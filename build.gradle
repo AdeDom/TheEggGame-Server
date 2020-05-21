@@ -32,4 +32,17 @@ dependencies {
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+
+    // exposed
+    implementation "org.jetbrains.exposed:exposed-core:0.24.1"
+    implementation "org.jetbrains.exposed:exposed-dao:0.24.1"
+    implementation "org.jetbrains.exposed:exposed-jdbc:0.24.1"
+    implementation 'org.jetbrains.exposed:exposed-jodatime:0.24.1'
+
+    // jackson(gson to json)
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+
+    // mysql
+    implementation "mysql:mysql-connector-java:8.0.19"
+    implementation "com.zaxxer:HikariCP:3.4.2"
 }
