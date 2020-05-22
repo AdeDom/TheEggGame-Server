@@ -9,6 +9,7 @@ data class Player(
     val username: String? = null,
     val name: String? = null,
     val image: String? = null,
+    val level: Int? = null,
     val state: String? = null,
     val gender: String? = null
 )
@@ -25,11 +26,12 @@ object Players : Table(name = "player") {
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(playerId, name = "PK_Player_ID")
 
-    fun toPlayer(row: ResultRow) = Player(
+    fun toPlayer(row: ResultRow, level: Int) = Player(
         playerId = row[playerId],
         username = row[username],
         name = row[name],
         image = row[image],
+        level = level,
         state = row[state],
         gender = row[gender]
     )
