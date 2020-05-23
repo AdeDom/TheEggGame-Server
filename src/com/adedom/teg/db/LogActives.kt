@@ -1,6 +1,7 @@
 package com.adedom.teg.db
 
 import com.adedom.teg.models.LogActive
+import com.adedom.teg.util.toDateFormat
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
@@ -16,12 +17,12 @@ object LogActives : Table(name = DatabaseConstant.logActiveTable) {
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(logId, name = DatabaseConstant.logActivePk)
 
-    fun toLog(row: ResultRow) = LogActive(
+    fun toLogActive(row: ResultRow) = LogActive(
         logId = row[logId],
         logKey = row[logKey],
         playerId = row[playerId],
-        dateTimeIn = row[dateTimeIn],
-        dateTimeOut = row[dateTimeOut]
+        dateTimeIn = row[dateTimeIn].toDateFormat(),
+        dateTimeOut = row[dateTimeOut].toDateFormat()
     )
 
 }
