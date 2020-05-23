@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Table
 
 object Multis : Table(name = DatabaseConstant.multiTable) {
 
-    val multiId = integer(name = DatabaseConstant.multiId)
+    val multiId = integer(name = DatabaseConstant.multiId).autoIncrement()
     val roomNo = varchar(name = DatabaseConstant.roomNo, length = 10)
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)
