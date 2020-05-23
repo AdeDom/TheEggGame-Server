@@ -2,8 +2,10 @@ package com.adedom.teg.route
 
 import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.LogActives
+import com.adedom.teg.db.Multis
 import com.adedom.teg.response.ItemCollectionsResponse
 import com.adedom.teg.response.LogActivesResponse
+import com.adedom.teg.response.MultiResponse
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -36,6 +38,19 @@ fun Route.fetchList() {
         )
         response.success = true
         response.message = "Fetch log active success"
+        call.respond(response)
+    }
+
+    get("/multi") {
+        val list = transaction {
+            Multis.selectAll()
+                .map { Multis.toMulti(it) }
+        }
+        val response = MultiResponse(
+            multi = list
+        )
+        response.success = true
+        response.message = "Fetch multi success"
         call.respond(response)
     }
 
