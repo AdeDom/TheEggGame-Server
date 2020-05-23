@@ -1,13 +1,7 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.db.ItemCollections
-import com.adedom.teg.db.LogActives
-import com.adedom.teg.db.MultiCollections
-import com.adedom.teg.db.Multis
-import com.adedom.teg.response.ItemCollectionsResponse
-import com.adedom.teg.response.LogActivesResponse
-import com.adedom.teg.response.MultiCollectionsResponse
-import com.adedom.teg.response.MultisResponse
+import com.adedom.teg.db.*
+import com.adedom.teg.response.*
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -66,6 +60,19 @@ fun Route.fetchList() {
         )
         response.success = true
         response.message = "Fetch multi collection success"
+        call.respond(response)
+    }
+
+    get("/room") {
+        val list = transaction {
+            Rooms.selectAll()
+                .map { Rooms.toRoom(it) }
+        }
+        val response = RoomsResponse(
+            room = list
+        )
+        response.success = true
+        response.message = "Fetch room success"
         call.respond(response)
     }
 
