@@ -7,12 +7,14 @@ object DatabaseConstant {
     const val logActiveTable = "log_active"
     const val multiTable = "multi"
     const val multiCollectionTable = "multi_collection"
+    const val roomTable = "room"
 
     const val playerPk = "PK_Player_ID"
     const val itemCollectionPk = "PK_ItemCollection_ID"
     const val logActivePk = "PK_LogActive_ID"
     const val multiPk = "PK_Multi_ID"
-    const val multiCollectionPk = "PK_multiCollection_ID"
+    const val multiCollectionPk = "PK_MultiCollection_ID"
+    const val roomPk = "PK_Room_ID"
 
     const val playerId = "player_id"
     const val username = "username"
@@ -35,5 +37,7 @@ object DatabaseConstant {
     const val status = "status"
     const val score = "score"
     const val team = "team"
+    const val roomId = "room_id"
+    const val people = "people"
 
 }
