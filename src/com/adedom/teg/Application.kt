@@ -1,4 +1,4 @@
-package com.adedom.teg.main
+package com.adedom.teg
 
 import com.adedom.teg.controller.controller
 import com.zaxxer.hikari.HikariConfig

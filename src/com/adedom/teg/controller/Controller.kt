@@ -6,7 +6,7 @@ import io.ktor.routing.route
 
 fun Route.controller() {
 
-    route("/account"){
+    route("/account") {
         user()
     }
 

@@ -1,8 +1,8 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.models.ItemCollections
-import com.adedom.teg.models.PlayerResponse
-import com.adedom.teg.models.Players
+import com.adedom.teg.db.ItemCollections
+import com.adedom.teg.db.Players
+import com.adedom.teg.networks.PlayerResponse
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
