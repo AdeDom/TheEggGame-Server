@@ -1,5 +1,6 @@
 package com.adedom.teg.models
 
+import com.adedom.teg.networks.BaseResponse
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime

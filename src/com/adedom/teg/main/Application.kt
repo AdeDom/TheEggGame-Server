@@ -1,5 +1,6 @@
-package com.adedom.teg
+package com.adedom.teg.main
 
+import com.adedom.teg.controller.controller
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
@@ -16,7 +17,7 @@ import org.jetbrains.exposed.sql.Database
 
 fun main() {
     val port = 3306
-    val host = "192.168.1.15"
+    val host = "192.168.43.22"
     val config = HikariConfig().apply {
         jdbcUrl = "jdbc:mysql://$host:$port/the_egg_game"
         driverClassName = "com.mysql.cj.jdbc.Driver"

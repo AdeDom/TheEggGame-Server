@@ -1,4 +1,4 @@
-package com.adedom.teg
+package com.adedom.teg.route
 
 import com.adedom.teg.models.ItemCollections
 import com.adedom.teg.models.PlayerResponse

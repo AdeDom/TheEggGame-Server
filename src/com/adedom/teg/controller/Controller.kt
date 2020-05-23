@@ -1,5 +1,6 @@
-package com.adedom.teg
+package com.adedom.teg.controller
 
+import com.adedom.teg.route.user
 import io.ktor.routing.Route
 import io.ktor.routing.route
 

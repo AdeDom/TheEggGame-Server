@@ -1,4 +1,4 @@
-package com.adedom.teg.models
+package com.adedom.teg.networks
 
 open class BaseResponse(
     var success: Boolean = false,
