@@ -76,5 +76,18 @@ fun Route.fetchList() {
         call.respond(response)
     }
 
+    get("/room-info") {
+        val list = transaction {
+            RoomInfos.selectAll()
+                .map { RoomInfos.toRoomInfo(it) }
+        }
+        val response = RoomInfosResponse(
+            roomInfo = list
+        )
+        response.success = true
+        response.message = "Fetch room info success"
+        call.respond(response)
+    }
+
 }
 

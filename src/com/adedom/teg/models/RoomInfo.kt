@@ -1,7 +1,5 @@
 package com.adedom.teg.models
 
-import org.joda.time.DateTime
-
 data class RoomInfo(
     val infoId: Int? = null,
     val roomNo: String? = null,
@@ -10,5 +8,5 @@ data class RoomInfo(
     val longitude: Double? = null,
     val team: String? = null,
     val status: String? = null,
-    val dateTime: DateTime? = null
+    val dateTime: String? = null
 )

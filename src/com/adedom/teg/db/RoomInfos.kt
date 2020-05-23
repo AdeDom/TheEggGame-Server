@@ -1,6 +1,7 @@
 package com.adedom.teg.db
 
 import com.adedom.teg.models.RoomInfo
+import com.adedom.teg.util.toDateFormat
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
@@ -27,7 +28,7 @@ object RoomInfos : Table(name = DatabaseConstant.roomInfoTable) {
         longitude = row[longitude],
         team = row[team],
         status = row[status],
-        dateTime = row[dateTime]
+        dateTime = row[dateTime].toDateFormat()
     )
 
 }
