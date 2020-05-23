@@ -1,7 +1,5 @@
 package com.adedom.teg.models
 
-import org.joda.time.DateTime
-
 data class ItemCollection(
     val collectionId: Int? = null,
     val playerId: Int? = null,
@@ -9,5 +7,5 @@ data class ItemCollection(
     val qty: Int? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val dateTime: DateTime? = null
+    val dateTime: String? = null
 )

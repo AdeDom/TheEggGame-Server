@@ -1,6 +1,7 @@
 package com.adedom.teg.db
 
 import com.adedom.teg.models.ItemCollection
+import com.adedom.teg.util.toDateFormat
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
@@ -25,7 +26,7 @@ object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
         qty = row[qty],
         latitude = row[latitude],
         longitude = row[longitude],
-        dateTime = row[dateTime]
+        dateTime = row[dateTime].toDateFormat()
     )
 
 }
