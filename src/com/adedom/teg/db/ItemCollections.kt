@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
 
 object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
+
     val collectionId = ItemCollections.integer(name = DatabaseConstant.collectionId).autoIncrement()
     val playerId = ItemCollections.integer(name = DatabaseConstant.playerId)
     val itemId = ItemCollections.integer(name = DatabaseConstant.itemId)
@@ -17,16 +18,14 @@ object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(collectionId, name = DatabaseConstant.itemCollectionPk)
 
-    fun toItemCollection(row: ResultRow): ItemCollection {
-        return ItemCollection(
-            collectionId = row[collectionId],
-            playerId = row[playerId],
-            itemId = row[itemId],
-            qty = row[qty],
-            latitude = row[latitude],
-            longitude = row[longitude],
-            dateTime = row[dateTime]
-        )
-    }
+    fun toItemCollection(row: ResultRow) = ItemCollection(
+        collectionId = row[collectionId],
+        playerId = row[playerId],
+        itemId = row[itemId],
+        qty = row[qty],
+        latitude = row[latitude],
+        longitude = row[longitude],
+        dateTime = row[dateTime]
+    )
 
 }
