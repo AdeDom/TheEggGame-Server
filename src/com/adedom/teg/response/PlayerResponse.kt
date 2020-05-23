@@ -1,4 +1,4 @@
-package com.adedom.teg.networks
+package com.adedom.teg.response
 
 import com.adedom.teg.models.Player
 
