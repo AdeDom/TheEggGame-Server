@@ -1,7 +1,5 @@
 package com.adedom.teg.models
 
-import org.joda.time.DateTime
-
 data class MultiCollection(
     val collectionId: Int? = null,
     val roomNo: String? = null,
@@ -10,5 +8,5 @@ data class MultiCollection(
     val team: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val dateTime: DateTime? = null
+    val dateTime: String? = null
 )

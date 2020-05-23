@@ -1,6 +1,7 @@
 package com.adedom.teg.db
 
 import com.adedom.teg.models.MultiCollection
+import com.adedom.teg.util.toDateFormat
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
@@ -27,7 +28,7 @@ object MultiCollections : Table(name = DatabaseConstant.multiCollectionTable) {
         team = row[team],
         latitude = row[latitude],
         longitude = row[longitude],
-        dateTime = row[dateTime]
+        dateTime = row[dateTime].toDateFormat()
     )
 
 }
