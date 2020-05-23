@@ -5,17 +5,17 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
 
-object ItemCollections : Table(name = "item_collection") {
-    val collectionId = ItemCollections.integer(name = "collection_id").autoIncrement()
-    val playerId = ItemCollections.integer(name = "player_id")
-    val itemId = ItemCollections.integer(name = "item_id")
-    val qty = ItemCollections.integer(name = "qty")
-    val latitude = ItemCollections.double(name = "latitude")
-    val longitude = ItemCollections.double(name = "longitude")
-    val dateTime = datetime(name = "date_time")
+object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
+    val collectionId = ItemCollections.integer(name = DatabaseConstant.collectionId).autoIncrement()
+    val playerId = ItemCollections.integer(name = DatabaseConstant.playerId)
+    val itemId = ItemCollections.integer(name = DatabaseConstant.itemId)
+    val qty = ItemCollections.integer(name = DatabaseConstant.qty)
+    val latitude = ItemCollections.double(name = DatabaseConstant.latitude)
+    val longitude = ItemCollections.double(name = DatabaseConstant.longitude)
+    val dateTime = datetime(name = DatabaseConstant.dateTime)
 
     override val primaryKey: PrimaryKey?
-        get() = PrimaryKey(collectionId, name = "PK_ItemCollection_ID")
+        get() = PrimaryKey(collectionId, name = DatabaseConstant.itemCollectionPk)
 
     fun toItemCollection(row: ResultRow): ItemCollection {
         return ItemCollection(

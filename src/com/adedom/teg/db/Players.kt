@@ -5,17 +5,17 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
 
-object Players : Table(name = "player") {
-    val playerId = Players.integer(name = "player_id").autoIncrement()
-    val username = Players.varchar("username", length = 50)
-    val name = Players.varchar("name", length = 50)
-    val image = Players.varchar("image", length = 50)
-    val state = Players.varchar("state", length = 10)
-    val gender = Players.varchar("gender", length = 5)
-    val dateTime = datetime("date_time")
+object Players : Table(name = DatabaseConstant.playerTable) {
+    val playerId = Players.integer(name = DatabaseConstant.playerId).autoIncrement()
+    val username = Players.varchar(name = DatabaseConstant.username, length = 50)
+    val name = Players.varchar(name = DatabaseConstant.name, length = 50)
+    val image = Players.varchar(name = DatabaseConstant.image, length = 50)
+    val state = Players.varchar(name = DatabaseConstant.state, length = 10)
+    val gender = Players.varchar(name = DatabaseConstant.gender, length = 5)
+    val dateTime = datetime(name = DatabaseConstant.dateTime)
 
     override val primaryKey: PrimaryKey?
-        get() = PrimaryKey(playerId, name = "PK_Player_ID")
+        get() = PrimaryKey(playerId, name = DatabaseConstant.playerPk)
 
     fun toPlayer(row: ResultRow, level: Int) = Player(
         playerId = row[playerId],
