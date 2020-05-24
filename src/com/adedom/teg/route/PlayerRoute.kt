@@ -1,7 +1,7 @@
 package com.adedom.teg.route
 
 import com.adedom.teg.request.PutPassword
-import com.adedom.teg.request.SetState
+import com.adedom.teg.request.PutState
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.transaction.DatabaseTransaction
@@ -92,17 +92,17 @@ fun Route.putState() {
     route("state") {
         put("/") {
             val response = BaseResponse()
-            val (playerId, state) = call.receive<SetState>()
+            val (playerId, state) = call.receive<PutState>()
             val message = when {
-                playerId == null -> SetState::playerId.name.validateEmpty()
-                playerId <= 0 -> SetState::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetState::playerId.name.validateNotFound()
+                playerId == null -> PutState::playerId.name.validateEmpty()
+                playerId <= 0 -> PutState::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutState::playerId.name.validateNotFound()
 
-                state.isNullOrBlank() -> SetState::state.name.validateEmpty()
+                state.isNullOrBlank() -> PutState::state.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putState(
-                        setState = SetState(
+                        putState = PutState(
                             playerId = playerId,
                             state = state
                         )

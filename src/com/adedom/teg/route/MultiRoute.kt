@@ -59,21 +59,21 @@ fun Route.putReady() {
     route("ready") {
         put("/") {
             val response = BaseResponse()
-            val (roomNo, playerId, status) = call.receive<SetReady>()
+            val (roomNo, playerId, status) = call.receive<PutReady>()
             val message = when {
-                roomNo.isNullOrBlank() -> SetReady::roomNo.name.validateEmpty()
-                roomNo.toInt() <= 0 -> SetReady::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> SetReady::roomNo.name.validateNotFound()
+                roomNo.isNullOrBlank() -> PutReady::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PutReady::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PutReady::roomNo.name.validateNotFound()
 
-                playerId == null -> SetReady::playerId.name.validateEmpty()
-                playerId <= 0 -> SetReady::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetReady::playerId.name.validateNotFound()
+                playerId == null -> PutReady::playerId.name.validateEmpty()
+                playerId <= 0 -> PutReady::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutReady::playerId.name.validateNotFound()
 
-                status.isNullOrBlank() -> SetReady::status.name.validateEmpty()
+                status.isNullOrBlank() -> PutReady::status.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putReady(
-                        setReady = SetReady(
+                        putReady = PutReady(
                             roomNo = roomNo,
                             playerId = playerId,
                             status = status
@@ -95,11 +95,11 @@ fun Route.putRoomOff() {
     route("room-off") {
         put("/") {
             val response = BaseResponse()
-            val (roomNo) = call.receive<SetRoomOff>()
+            val (roomNo) = call.receive<PutRoomOff>()
             val message = when {
-                roomNo.isNullOrBlank() -> SetRoomOff::roomNo.name.validateEmpty()
-                roomNo.toInt() <= 0 -> SetRoomOff::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> SetRoomOff::roomNo.name.validateNotFound()
+                roomNo.isNullOrBlank() -> PutRoomOff::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PutRoomOff::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> PutRoomOff::roomNo.name.validateNotFound()
                 else -> {
                     DatabaseTransaction.putRoomOff(roomNo)
                     response.success = true
@@ -118,21 +118,21 @@ fun Route.putTeam() {
     route("team") {
         put("/") {
             val response = BaseResponse()
-            val (roomNo, playerId, team) = call.receive<SetTeam>()
+            val (roomNo, playerId, team) = call.receive<PutTeam>()
             val message = when {
-                roomNo.isNullOrBlank() -> SetTeam::roomNo.name.validateEmpty()
-                roomNo.toInt() <= 0 -> SetTeam::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> SetTeam::roomNo.name.validateNotFound()
+                roomNo.isNullOrBlank() -> PutTeam::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PutTeam::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PutTeam::roomNo.name.validateNotFound()
 
-                playerId == null -> SetTeam::playerId.name.validateEmpty()
-                playerId <= 0 -> SetTeam::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetTeam::playerId.name.validateNotFound()
+                playerId == null -> PutTeam::playerId.name.validateEmpty()
+                playerId <= 0 -> PutTeam::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutTeam::playerId.name.validateNotFound()
 
-                team.isNullOrBlank() -> SetTeam::team.name.validateEmpty()
+                team.isNullOrBlank() -> PutTeam::team.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putTeam(
-                        setTeam = SetTeam(
+                        putTeam = PutTeam(
                             roomNo = roomNo,
                             playerId = playerId,
                             team = team

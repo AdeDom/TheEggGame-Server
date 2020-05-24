@@ -1,5 +1,5 @@
 package com.adedom.teg.request
 
-data class SetRoomOff(
+data class PutRoomOff(
     val roomNo: String? = null
 )

@@ -69,8 +69,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putReady(setReady: SetReady) {
-        val (roomNo, playerId, status) = setReady
+    fun putReady(putReady: PutReady) {
+        val (roomNo, playerId, status) = putReady
         transaction {
             RoomInfos.update({
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
@@ -86,8 +86,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putState(setState: SetState) {
-        val (playerId, state) = setState
+    fun putState(putState: PutState) {
+        val (playerId, state) = putState
         transaction {
             Players.update({ Players.playerId eq playerId!! }) {
                 it[Players.state] = state!!
@@ -95,8 +95,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putTeam(setTeam: SetTeam) {
-        val (roomNo, playerId, team) = setTeam
+    fun putTeam(putTeam: PutTeam) {
+        val (roomNo, playerId, team) = putTeam
         transaction {
             RoomInfos.update({
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
