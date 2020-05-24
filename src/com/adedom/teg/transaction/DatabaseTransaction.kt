@@ -2,10 +2,7 @@ package com.adedom.teg.transaction
 
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
-import com.adedom.teg.request.SetLatlng
-import com.adedom.teg.request.SetReady
-import com.adedom.teg.request.SetState
-import com.adedom.teg.request.SetTeam
+import com.adedom.teg.request.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -89,6 +86,15 @@ object DatabaseTransaction {
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }) {
                 it[RoomInfos.team] = team!!
+            }
+        }
+    }
+
+    fun deletePlayerRoomInfo(deletePlayerRoomInfo: DeletePlayerRoomInfo) {
+        val (roomNo, playerId) = deletePlayerRoomInfo
+        transaction {
+            RoomInfos.deleteWhere {
+                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }
         }
     }

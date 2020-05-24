@@ -20,6 +20,7 @@ fun Route.controller() {
         setReady()
         setRoomOff()
         setTeam()
+        deletePlayerRoomInfo()
     }
 
 }
