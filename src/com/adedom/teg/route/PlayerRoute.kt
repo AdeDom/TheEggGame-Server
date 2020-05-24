@@ -1,10 +1,12 @@
 package com.adedom.teg.route
 
+import com.adedom.teg.request.PutPassword
 import com.adedom.teg.request.SetState
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.validateEmpty
+import com.adedom.teg.util.validateGrateEq
 import com.adedom.teg.util.validateLessEqZero
 import com.adedom.teg.util.validateNotFound
 import io.ktor.application.call
@@ -35,6 +37,47 @@ fun Route.getPlayer() {
                         response.player = player
                         "Fetch player success"
                     }
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
+fun Route.putPassword() {
+
+    route("password") {
+        put("/") {
+            val response = BaseResponse()
+            val (playerId, oldPassword, newPassword) = call.receive<PutPassword>()
+            val minPassword = 4
+            val message = when {
+                playerId == null -> PutPassword::playerId.name.validateEmpty()
+                playerId <= 0 -> PutPassword::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutPassword::playerId.name.validateNotFound()
+
+                oldPassword.isNullOrBlank() -> PutPassword::oldPassword.name.validateEmpty()
+                DatabaseTransaction.getCountPasswordPlayer(
+                    putPassword = PutPassword(
+                        playerId = playerId,
+                        oldPassword = oldPassword
+                    )
+                ) == 0 -> PutPassword::oldPassword.name.validateLessEqZero()
+
+                newPassword.isNullOrBlank() -> PutPassword::newPassword.name.validateEmpty()
+                newPassword.length < minPassword -> PutPassword::newPassword.name validateGrateEq minPassword
+
+                else -> {
+                    DatabaseTransaction.putPassword(
+                        putPassword = PutPassword(
+                            playerId = playerId,
+                            newPassword = newPassword
+                        )
+                    )
+                    response.success = true
+                    "Put password success"
                 }
             }
             response.message = message

@@ -13,3 +13,5 @@ fun String?.validateEmpty() = "Please enter $this"
 fun String?.validateLessEqZero() = "Please check the $this again"
 
 fun String?.validateNotFound() = "$this not found"
+
+infix fun String?.validateGrateEq(length: Int) = "Please enter a number greater than or equal to $length"

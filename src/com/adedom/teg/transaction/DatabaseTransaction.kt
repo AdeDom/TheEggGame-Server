@@ -33,6 +33,15 @@ object DatabaseTransaction {
             .toInt()
     }
 
+    fun getCountPasswordPlayer(putPassword: PutPassword): Int {
+        val (playerId, oldPassword, _) = putPassword
+        return transaction {
+            Players.select { Players.playerId eq playerId!! and (Players.password eq oldPassword!!) }
+                .count()
+                .toInt()
+        }
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -101,8 +110,19 @@ object DatabaseTransaction {
         transaction {
             LogActives.update({
                 LogActives.logKey eq logKey
-            }){
+            }) {
                 it[dateTimeOut] = DateTime.now()
+            }
+        }
+    }
+
+    fun putPassword(putPassword: PutPassword) {
+        val (playerId, _, newPassword) = putPassword
+        transaction {
+            Players.update({
+                Players.playerId eq playerId!!
+            }) {
+                it[password] = newPassword!!
             }
         }
     }

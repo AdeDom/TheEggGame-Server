@@ -20,6 +20,7 @@ object DatabaseConstant {
 
     const val playerId = "player_id"
     const val username = "username"
+    const val password = "password"
     const val name = "name"
     const val image = "image"
     const val state = "state"
