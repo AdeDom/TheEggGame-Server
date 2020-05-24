@@ -3,6 +3,9 @@ package com.adedom.teg.route
 import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.Players
 import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.util.validateEmpty
+import com.adedom.teg.util.validateLessEqZero
+import com.adedom.teg.util.validateNotFound
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -15,12 +18,13 @@ import org.jetbrains.exposed.sql.transactions.transaction
 fun Route.user() {
 
     route("get-player") {
-        get("/{player_id}") {
+        val playerIdKey = "player_id"
+        get("/{$playerIdKey}") {
             val response = PlayerResponse()
-            val playerId = call.parameters["player_id"]
-            when {
-                playerId.isNullOrBlank() -> response.message = "Please enter player id"
-                playerId.toInt() <= 0 -> response.message = "Please check the player id again"
+            val playerId = call.parameters[playerIdKey]
+            val message = when {
+                playerId.isNullOrBlank() -> playerIdKey.validateEmpty()
+                playerId.toInt() <= 0 -> playerIdKey.validateLessEqZero()
                 else -> {
                     val count = transaction {
                         Players.select { Players.playerId eq playerId.toInt() }
@@ -28,7 +32,7 @@ fun Route.user() {
                             .toInt()
                     }
                     if (count == 0) {
-                        response.message = "Not found"
+                        playerIdKey.validateNotFound()
                     } else {
                         val level = transaction {
                             ItemCollections.select { ItemCollections.playerId eq playerId.toInt() }
@@ -43,11 +47,12 @@ fun Route.user() {
                                 .single()
                         }
                         response.success = true
-                        response.message = "Fetch player"
                         response.player = player
+                        "Fetch player"
                     }
                 }
             }
+            response.message = message
             call.respond(response)
         }
     }

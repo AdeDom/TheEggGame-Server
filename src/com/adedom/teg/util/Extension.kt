@@ -10,4 +10,8 @@ fun Int?.isNull() = this == null
 
 fun Double?.isNull() = this == null
 
-fun String.validateEmpty() = "Please enter $this"
+fun String?.validateEmpty() = "Please enter $this"
+
+fun String?.validateLessEqZero() = "Please check the $this again"
+
+fun String?.validateNotFound() = "$this not found"
