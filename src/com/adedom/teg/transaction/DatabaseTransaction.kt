@@ -127,6 +127,18 @@ object DatabaseTransaction {
         }
     }
 
+    fun putProfile(putProfile: PutProfile) {
+        val (playerId, name, gender) = putProfile
+        transaction {
+            Players.update({
+                Players.playerId eq playerId!!
+            }) {
+                it[Players.name] = name!!
+                it[Players.gender] = gender!!
+            }
+        }
+    }
+
     fun deletePlayerRoomInfo(deletePlayerRoomInfo: DeletePlayerRoomInfo) {
         val (roomNo, playerId) = deletePlayerRoomInfo
         transaction {

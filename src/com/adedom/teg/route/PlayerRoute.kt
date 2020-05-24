@@ -1,6 +1,7 @@
 package com.adedom.teg.route
 
 import com.adedom.teg.request.PutPassword
+import com.adedom.teg.request.PutProfile
 import com.adedom.teg.request.PutState
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
@@ -19,6 +20,7 @@ import io.ktor.routing.route
 
 fun Route.getPlayer() {
 
+    //todo JWT authentication
     route("player") {
         val playerIdKey = "player_id"
         get("/{$playerIdKey}") {
@@ -48,6 +50,7 @@ fun Route.getPlayer() {
 
 fun Route.putPassword() {
 
+    //todo encode password
     route("password") {
         put("/") {
             val response = BaseResponse()
@@ -78,6 +81,43 @@ fun Route.putPassword() {
                     )
                     response.success = true
                     "Put password success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
+fun Route.putProfile() {
+
+    //todo image profile
+    route("profile") {
+        put("/") {
+            val response = BaseResponse()
+            val (playerId, name, gender) = call.receive<PutProfile>()
+            val minName = 4
+            val message = when {
+                playerId == null -> PutProfile::playerId.name.validateEmpty()
+                playerId <= 0 -> PutProfile::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutProfile::playerId.name.validateNotFound()
+
+                name.isNullOrBlank() -> PutProfile::name.name.validateEmpty()
+                name.length < minName -> PutProfile::name.name.validateGrateEq(minName)
+
+                gender.isNullOrBlank() -> PutProfile::gender.name.validateEmpty()
+
+                else -> {
+                    DatabaseTransaction.putProfile(
+                        putProfile = PutProfile(
+                            playerId = playerId,
+                            name = name,
+                            gender = gender
+                        )
+                    )
+                    response.success = true
+                    "Put profile success"
                 }
             }
             response.message = message

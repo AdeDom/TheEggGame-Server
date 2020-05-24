@@ -13,6 +13,7 @@ fun Route.controller() {
     route("account") {
         getPlayer()
         putPassword()
+        putProfile()
         putState()
     }
 
