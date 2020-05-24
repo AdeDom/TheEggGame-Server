@@ -34,6 +34,14 @@ fun Route.multi() {
                 longitude.isNull() -> SetLatlng::longitude.name.validateEmpty()
 
                 else -> {
+                    DatabaseTransaction.putSetLatLng(
+                        setLatlng = SetLatlng(
+                            roomNo = roomNo,
+                            playerId = playerId,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
                     response.success = true
                     "Set latlng success"
                 }

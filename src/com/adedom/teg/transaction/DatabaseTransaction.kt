@@ -2,9 +2,8 @@ package com.adedom.teg.transaction
 
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import com.adedom.teg.request.SetLatlng
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseTransaction {
@@ -33,6 +32,18 @@ object DatabaseTransaction {
             Players.select { Players.playerId eq playerId }
                 .map { Players.toPlayer(it, level) }
                 .single()
+        }
+    }
+
+    fun putSetLatLng(setLatlng: SetLatlng) {
+        val (roomNo, playerId, latitude, longitude) = setLatlng
+        transaction {
+            RoomInfos.update({
+                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
+            }) {
+                it[RoomInfos.latitude] = latitude!!
+                it[RoomInfos.longitude] = longitude!!
+            }
         }
     }
 
