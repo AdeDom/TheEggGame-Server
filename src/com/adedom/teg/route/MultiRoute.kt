@@ -15,9 +15,9 @@ import io.ktor.routing.delete
 import io.ktor.routing.put
 import io.ktor.routing.route
 
-fun Route.setLatlng() {
+fun Route.putLatlng() {
 
-    route("set-latlng") {
+    route("latlng") {
         put("/") {
             val response = BaseResponse()
             val (roomNo, playerId, latitude, longitude) = call.receive<SetLatlng>()
@@ -35,7 +35,7 @@ fun Route.setLatlng() {
                 longitude.isNull() -> SetLatlng::longitude.name.validateEmpty()
 
                 else -> {
-                    DatabaseTransaction.putSetLatLng(
+                    DatabaseTransaction.putLatLng(
                         setLatlng = SetLatlng(
                             roomNo = roomNo,
                             playerId = playerId,
@@ -44,7 +44,7 @@ fun Route.setLatlng() {
                         )
                     )
                     response.success = true
-                    "Set latlng success"
+                    "Put latlng success"
                 }
             }
             response.message = message

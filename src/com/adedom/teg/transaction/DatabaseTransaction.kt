@@ -48,7 +48,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putSetLatLng(setLatlng: SetLatlng) {
+    fun putLatLng(setLatlng: SetLatlng) {
         val (roomNo, playerId, latitude, longitude) = setLatlng
         transaction {
             RoomInfos.update({

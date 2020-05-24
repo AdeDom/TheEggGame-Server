@@ -20,7 +20,7 @@ fun Route.controller() {
     }
 
     route("multi") {
-        setLatlng()
+        putLatlng()
         setReady()
         setRoomOff()
         setTeam()
