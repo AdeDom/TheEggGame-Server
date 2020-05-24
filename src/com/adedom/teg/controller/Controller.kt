@@ -12,7 +12,7 @@ fun Route.controller() {
 
     route("account") {
         getPlayer()
-        setState()
+        putState()
     }
 
     route("fetch-list") {

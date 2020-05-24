@@ -44,9 +44,9 @@ fun Route.getPlayer() {
 
 }
 
-fun Route.setState() {
+fun Route.putState() {
 
-    route("set-state") {
+    route("state") {
         put("/") {
             val response = BaseResponse()
             val (playerId, state) = call.receive<SetState>()
@@ -58,14 +58,14 @@ fun Route.setState() {
                 state.isNullOrBlank() -> SetState::state.name.validateEmpty()
 
                 else -> {
-                    DatabaseTransaction.putSetState(
+                    DatabaseTransaction.putState(
                         setState = SetState(
                             playerId = playerId,
                             state = state
                         )
                     )
                     response.success = true
-                    "Set state success"
+                    "Put state success"
                 }
             }
             response.message = message

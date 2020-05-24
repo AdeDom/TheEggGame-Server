@@ -77,7 +77,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putSetState(setState: SetState) {
+    fun putState(setState: SetState) {
         val (playerId, state) = setState
         transaction {
             Players.update({ Players.playerId eq playerId!! }) {
