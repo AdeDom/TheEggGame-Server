@@ -151,7 +151,7 @@ fun Route.putTeam() {
 
 fun Route.deletePlayerRoomInfo() {
 
-    route("delete-player-room-info") {
+    route("player-room-info") {
         delete("/") {
             val response = BaseResponse()
             val (roomNo, playerId) = call.receive<DeletePlayerRoomInfo>()
