@@ -90,9 +90,9 @@ fun Route.putReady() {
 
 }
 
-fun Route.setRoomOff() {
+fun Route.putRoomOff() {
 
-    route("set-room-off") {
+    route("room-off") {
         put("/") {
             val response = BaseResponse()
             val (roomNo) = call.receive<SetRoomOff>()
@@ -101,9 +101,9 @@ fun Route.setRoomOff() {
                 roomNo.toInt() <= 0 -> SetRoomOff::roomNo.name.validateLessEqZero()
                 DatabaseTransaction.getCountRoom(roomNo) == 0 -> SetRoomOff::roomNo.name.validateNotFound()
                 else -> {
-                    DatabaseTransaction.putSetRoomOff(roomNo)
+                    DatabaseTransaction.putRoomOff(roomNo)
                     response.success = true
-                    "Set room off success"
+                    "Put room off success"
                 }
             }
             response.message = message

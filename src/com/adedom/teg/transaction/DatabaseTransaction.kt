@@ -71,7 +71,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putSetRoomOff(roomNo: String) = transaction {
+    fun putRoomOff(roomNo: String) = transaction {
         Rooms.update({ Rooms.roomNo eq roomNo }) {
             it[status] = "off"
         }
