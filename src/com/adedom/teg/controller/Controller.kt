@@ -1,8 +1,6 @@
 package com.adedom.teg.controller
 
-import com.adedom.teg.route.fetchList
-import com.adedom.teg.route.multi
-import com.adedom.teg.route.user
+import com.adedom.teg.route.*
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
@@ -17,7 +15,10 @@ fun Route.controller() {
     }
 
     route("multi") {
-        multi()
+        setLatlng()
+        setReady()
+        setRoomOff()
+        setTeam()
     }
 
 }

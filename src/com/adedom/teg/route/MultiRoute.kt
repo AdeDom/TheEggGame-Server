@@ -17,12 +17,11 @@ import io.ktor.routing.Route
 import io.ktor.routing.put
 import io.ktor.routing.route
 
-fun Route.multi() {
-
-    val response = BaseResponse()
+fun Route.setLatlng() {
 
     route("set-latlng") {
         put("/") {
+            val response = BaseResponse()
             val (roomNo, playerId, latitude, longitude) = call.receive<SetLatlng>()
             val message = when {
                 roomNo.isNullOrBlank() -> SetLatlng::roomNo.name.validateEmpty()
@@ -55,8 +54,13 @@ fun Route.multi() {
         }
     }
 
+}
+
+fun Route.setReady() {
+
     route("set-ready") {
         put("/") {
+            val response = BaseResponse()
             val (roomNo, playerId, status) = call.receive<SetReady>()
             val message = when {
                 roomNo.isNullOrBlank() -> SetReady::roomNo.name.validateEmpty()
@@ -86,8 +90,13 @@ fun Route.multi() {
         }
     }
 
+}
+
+fun Route.setRoomOff() {
+
     route("set-room-off") {
         put("/") {
+            val response = BaseResponse()
             val (roomNo) = call.receive<SetRoomOff>()
             val message = when {
                 roomNo.isNullOrBlank() -> SetRoomOff::roomNo.name.validateEmpty()
@@ -104,8 +113,13 @@ fun Route.multi() {
         }
     }
 
+}
+
+fun Route.setTeam() {
+
     route("set-team") {
         put("/") {
+            val response = BaseResponse()
             val (roomNo, playerId, team) = call.receive<SetTeam>()
             val message = when {
                 roomNo.isNullOrBlank() -> SetTeam::roomNo.name.validateEmpty()
