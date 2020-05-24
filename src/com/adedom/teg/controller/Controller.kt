@@ -6,6 +6,10 @@ import io.ktor.routing.route
 
 fun Route.controller() {
 
+    route("application"){
+        putLogActive()
+    }
+
     route("account") {
         getPlayer()
         setState()

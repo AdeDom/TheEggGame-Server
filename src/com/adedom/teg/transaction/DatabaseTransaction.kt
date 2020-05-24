@@ -5,6 +5,7 @@ import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 
 object DatabaseTransaction {
 
@@ -22,6 +23,12 @@ object DatabaseTransaction {
 
     fun getCountRoomInfo(roomNo: String) = transaction {
         RoomInfos.select { RoomInfos.roomNo eq roomNo }
+            .count()
+            .toInt()
+    }
+
+    fun getCountLogActive(logKey: String) = transaction {
+        LogActives.select { LogActives.logKey eq logKey }
             .count()
             .toInt()
     }
@@ -86,6 +93,16 @@ object DatabaseTransaction {
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }) {
                 it[RoomInfos.team] = team!!
+            }
+        }
+    }
+
+    fun putLogActive(logKey: String) {
+        transaction {
+            LogActives.update({
+                LogActives.logKey eq logKey
+            }){
+                it[dateTimeOut] = DateTime.now()
             }
         }
     }
