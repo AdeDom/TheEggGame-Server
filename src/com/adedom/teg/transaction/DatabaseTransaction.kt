@@ -4,6 +4,7 @@ import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.SetLatlng
 import com.adedom.teg.request.SetReady
+import com.adedom.teg.request.SetState
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -68,6 +69,15 @@ object DatabaseTransaction {
     fun putSetRoomOff(roomNo: String) = transaction {
         Rooms.update({ Rooms.roomNo eq roomNo }) {
             it[status] = "off"
+        }
+    }
+
+    fun putSetState(setState: SetState) {
+        val (playerId, state) = setState
+        transaction {
+            Players.update({ Players.playerId eq playerId!! }) {
+                it[Players.state] = state!!
+            }
         }
     }
 
