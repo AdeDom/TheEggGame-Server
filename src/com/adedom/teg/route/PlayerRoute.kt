@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.user() {
 
-    route("/get-player") {
+    route("get-player") {
         get("/{player_id}") {
             val response = PlayerResponse()
             val playerId = call.parameters["player_id"]

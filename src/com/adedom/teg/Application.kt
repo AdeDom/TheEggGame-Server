@@ -45,7 +45,7 @@ fun Application.module() {
     }
 
     install(Routing) {
-        route("/api") {
+        route("api") {
             controller()
         }
     }
