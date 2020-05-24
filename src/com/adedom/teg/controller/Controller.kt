@@ -7,7 +7,8 @@ import io.ktor.routing.route
 fun Route.controller() {
 
     route("account") {
-        user()
+        getPlayer()
+        setState()
     }
 
     route("fetch-list") {

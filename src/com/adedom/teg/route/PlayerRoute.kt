@@ -15,9 +15,7 @@ import io.ktor.routing.get
 import io.ktor.routing.put
 import io.ktor.routing.route
 
-fun Route.user() {
-
-    val baseResponse = BaseResponse()
+fun Route.getPlayer() {
 
     route("get-player") {
         val playerIdKey = "player_id"
@@ -44,8 +42,13 @@ fun Route.user() {
         }
     }
 
+}
+
+fun Route.setState() {
+
     route("set-state") {
         put("/") {
+            val response = BaseResponse()
             val (playerId, state) = call.receive<SetState>()
             val message = when {
                 playerId == null -> SetState::playerId.name.validateEmpty()
@@ -61,12 +64,12 @@ fun Route.user() {
                             state = state
                         )
                     )
-                    baseResponse.success = true
+                    response.success = true
                     "Set state success"
                 }
             }
-            baseResponse.message = message
-            call.respond(baseResponse)
+            response.message = message
+            call.respond(response)
         }
     }
 
