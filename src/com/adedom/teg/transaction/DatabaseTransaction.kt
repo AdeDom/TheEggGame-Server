@@ -9,12 +9,16 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseTransaction {
 
-    fun getCountPlayer(playerId: Int): Int {
-        return transaction {
-            Players.select { Players.playerId eq playerId }
-                .count()
-                .toInt()
-        }
+    fun getCountPlayer(playerId: Int) = transaction {
+        Players.select { Players.playerId eq playerId }
+            .count()
+            .toInt()
+    }
+
+    fun getCountRoomInfo(roomNo: String) = transaction {
+        RoomInfos.select { RoomInfos.roomNo eq roomNo }
+            .count()
+            .toInt()
     }
 
     fun getPlayerInfo(playerId: Int): Player {
