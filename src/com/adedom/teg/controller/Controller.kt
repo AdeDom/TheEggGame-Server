@@ -21,7 +21,7 @@ fun Route.controller() {
 
     route("multi") {
         putLatlng()
-        setReady()
+        putReady()
         setRoomOff()
         setTeam()
         deletePlayerRoomInfo()

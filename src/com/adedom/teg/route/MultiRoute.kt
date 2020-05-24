@@ -54,9 +54,9 @@ fun Route.putLatlng() {
 
 }
 
-fun Route.setReady() {
+fun Route.putReady() {
 
-    route("set-ready") {
+    route("ready") {
         put("/") {
             val response = BaseResponse()
             val (roomNo, playerId, status) = call.receive<SetReady>()
@@ -72,7 +72,7 @@ fun Route.setReady() {
                 status.isNullOrBlank() -> SetReady::status.name.validateEmpty()
 
                 else -> {
-                    DatabaseTransaction.putSetReady(
+                    DatabaseTransaction.putReady(
                         setReady = SetReady(
                             roomNo = roomNo,
                             playerId = playerId,
@@ -80,7 +80,7 @@ fun Route.setReady() {
                         )
                     )
                     response.success = true
-                    "Set ready success"
+                    "Put ready success"
                 }
             }
             response.message = message

@@ -60,7 +60,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putSetReady(setReady: SetReady) {
+    fun putReady(setReady: SetReady) {
         val (roomNo, playerId, status) = setReady
         transaction {
             RoomInfos.update({
