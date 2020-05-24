@@ -1,6 +1,7 @@
 package com.adedom.teg.route
 
 import com.adedom.teg.request.SetLatlng
+import com.adedom.teg.request.SetReady
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.isNull
@@ -16,9 +17,10 @@ import io.ktor.routing.route
 
 fun Route.multi() {
 
+    val response = BaseResponse()
+
     route("set-latlng") {
         put("/") {
-            val response = BaseResponse()
             val (roomNo, playerId, latitude, longitude) = call.receive<SetLatlng>()
             val message = when {
                 roomNo.isNullOrBlank() -> SetLatlng::roomNo.name.validateEmpty()
@@ -44,6 +46,37 @@ fun Route.multi() {
                     )
                     response.success = true
                     "Set latlng success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+    route("set-ready") {
+        put("/") {
+            val (roomNo, playerId, status) = call.receive<SetReady>()
+            val message = when {
+                roomNo.isNullOrBlank() -> SetReady::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> SetReady::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> SetReady::roomNo.name.validateNotFound()
+
+                playerId == null -> SetReady::playerId.name.validateEmpty()
+                playerId <= 0 -> SetReady::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetReady::playerId.name.validateNotFound()
+
+                status.isNullOrBlank() -> SetReady::status.name.validateEmpty()
+
+                else -> {
+                    DatabaseTransaction.putSetReady(
+                        setReady = SetReady(
+                            roomNo = roomNo,
+                            playerId = playerId,
+                            status = status
+                        )
+                    )
+                    response.success = true
+                    "Set ready success"
                 }
             }
             response.message = message

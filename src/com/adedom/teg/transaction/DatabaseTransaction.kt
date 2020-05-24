@@ -3,6 +3,7 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.SetLatlng
+import com.adedom.teg.request.SetReady
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -43,6 +44,17 @@ object DatabaseTransaction {
             }) {
                 it[RoomInfos.latitude] = latitude!!
                 it[RoomInfos.longitude] = longitude!!
+            }
+        }
+    }
+
+    fun putSetReady(setReady: SetReady) {
+        val (roomNo, playerId, status) = setReady
+        transaction {
+            RoomInfos.update({
+                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
+            }) {
+                it[RoomInfos.status] = status!!
             }
         }
     }
