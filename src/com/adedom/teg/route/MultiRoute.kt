@@ -2,6 +2,7 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.SetLatlng
 import com.adedom.teg.request.SetReady
+import com.adedom.teg.request.SetRoomOff
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.isNull
@@ -77,6 +78,24 @@ fun Route.multi() {
                     )
                     response.success = true
                     "Set ready success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+    route("set-room-off") {
+        put("/") {
+            val (roomNo) = call.receive<SetRoomOff>()
+            val message = when {
+                roomNo.isNullOrBlank() -> SetRoomOff::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> SetRoomOff::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> SetRoomOff::roomNo.name.validateNotFound()
+                else -> {
+                    DatabaseTransaction.putSetRoomOff(roomNo)
+                    response.success = true
+                    "Set room off success"
                 }
             }
             response.message = message

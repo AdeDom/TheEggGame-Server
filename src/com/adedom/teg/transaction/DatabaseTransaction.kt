@@ -15,6 +15,12 @@ object DatabaseTransaction {
             .toInt()
     }
 
+    fun getCountRoom(roomNo: String) = transaction {
+        Rooms.select { Rooms.roomNo eq roomNo }
+            .count()
+            .toInt()
+    }
+
     fun getCountRoomInfo(roomNo: String) = transaction {
         RoomInfos.select { RoomInfos.roomNo eq roomNo }
             .count()
@@ -56,6 +62,12 @@ object DatabaseTransaction {
             }) {
                 it[RoomInfos.status] = status!!
             }
+        }
+    }
+
+    fun putSetRoomOff(roomNo: String) = transaction {
+        Rooms.update({ Rooms.roomNo eq roomNo }) {
+            it[status] = "off"
         }
     }
 
