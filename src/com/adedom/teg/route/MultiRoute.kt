@@ -3,6 +3,7 @@ package com.adedom.teg.route
 import com.adedom.teg.request.SetLatlng
 import com.adedom.teg.request.SetReady
 import com.adedom.teg.request.SetRoomOff
+import com.adedom.teg.request.SetTeam
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.isNull
@@ -96,6 +97,37 @@ fun Route.multi() {
                     DatabaseTransaction.putSetRoomOff(roomNo)
                     response.success = true
                     "Set room off success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+    route("set-team") {
+        put("/") {
+            val (roomNo, playerId, team) = call.receive<SetTeam>()
+            val message = when {
+                roomNo.isNullOrBlank() -> SetTeam::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> SetTeam::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> SetTeam::roomNo.name.validateNotFound()
+
+                playerId == null -> SetTeam::playerId.name.validateEmpty()
+                playerId <= 0 -> SetTeam::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetTeam::playerId.name.validateNotFound()
+
+                team.isNullOrBlank() -> SetTeam::team.name.validateEmpty()
+
+                else -> {
+                    DatabaseTransaction.putSetTeam(
+                        setTeam = SetTeam(
+                            roomNo = roomNo,
+                            playerId = playerId,
+                            team = team
+                        )
+                    )
+                    response.success = true
+                    "Set team success"
                 }
             }
             response.message = message

@@ -5,6 +5,7 @@ import com.adedom.teg.models.*
 import com.adedom.teg.request.SetLatlng
 import com.adedom.teg.request.SetReady
 import com.adedom.teg.request.SetState
+import com.adedom.teg.request.SetTeam
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -77,6 +78,17 @@ object DatabaseTransaction {
         transaction {
             Players.update({ Players.playerId eq playerId!! }) {
                 it[Players.state] = state!!
+            }
+        }
+    }
+
+    fun putSetTeam(setTeam: SetTeam) {
+        val (roomNo, playerId, team) = setTeam
+        transaction {
+            RoomInfos.update({
+                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
+            }) {
+                it[RoomInfos.team] = team!!
             }
         }
     }
