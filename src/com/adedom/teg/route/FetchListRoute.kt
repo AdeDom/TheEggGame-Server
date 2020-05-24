@@ -1,21 +1,16 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.db.*
 import com.adedom.teg.response.*
+import com.adedom.teg.transaction.DatabaseTransaction
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.fetchList() {
 
     get("/item-collection") {
-        val list = transaction {
-            ItemCollections.selectAll()
-                .map { ItemCollections.toItemCollection(it) }
-        }
+        val list = DatabaseTransaction.fetchItemCollection()
         val response = ItemCollectionsResponse(
             itemCollection = list
         )
@@ -25,10 +20,7 @@ fun Route.fetchList() {
     }
 
     get("/log-active") {
-        val list = transaction {
-            LogActives.selectAll()
-                .map { LogActives.toLogActive(it) }
-        }
+        val list = DatabaseTransaction.fetchLogActive()
         val response = LogActivesResponse(
             logActive = list
         )
@@ -38,10 +30,7 @@ fun Route.fetchList() {
     }
 
     get("/multi") {
-        val list = transaction {
-            Multis.selectAll()
-                .map { Multis.toMulti(it) }
-        }
+        val list = DatabaseTransaction.fetchMulti()
         val response = MultisResponse(
             multi = list
         )
@@ -51,10 +40,7 @@ fun Route.fetchList() {
     }
 
     get("/multi-collection") {
-        val list = transaction {
-            MultiCollections.selectAll()
-                .map { MultiCollections.toMultiCollection(it) }
-        }
+        val list = DatabaseTransaction.fetchMultiCollection()
         val response = MultiCollectionsResponse(
             multiCollection = list
         )
@@ -64,10 +50,7 @@ fun Route.fetchList() {
     }
 
     get("/room") {
-        val list = transaction {
-            Rooms.selectAll()
-                .map { Rooms.toRoom(it) }
-        }
+        val list = DatabaseTransaction.fetchRoom()
         val response = RoomsResponse(
             room = list
         )
@@ -77,10 +60,7 @@ fun Route.fetchList() {
     }
 
     get("/room-info") {
-        val list = transaction {
-            RoomInfos.selectAll()
-                .map { RoomInfos.toRoomInfo(it) }
-        }
+        val list = DatabaseTransaction.fetchRoomInfo()
         val response = RoomInfosResponse(
             roomInfo = list
         )
@@ -90,4 +70,3 @@ fun Route.fetchList() {
     }
 
 }
-
