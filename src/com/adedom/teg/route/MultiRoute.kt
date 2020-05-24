@@ -20,23 +20,23 @@ fun Route.putLatlng() {
     route("latlng") {
         put("/") {
             val response = BaseResponse()
-            val (roomNo, playerId, latitude, longitude) = call.receive<SetLatlng>()
+            val (roomNo, playerId, latitude, longitude) = call.receive<PutLatlng>()
             val message = when {
-                roomNo.isNullOrBlank() -> SetLatlng::roomNo.name.validateEmpty()
-                roomNo.toInt() <= 0 -> SetLatlng::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> SetLatlng::roomNo.name.validateNotFound()
+                roomNo.isNullOrBlank() -> PutLatlng::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PutLatlng::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PutLatlng::roomNo.name.validateNotFound()
 
-                playerId == null -> SetLatlng::playerId.name.validateEmpty()
-                playerId <= 0 -> SetLatlng::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> SetLatlng::playerId.name.validateNotFound()
+                playerId == null -> PutLatlng::playerId.name.validateEmpty()
+                playerId <= 0 -> PutLatlng::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutLatlng::playerId.name.validateNotFound()
 
-                latitude.isNull() -> SetLatlng::latitude.name.validateEmpty()
+                latitude.isNull() -> PutLatlng::latitude.name.validateEmpty()
 
-                longitude.isNull() -> SetLatlng::longitude.name.validateEmpty()
+                longitude.isNull() -> PutLatlng::longitude.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putLatLng(
-                        setLatlng = SetLatlng(
+                        putLatlng = PutLatlng(
                             roomNo = roomNo,
                             playerId = playerId,
                             latitude = latitude,
