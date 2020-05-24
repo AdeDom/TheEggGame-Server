@@ -23,7 +23,7 @@ fun Route.controller() {
         putLatlng()
         putReady()
         putRoomOff()
-        setTeam()
+        putTeam()
         deletePlayerRoomInfo()
     }
 

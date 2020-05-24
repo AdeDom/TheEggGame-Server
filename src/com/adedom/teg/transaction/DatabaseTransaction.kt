@@ -86,7 +86,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putSetTeam(setTeam: SetTeam) {
+    fun putTeam(setTeam: SetTeam) {
         val (roomNo, playerId, team) = setTeam
         transaction {
             RoomInfos.update({

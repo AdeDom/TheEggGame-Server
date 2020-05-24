@@ -113,9 +113,9 @@ fun Route.putRoomOff() {
 
 }
 
-fun Route.setTeam() {
+fun Route.putTeam() {
 
-    route("set-team") {
+    route("team") {
         put("/") {
             val response = BaseResponse()
             val (roomNo, playerId, team) = call.receive<SetTeam>()
@@ -131,7 +131,7 @@ fun Route.setTeam() {
                 team.isNullOrBlank() -> SetTeam::team.name.validateEmpty()
 
                 else -> {
-                    DatabaseTransaction.putSetTeam(
+                    DatabaseTransaction.putTeam(
                         setTeam = SetTeam(
                             roomNo = roomNo,
                             playerId = playerId,
@@ -139,7 +139,7 @@ fun Route.setTeam() {
                         )
                     )
                     response.success = true
-                    "Set team success"
+                    "Put team success"
                 }
             }
             response.message = message
