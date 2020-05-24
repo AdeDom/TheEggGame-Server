@@ -17,7 +17,7 @@ import io.ktor.routing.route
 
 fun Route.getPlayer() {
 
-    route("get-player") {
+    route("player") {
         val playerIdKey = "player_id"
         get("/{$playerIdKey}") {
             val response = PlayerResponse()
@@ -30,10 +30,10 @@ fun Route.getPlayer() {
                     if (count == 0) {
                         playerIdKey.validateNotFound()
                     } else {
-                        val player = DatabaseTransaction.getPlayerInfo(playerId.toInt())
+                        val player = DatabaseTransaction.getPlayer(playerId.toInt())
                         response.success = true
                         response.player = player
-                        "Fetch player"
+                        "Fetch player success"
                     }
                 }
             }

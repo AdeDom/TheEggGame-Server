@@ -33,7 +33,7 @@ object DatabaseTransaction {
             .toInt()
     }
 
-    fun getPlayerInfo(playerId: Int): Player {
+    fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
                 .andWhere { ItemCollections.itemId eq 1 }
