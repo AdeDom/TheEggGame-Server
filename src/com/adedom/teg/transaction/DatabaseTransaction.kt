@@ -42,6 +42,18 @@ object DatabaseTransaction {
         }
     }
 
+    fun getCountUsername(username: String) = transaction {
+        Players.select { Players.username eq username }
+            .count()
+            .toInt()
+    }
+
+    fun getCountName(name: String) = transaction {
+        Players.select { Players.name eq name }
+            .count()
+            .toInt()
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -54,6 +66,23 @@ object DatabaseTransaction {
             Players.select { Players.playerId eq playerId }
                 .map { Players.toPlayer(it, level) }
                 .single()
+        }
+    }
+
+    fun postSignUp(postSignUp: PostSignUp): Int? {
+        val (username, password, name, gender) = postSignUp
+        return transaction {
+            Players.insert {
+                it[Players.username] = username!!
+                it[Players.password] = password!!
+                it[Players.name] = name!!
+                it[Players.image] = "empty"
+                it[Players.state] = "online"
+                it[Players.gender] = gender!!
+                it[Players.dateTime] = DateTime.now()
+            }
+
+            Players.select { Players.username eq username!! }.map { Players.toPlayerId(it) }.single().playerId
         }
     }
 

@@ -1,22 +1,18 @@
 package com.adedom.teg.route
 
+import com.adedom.teg.request.PostSignUp
 import com.adedom.teg.request.PutPassword
 import com.adedom.teg.request.PutProfile
 import com.adedom.teg.request.PutState
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.response.SignUpResponse
 import com.adedom.teg.transaction.DatabaseTransaction
-import com.adedom.teg.util.validateEmpty
-import com.adedom.teg.util.validateGrateEq
-import com.adedom.teg.util.validateLessEqZero
-import com.adedom.teg.util.validateNotFound
+import com.adedom.teg.util.*
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.get
-import io.ktor.routing.put
-import io.ktor.routing.route
+import io.ktor.routing.*
 
 fun Route.getPlayer() {
 
@@ -39,6 +35,48 @@ fun Route.getPlayer() {
                         response.player = player
                         "Fetch player success"
                     }
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
+fun Route.postSignUp() {
+
+    route("sign-up") {
+        post("/") {
+            val response = SignUpResponse()
+            val (username, password, name, gender) = call.receive<PostSignUp>()
+            val minAuth = 4
+            val message = when {
+                username.isNullOrBlank() -> PostSignUp::username.name.validateEmpty()
+                username.length < minAuth -> PostSignUp::username.name validateGrateEq minAuth
+                DatabaseTransaction.getCountUsername(username) != 0 -> username.validateRepeatUsername()
+
+                password.isNullOrBlank() -> PostSignUp::password.name.validateEmpty()
+                password.length < minAuth -> PostSignUp::password.name validateGrateEq minAuth
+
+                name.isNullOrBlank() -> PostSignUp::name.name.validateEmpty()
+                DatabaseTransaction.getCountName(name) != 0 -> name.validateRepeatName()
+
+                gender == null -> PostSignUp::gender.name.validateEmpty()
+                !gender.validateGender() -> PostSignUp::gender.name.validateIncorrect()
+
+                else -> {
+                    val playerId = DatabaseTransaction.postSignUp(
+                        postSignUp = PostSignUp(
+                            username = username,
+                            password = password,
+                            name = name,
+                            gender = gender
+                        )
+                    )
+                    response.playerId = playerId
+                    response.success = true
+                    "Post sign up success"
                 }
             }
             response.message = message

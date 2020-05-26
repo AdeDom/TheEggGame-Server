@@ -28,4 +28,6 @@ object Players : Table(name = DatabaseConstant.playerTable) {
         gender = row[gender]
     )
 
+    fun toPlayerId(row: ResultRow) = Player(playerId = row[playerId])
+
 }
