@@ -88,7 +88,6 @@ fun Route.postSignUp() {
 
 fun Route.putPassword() {
 
-    //todo encode password
     route("password") {
         put("/") {
             val response = BaseResponse()

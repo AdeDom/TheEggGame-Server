@@ -1,6 +1,10 @@
 package com.adedom.teg.util
 
 import org.joda.time.DateTime
+import java.io.UnsupportedEncodingException
+import java.math.BigInteger
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,3 +27,18 @@ fun String?.validateRepeatUsername() = "Username is $this repeat other in the eg
 fun String?.validateRepeatName() = "Name is $this repeat other in the egg game"
 
 infix fun String?.validateGrateEq(length: Int) = "Please enter a number greater than or equal to $length"
+
+fun String?.encryptSHA(): String {
+    var sha = ""
+    try {
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val byteArray = messageDigest.digest(this?.toByteArray())
+        val bigInteger = BigInteger(1, byteArray)
+        sha = bigInteger.toString(16)
+    } catch (e: NoSuchAlgorithmException) {
+        e.printStackTrace()
+    } catch (e: UnsupportedEncodingException) {
+        e.printStackTrace()
+    }
+    return sha
+}

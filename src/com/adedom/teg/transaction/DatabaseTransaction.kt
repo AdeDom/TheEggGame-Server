@@ -3,6 +3,7 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
+import com.adedom.teg.util.encryptSHA
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -36,9 +37,9 @@ object DatabaseTransaction {
     fun getCountPasswordPlayer(putPassword: PutPassword): Int {
         val (playerId, oldPassword, _) = putPassword
         return transaction {
-            Players.select { Players.playerId eq playerId!! and (Players.password eq oldPassword!!) }
-                .count()
-                .toInt()
+            Players.select {
+                Players.playerId eq playerId!! and (Players.password eq oldPassword.encryptSHA())
+            }.count().toInt()
         }
     }
 
@@ -94,7 +95,7 @@ object DatabaseTransaction {
         return transaction {
             Players.insert {
                 it[Players.username] = username!!
-                it[Players.password] = password!!
+                it[Players.password] = password.encryptSHA()
                 it[Players.name] = name!!
                 it[image] = "empty"
                 it[state] = "online"
@@ -277,7 +278,7 @@ object DatabaseTransaction {
             Players.update({
                 Players.playerId eq playerId!!
             }) {
-                it[password] = newPassword!!
+                it[password] = newPassword.encryptSHA()
             }
         }
     }
