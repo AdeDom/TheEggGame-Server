@@ -76,10 +76,10 @@ object DatabaseTransaction {
                 it[Players.username] = username!!
                 it[Players.password] = password!!
                 it[Players.name] = name!!
-                it[Players.image] = "empty"
-                it[Players.state] = "online"
+                it[image] = "empty"
+                it[state] = "online"
                 it[Players.gender] = gender!!
-                it[Players.dateTime] = DateTime.now()
+                it[dateTime] = DateTime.now()
             }
 
             Players.select { Players.username eq username!! }.map { Players.toPlayerId(it) }.single().playerId
@@ -92,8 +92,22 @@ object DatabaseTransaction {
             LogActives.insert {
                 it[LogActives.logKey] = logKey!!
                 it[LogActives.playerId] = playerId!!
-                it[LogActives.dateTimeIn] = DateTime.now()
-                it[LogActives.dateTimeOut] = DateTime.now()
+                it[dateTimeIn] = DateTime.now()
+                it[dateTimeOut] = DateTime.now()
+            }
+        }
+    }
+
+    fun postItemCollection(postItemCollection: PostItemCollection) {
+        val (playerId, itemId, qty, latitude, longitude) = postItemCollection
+        transaction {
+            ItemCollections.insert {
+                it[ItemCollections.playerId] = playerId!!
+                it[ItemCollections.itemId] = itemId!!
+                it[ItemCollections.qty] = qty!!
+                it[ItemCollections.latitude] = latitude!!
+                it[ItemCollections.longitude] = longitude!!
+                it[dateTime] = DateTime.now()
             }
         }
     }

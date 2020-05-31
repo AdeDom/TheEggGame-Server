@@ -6,7 +6,7 @@ import io.ktor.routing.route
 
 fun Route.controller() {
 
-    route("application"){
+    route("application") {
         putLogActive()
     }
 
@@ -20,6 +20,10 @@ fun Route.controller() {
 
     route("fetch-list") {
         fetchList()
+    }
+
+    route("single") {
+        postItemCollection()
     }
 
     route("multi") {

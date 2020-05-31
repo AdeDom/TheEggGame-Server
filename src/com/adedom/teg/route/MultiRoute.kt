@@ -3,7 +3,6 @@ package com.adedom.teg.route
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
-import com.adedom.teg.util.isNull
 import com.adedom.teg.util.validateEmpty
 import com.adedom.teg.util.validateLessEqZero
 import com.adedom.teg.util.validateNotFound
@@ -30,9 +29,9 @@ fun Route.putLatlng() {
                 playerId <= 0 -> PutLatlng::playerId.name.validateLessEqZero()
                 DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutLatlng::playerId.name.validateNotFound()
 
-                latitude.isNull() -> PutLatlng::latitude.name.validateEmpty()
+                latitude == null -> PutLatlng::latitude.name.validateEmpty()
 
-                longitude.isNull() -> PutLatlng::longitude.name.validateEmpty()
+                longitude == null -> PutLatlng::longitude.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putLatLng(
