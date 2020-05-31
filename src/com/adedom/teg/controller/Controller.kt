@@ -12,6 +12,7 @@ fun Route.controller() {
 
     route("account") {
         getPlayer()
+        postSignIn()
         postSignUp()
         putPassword()
         putProfile()

@@ -1,11 +1,9 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.request.PostSignUp
-import com.adedom.teg.request.PutPassword
-import com.adedom.teg.request.PutProfile
-import com.adedom.teg.request.PutState
+import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.response.SignUpResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
@@ -35,6 +33,46 @@ fun Route.getPlayer() {
                         response.player = player
                         "Fetch player success"
                     }
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
+fun Route.postSignIn() {
+
+    route("sign-in") {
+        post("/") {
+            val response = SignInResponse()
+            val (username, password) = call.receive<PostSignIn>()
+            val minAuth = 4
+            val message = when {
+                username.isNullOrBlank() -> PostSignIn::username.name.validateEmpty()
+                username.length < minAuth -> PostSignIn::username.name validateGrateEq minAuth
+
+                password.isNullOrBlank() -> PostSignIn::password.name.validateEmpty()
+                password.length < minAuth -> PostSignIn::password.name validateGrateEq minAuth
+
+                DatabaseTransaction.getCountSignIn(
+                    postSignIn = PostSignIn(
+                        username = username,
+                        password = password
+                    )
+                ) -> "Username and password incorrect"
+
+                else -> {
+                    val playerId = DatabaseTransaction.postSignIn(
+                        postSignIn = PostSignIn(
+                            username = username,
+                            password = password
+                        )
+                    )
+                    response.playerId = playerId
+                    response.success = true
+                    "Post sign in success"
                 }
             }
             response.message = message

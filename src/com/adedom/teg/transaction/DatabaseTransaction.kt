@@ -75,6 +75,17 @@ object DatabaseTransaction {
         peopleRoom < peopleRoomInfo
     }
 
+    fun getCountSignIn(postSignIn: PostSignIn): Boolean {
+        val (username, password) = postSignIn
+        return transaction {
+            val count: Int = Players.select {
+                Players.username eq username!! and (Players.password eq password.encryptSHA())
+            }.count().toInt()
+
+            count == 0
+        }
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -87,6 +98,17 @@ object DatabaseTransaction {
             Players.select { Players.playerId eq playerId }
                 .map { Players.toPlayer(it, level) }
                 .single()
+        }
+    }
+
+    fun postSignIn(postSignIn: PostSignIn): Int? {
+        val (username, password) = postSignIn
+        return transaction {
+            Players.select {
+                Players.username eq username!! and (Players.password eq password.encryptSHA())
+            }.map { Players.toPlayerId(it) }
+                .single()
+                .playerId
         }
     }
 
