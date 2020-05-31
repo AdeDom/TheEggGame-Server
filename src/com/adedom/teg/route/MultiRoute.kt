@@ -46,6 +46,40 @@ fun Route.postRoom() {
 
 }
 
+fun Route.postRoomInfo() {
+
+    route("room-info") {
+        post("/") {
+            val response = BaseResponse()
+            val (roomNo, playerId) = call.receive<PostRoomInfo>()
+            val message = when {
+                roomNo.isNullOrBlank() -> PostRoomInfo::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PostRoomInfo::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PostRoomInfo::roomNo.name.validateNotFound()
+                DatabaseTransaction.getCountPeopleRoom(roomNo) -> "People in room is maximum"
+
+                playerId == null -> PostRoomInfo::playerId.name.validateEmpty()
+                playerId <= 0 -> PostRoomInfo::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostRoomInfo::playerId.name.validateNotFound()
+
+                else -> {
+                    DatabaseTransaction.postRoomInfo(
+                        postRoomInfo = PostRoomInfo(
+                            roomNo = roomNo,
+                            playerId = playerId
+                        )
+                    )
+                    response.success = true
+                    "Post room info success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
 fun Route.postMulti() {
 
     route("multi") {

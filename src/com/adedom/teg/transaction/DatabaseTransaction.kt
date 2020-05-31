@@ -60,6 +60,20 @@ object DatabaseTransaction {
             .toInt()
     }
 
+    fun getCountPeopleRoom(roomNo: String): Boolean = transaction {
+        val peopleRoom: Int = Rooms.select { Rooms.roomNo eq roomNo }
+            .map { Rooms.toRoom(it) }
+            .single()
+            .people
+            ?.toInt() ?: 0
+
+        val peopleRoomInfo: Int = RoomInfos.select { RoomInfos.roomNo eq roomNo }
+            .count()
+            .toInt()
+
+        peopleRoom < peopleRoomInfo
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -180,6 +194,21 @@ object DatabaseTransaction {
             }
 
             roomNo
+        }
+    }
+
+    fun postRoomInfo(postRoomInfo: PostRoomInfo) {
+        val (roomNo, playerId) = postRoomInfo
+        transaction {
+            RoomInfos.insert {
+                it[RoomInfos.roomNo] = roomNo!!
+                it[RoomInfos.playerId] = playerId!!
+                it[latitude] = 0.0
+                it[longitude] = 0.0
+                it[team] = "B"
+                it[status] = "unready"
+                it[dateTime] = DateTime.now()
+            }
         }
     }
 
