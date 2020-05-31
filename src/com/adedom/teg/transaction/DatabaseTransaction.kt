@@ -86,6 +86,18 @@ object DatabaseTransaction {
         }
     }
 
+    fun postLogActive(postLogActive: PostLogActive) {
+        val (logKey, playerId) = postLogActive
+        transaction {
+            LogActives.insert {
+                it[LogActives.logKey] = logKey!!
+                it[LogActives.playerId] = playerId!!
+                it[LogActives.dateTimeIn] = DateTime.now()
+                it[LogActives.dateTimeOut] = DateTime.now()
+            }
+        }
+    }
+
     fun putLatLng(putLatlng: PutLatlng) {
         val (roomNo, playerId, latitude, longitude) = putLatlng
         transaction {
