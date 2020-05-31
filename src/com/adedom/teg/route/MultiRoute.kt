@@ -2,12 +2,49 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.RoomResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+
+fun Route.postRoom() {
+
+    route("room") {
+        post("/") {
+            val response = RoomResponse()
+            val (name, people, playerId) = call.receive<PostRoom>()
+            val message = when {
+                name.isNullOrBlank() -> PostRoom::name.name.validateEmpty()
+
+                people.isNullOrBlank() -> PostRoom::people.name.validateEmpty()
+                people.toInt() < 2 || people.toInt() > 6 -> PostRoom::people.name.validateIncorrect()
+
+                playerId == null -> PostRoom::playerId.name.validateEmpty()
+                playerId <= 0 -> PostRoom::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostRoom::playerId.name.validateNotFound()
+
+                else -> {
+                    val roomNo = DatabaseTransaction.postRoom(
+                        postRoom = PostRoom(
+                            name = name,
+                            people = people,
+                            playerId = playerId
+                        )
+                    )
+                    response.roomNo = roomNo
+                    response.success = true
+                    "Post room success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
 
 fun Route.postMulti() {
 

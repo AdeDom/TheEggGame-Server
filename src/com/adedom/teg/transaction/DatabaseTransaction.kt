@@ -148,6 +148,41 @@ object DatabaseTransaction {
         }
     }
 
+    fun postRoom(postRoom: PostRoom): String {
+        val (name, people, playerId) = postRoom
+        return transaction {
+            val roomNo: String = (Rooms.selectAll()
+                .orderBy(Rooms.roomId to SortOrder.DESC)
+                .limit(1)
+                .map { Rooms.toRoom(it) }
+                .single()
+                .roomNo
+                ?.toInt()
+                ?.plus(1) ?: 1)
+                .toString()
+
+            Rooms.insert {
+                it[Rooms.roomNo] = roomNo
+                it[Rooms.name] = name!!
+                it[Rooms.people] = people!!
+                it[status] = "on"
+                it[dateTime] = DateTime.now()
+            }
+
+            RoomInfos.insert {
+                it[RoomInfos.roomNo] = roomNo
+                it[RoomInfos.playerId] = playerId!!
+                it[latitude] = 0.0
+                it[longitude] = 0.0
+                it[team] = "A"
+                it[status] = "unready"
+                it[dateTime] = DateTime.now()
+            }
+
+            roomNo
+        }
+    }
+
     fun putLatLng(putLatlng: PutLatlng) {
         val (roomNo, playerId, latitude, longitude) = putLatlng
         transaction {
