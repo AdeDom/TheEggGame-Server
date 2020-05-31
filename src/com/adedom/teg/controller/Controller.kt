@@ -27,6 +27,7 @@ fun Route.controller() {
     }
 
     route("multi") {
+        postMulti()
         putLatlng()
         putReady()
         putRoomOff()

@@ -9,10 +9,41 @@ import com.adedom.teg.util.validateNotFound
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.delete
-import io.ktor.routing.put
-import io.ktor.routing.route
+import io.ktor.routing.*
+
+fun Route.postMulti() {
+
+    route("multi") {
+        post("/") {
+            val response = BaseResponse()
+            val (roomNo, latitude, longitude) = call.receive<PostMulti>()
+            val message = when {
+                roomNo.isNullOrBlank() -> PostMulti::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PostMulti::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PostMulti::roomNo.name.validateNotFound()
+
+                latitude == null -> PostMulti::latitude.name.validateEmpty()
+
+                longitude == null -> PostMulti::longitude.name.validateEmpty()
+
+                else -> {
+                    DatabaseTransaction.postMulti(
+                        postMulti = PostMulti(
+                            roomNo = roomNo,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
+                    response.success = true
+                    "Post multi success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
 
 fun Route.putLatlng() {
 

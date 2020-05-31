@@ -112,6 +112,18 @@ object DatabaseTransaction {
         }
     }
 
+    fun postMulti(postMulti: PostMulti) {
+        val (roomNo, latitude, longitude) = postMulti
+        transaction {
+            Multis.insert {
+                it[Multis.roomNo] = roomNo!!
+                it[Multis.latitude] = latitude!!
+                it[Multis.longitude] = longitude!!
+                it[status] = "on"
+            }
+        }
+    }
+
     fun putLatLng(putLatlng: PutLatlng) {
         val (roomNo, playerId, latitude, longitude) = putLatlng
         transaction {
