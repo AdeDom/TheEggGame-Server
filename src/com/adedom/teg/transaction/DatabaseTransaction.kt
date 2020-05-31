@@ -54,6 +54,12 @@ object DatabaseTransaction {
             .toInt()
     }
 
+    fun getCountMulti(multiId: Int) = transaction {
+        Multis.select { Multis.multiId eq multiId }
+            .count()
+            .toInt()
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -120,6 +126,24 @@ object DatabaseTransaction {
                 it[Multis.latitude] = latitude!!
                 it[Multis.longitude] = longitude!!
                 it[status] = "on"
+            }
+        }
+    }
+
+    fun postMultiCollection(postMultiCollection: PostMultiCollection) {
+        val (multiId, roomNo, playerId, team, latitude, longitude) = postMultiCollection
+        transaction {
+            Multis.update({ Multis.multiId eq multiId!! }) {
+                it[status] = "off"
+            }
+            MultiCollections.insert {
+                it[MultiCollections.roomNo] = roomNo!!
+                it[MultiCollections.playerId] = playerId!!
+                it[score] = 0
+                it[MultiCollections.team] = team!!
+                it[MultiCollections.latitude] = latitude!!
+                it[MultiCollections.longitude] = longitude!!
+                it[dateTime] = DateTime.now()
             }
         }
     }

@@ -3,9 +3,7 @@ package com.adedom.teg.route
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
-import com.adedom.teg.util.validateEmpty
-import com.adedom.teg.util.validateLessEqZero
-import com.adedom.teg.util.validateNotFound
+import com.adedom.teg.util.*
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -36,6 +34,54 @@ fun Route.postMulti() {
                     )
                     response.success = true
                     "Post multi success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
+
+fun Route.postMultiCollection() {
+
+    route("multi-collection") {
+        post("/") {
+            val response = BaseResponse()
+            val (multiId, roomNo, playerId, team, latitude, longitude) = call.receive<PostMultiCollection>()
+            val message = when {
+                multiId == null -> PostMultiCollection::multiId.name.validateEmpty()
+                multiId <= 0 -> PostMultiCollection::multiId.name.validateLessEqZero()
+                DatabaseTransaction.getCountMulti(multiId) == 0 -> PostMultiCollection::multiId.name.validateNotFound()
+
+                roomNo.isNullOrBlank() -> PostMultiCollection::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> PostMultiCollection::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> PostMultiCollection::roomNo.name.validateNotFound()
+
+                playerId == null -> PostMultiCollection::playerId.name.validateEmpty()
+                playerId <= 0 -> PostMultiCollection::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostMultiCollection::playerId.name.validateNotFound()
+
+                team.isNullOrBlank() -> PostMultiCollection::team.name.validateEmpty()
+                !team.validateTeam() -> PostMultiCollection::team.name.validateIncorrect()
+
+                latitude == null -> PostMultiCollection::latitude.name.validateEmpty()
+
+                longitude == null -> PostMultiCollection::longitude.name.validateEmpty()
+
+                else -> {
+                    DatabaseTransaction.postMultiCollection(
+                        postMultiCollection = PostMultiCollection(
+                            multiId = multiId,
+                            roomNo = roomNo,
+                            playerId = playerId,
+                            team = team,
+                            latitude = latitude,
+                            longitude = longitude
+                        )
+                    )
+                    response.success = true
+                    "Post multi collection success"
                 }
             }
             response.message = message
@@ -159,6 +205,7 @@ fun Route.putTeam() {
                 DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutTeam::playerId.name.validateNotFound()
 
                 team.isNullOrBlank() -> PutTeam::team.name.validateEmpty()
+                !team.validateTeam() -> PutTeam::team.name.validateIncorrect()
 
                 else -> {
                     DatabaseTransaction.putTeam(

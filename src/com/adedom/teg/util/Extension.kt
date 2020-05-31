@@ -14,6 +14,8 @@ fun String?.validateNotFound() = "$this not found"
 
 fun String?.validateGender() = (this == "M" || this == "F")
 
+fun String?.validateTeam() = (this == "A" || this == "B")
+
 fun String?.validateIncorrect() = "$this Incorrect"
 
 fun String?.validateRepeatUsername() = "Username is $this repeat other in the egg game"
