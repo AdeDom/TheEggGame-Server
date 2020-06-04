@@ -17,22 +17,18 @@ fun Route.getPlayer() {
     //todo JWT authentication
     route("player") {
         val playerIdKey = "player_id"
-        get("/{$playerIdKey}") {
+        get("fetch-player{$playerIdKey}") {
             val response = PlayerResponse()
             val playerId = call.parameters[playerIdKey]
             val message = when {
                 playerId.isNullOrBlank() -> playerIdKey.validateEmpty()
                 playerId.toInt() <= 0 -> playerIdKey.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> playerIdKey.validateNotFound()
                 else -> {
-                    val count = DatabaseTransaction.getCountPlayer(playerId.toInt())
-                    if (count == 0) {
-                        playerIdKey.validateNotFound()
-                    } else {
-                        val player = DatabaseTransaction.getPlayer(playerId.toInt())
-                        response.success = true
-                        response.player = player
-                        "Fetch player success"
-                    }
+                    val player = DatabaseTransaction.getPlayer(playerId.toInt())
+                    response.success = true
+                    response.player = player
+                    "Fetch player success"
                 }
             }
             response.message = message
