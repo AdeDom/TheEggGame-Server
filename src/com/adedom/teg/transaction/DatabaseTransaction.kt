@@ -86,6 +86,14 @@ object DatabaseTransaction {
         }
     }
 
+    fun getCountMultiRoomNo(roomNo: String): Boolean = transaction {
+        val count = Multis.select { Multis.roomNo eq roomNo }
+            .count()
+            .toInt()
+
+        count == 0
+    }
+
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -99,6 +107,11 @@ object DatabaseTransaction {
                 .map { Players.toPlayer(it, level) }
                 .single()
         }
+    }
+
+    fun getMultis(roomNo: String): List<Multi> = transaction {
+        Multis.select { Multis.roomNo eq roomNo }
+            .map { Multis.toMulti(it) }
     }
 
     fun postSignIn(postSignIn: PostSignIn): Int? {

@@ -2,6 +2,7 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.MultisResponse
 import com.adedom.teg.response.RoomResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
@@ -80,9 +81,29 @@ fun Route.postRoomInfo() {
 
 }
 
-fun Route.postMulti() {
+fun Route.multi() {
 
     route("multi") {
+        val roomNoKey = "room_no"
+        get("fetch-multis{$roomNoKey}") {
+            val response = MultisResponse()
+            val roomNo = call.parameters[roomNoKey]
+            val message = when {
+                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
+                roomNo.toInt() <= 0 -> roomNoKey.validateIncorrect()
+                DatabaseTransaction.getCountMultiRoomNo(roomNo) -> roomNoKey.validateNotFound()
+
+                else -> {
+                    val listMulti = DatabaseTransaction.getMultis(roomNo)
+                    response.multi = listMulti
+                    response.success = true
+                    "Fetch multi success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+
         post("/") {
             val response = BaseResponse()
             val (roomNo, latitude, longitude) = call.receive<PostMulti>()

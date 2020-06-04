@@ -30,7 +30,7 @@ fun Route.controller() {
     route("multi") {
         postRoom()
         postRoomInfo()
-        postMulti()
+        multi()
         postMultiCollection()
         putLatlng()
         putReady()
