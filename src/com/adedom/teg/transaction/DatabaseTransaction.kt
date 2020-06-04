@@ -4,6 +4,7 @@ import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BackpackResponse
+import com.adedom.teg.response.MultiScoreResponse
 import com.adedom.teg.util.encryptSHA
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -133,6 +134,18 @@ object DatabaseTransaction {
             .sumBy { it.qty!! }
 
         BackpackResponse(egg, eggI, eggII, eggIII)
+    }
+
+    fun getMultiScore(roomNo: String): MultiScoreResponse = transaction {
+        val teamA = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "A") }
+            .count()
+            .toInt()
+
+        val teamB = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "B") }
+            .count()
+            .toInt()
+
+        MultiScoreResponse(teamA, teamB)
     }
 
     fun postSignIn(postSignIn: PostSignIn): Int? {

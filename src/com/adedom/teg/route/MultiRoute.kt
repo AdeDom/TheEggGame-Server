@@ -2,6 +2,7 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.MultiScoreResponse
 import com.adedom.teg.response.MultisResponse
 import com.adedom.teg.response.RoomResponse
 import com.adedom.teg.transaction.DatabaseTransaction
@@ -10,6 +11,33 @@ import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
+
+fun Route.getMultiScore() {
+
+    route("multi-score") {
+        val roomNoKey = "room_no"
+        get("fetch-score{$roomNoKey}") {
+            val response = MultiScoreResponse()
+            val roomNo = call.parameters[roomNoKey]
+            val message = when {
+                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
+                roomNo.toInt() <= 0 -> roomNoKey.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> roomNoKey.validateIncorrect()
+
+                else -> {
+                    val (teamA, teamB) = DatabaseTransaction.getMultiScore(roomNo)
+                    response.teamA = teamA
+                    response.teamB = teamB
+                    response.success = true
+                    "Fetch multi score success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
 
 fun Route.postRoom() {
 
