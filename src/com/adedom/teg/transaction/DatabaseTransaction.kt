@@ -3,6 +3,7 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
+import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.util.encryptSHA
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -112,6 +113,26 @@ object DatabaseTransaction {
     fun getMultis(roomNo: String): List<Multi> = transaction {
         Multis.select { Multis.roomNo eq roomNo }
             .map { Multis.toMulti(it) }
+    }
+
+    fun getBackpack(playerId: Int): BackpackResponse = transaction {
+        val egg = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 1) }
+            .map { ItemCollections.toItemCollection(it) }
+            .sumBy { it.qty!! } / 1000
+
+        val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
+            .map { ItemCollections.toItemCollection(it) }
+            .sumBy { it.qty!! }
+
+        val eggII = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 3) }
+            .map { ItemCollections.toItemCollection(it) }
+            .sumBy { it.qty!! }
+
+        val eggIII = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 4) }
+            .map { ItemCollections.toItemCollection(it) }
+            .sumBy { it.qty!! }
+
+        BackpackResponse(egg, eggI, eggII, eggIII)
     }
 
     fun postSignIn(postSignIn: PostSignIn): Int? {

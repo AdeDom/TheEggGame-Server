@@ -24,7 +24,7 @@ fun Route.controller() {
     }
 
     route("single") {
-        postItemCollection()
+        itemCollection()
     }
 
     route("multi") {
