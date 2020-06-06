@@ -3,6 +3,7 @@ package com.adedom.teg.route
 import com.adedom.teg.request.PostLogActive
 import com.adedom.teg.request.PutLogActive
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.RankResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.validateEmpty
 import com.adedom.teg.util.validateIncorrect
@@ -11,10 +12,36 @@ import com.adedom.teg.util.validateNotFound
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.post
-import io.ktor.routing.put
-import io.ktor.routing.route
+import io.ktor.routing.*
+
+fun Route.getPlayers() {
+
+    route("players") {
+        val searchKey = "search"
+        val limitKey = "limit"
+        get("fetch-players") {
+            val response = RankResponse()
+            val search = call.parameters[searchKey]
+            val limit = call.parameters[limitKey]
+            val convertLimit = if (limit.isNullOrBlank()) 0 else limit.toInt()
+            val message = when {
+                search == null -> searchKey.validateEmpty()
+
+                limit == null -> limitKey.validateEmpty()
+
+                else -> {
+                    val players = DatabaseTransaction.getPlayers(search, convertLimit)
+                    response.players = players
+                    response.success = true
+                    "Fetch players success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+    }
+
+}
 
 fun Route.putLogActive() {
 

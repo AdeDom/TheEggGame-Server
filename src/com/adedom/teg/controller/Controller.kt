@@ -7,6 +7,7 @@ import io.ktor.routing.route
 fun Route.controller() {
 
     route("application") {
+        getPlayers()
         putLogActive()
     }
 

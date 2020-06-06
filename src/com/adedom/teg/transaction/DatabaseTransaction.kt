@@ -5,6 +5,7 @@ import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.MultiScoreResponse
+import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -146,6 +147,33 @@ object DatabaseTransaction {
             .toInt()
 
         MultiScoreResponse(teamA, teamB)
+    }
+
+    fun getPlayers(search: String, limit: Int): List<Player> = transaction {
+        addLogger(StdOutSqlLogger)
+
+        val query = (Players innerJoin ItemCollections)
+            .slice(
+                Players.playerId,
+                Players.username,
+                Players.name,
+                Players.image,
+                ItemCollections.level,
+                Players.state,
+                Players.gender
+            )
+            .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
+            .groupBy(Players.playerId)
+            .orderBy(ItemCollections.level to SortOrder.DESC, (Players.playerId to SortOrder.ASC))
+
+        when (limit) {
+            CommonConstant.LIMIT_TEN -> query.limit(CommonConstant.LIMIT_TEN)
+            CommonConstant.LIMIT_FIFTY -> query.limit(CommonConstant.LIMIT_FIFTY)
+            CommonConstant.LIMIT_ONE_HUNDRED -> query.limit(CommonConstant.LIMIT_ONE_HUNDRED)
+        }
+
+        query.map { Players.toPlayers(it) }
+
     }
 
     fun postSignIn(postSignIn: PostSignIn): Int? {

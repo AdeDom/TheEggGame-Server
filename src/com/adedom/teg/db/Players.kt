@@ -30,4 +30,14 @@ object Players : Table(name = DatabaseConstant.playerTable) {
 
     fun toPlayerId(row: ResultRow) = Player(playerId = row[playerId])
 
+    fun toPlayers(row: ResultRow) = Player(
+        playerId = row[playerId],
+        username = row[username],
+        name = row[name],
+        image = row[image],
+        level = row[ItemCollections.level]?.div(1000),
+        state = row[state],
+        gender = row[gender]
+    )
+
 }
