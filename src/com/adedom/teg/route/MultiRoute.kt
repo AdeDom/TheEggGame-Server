@@ -18,7 +18,7 @@ fun Route.getMultiScore() {
             val message = when {
                 roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
                 roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> GetConstant.ROOM_NO.validateIncorrect()
+                DatabaseTransaction.validateRoom(roomNo) -> GetConstant.ROOM_NO.validateIncorrect()
 
                 else -> {
                     val score = DatabaseTransaction.getMultiScore(roomNo)
@@ -62,7 +62,7 @@ fun Route.room() {
 
                 playerId == null -> RoomRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> RoomRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> RoomRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> RoomRequest::playerId.name.validateNotFound()
 
                 else -> {
                     val roomNo = DatabaseTransaction.postRoom(
@@ -93,7 +93,7 @@ fun Route.roomInfo() {
             val message = when {
                 roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
                 roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> GetConstant.ROOM_NO.validateIncorrect()
+                DatabaseTransaction.validateRoom(roomNo) -> GetConstant.ROOM_NO.validateIncorrect()
 
                 else -> {
                     val listRoomInfo = DatabaseTransaction.getRoomInfos(roomNo)
@@ -112,12 +112,12 @@ fun Route.roomInfo() {
             val message = when {
                 roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> RoomInfoRequest::roomNo.name.validateNotFound()
-                DatabaseTransaction.getCountPeopleRoom(roomNo) -> "People in room is maximum"
+                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validatePeopleRoom(roomNo) -> "People in room is maximum"
 
                 playerId == null -> RoomInfoRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> RoomInfoRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.postRoomInfo(
@@ -146,7 +146,7 @@ fun Route.multi() {
             val message = when {
                 roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
                 roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateIncorrect()
-                DatabaseTransaction.getCountMultiRoomNo(roomNo) -> GetConstant.ROOM_NO.validateNotFound()
+                DatabaseTransaction.validateMultiRoomNo(roomNo) -> GetConstant.ROOM_NO.validateNotFound()
 
                 else -> {
                     val listMulti = DatabaseTransaction.getMultis(roomNo)
@@ -165,7 +165,7 @@ fun Route.multi() {
             val message = when {
                 roomNo.isNullOrBlank() -> MultiRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> MultiRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> MultiRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> MultiRequest::roomNo.name.validateNotFound()
 
                 latitude == null -> MultiRequest::latitude.name.validateEmpty()
 
@@ -199,15 +199,15 @@ fun Route.postMultiCollection() {
             val message = when {
                 multiId == null -> MultiCollectionRequest::multiId.name.validateEmpty()
                 multiId <= 0 -> MultiCollectionRequest::multiId.name.validateLessEqZero()
-                DatabaseTransaction.getCountMulti(multiId) == 0 -> MultiCollectionRequest::multiId.name.validateNotFound()
+                DatabaseTransaction.validateMulti(multiId) -> MultiCollectionRequest::multiId.name.validateNotFound()
 
                 roomNo.isNullOrBlank() -> MultiCollectionRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> MultiCollectionRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> MultiCollectionRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> MultiCollectionRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> MultiCollectionRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> MultiCollectionRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> MultiCollectionRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> MultiCollectionRequest::playerId.name.validateNotFound()
 
                 team.isNullOrBlank() -> MultiCollectionRequest::team.name.validateEmpty()
                 !team.validateTeam() -> MultiCollectionRequest::team.name.validateIncorrect()
@@ -247,11 +247,11 @@ fun Route.putLatlng() {
             val message = when {
                 roomNo.isNullOrBlank() -> LatlngRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> LatlngRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> LatlngRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> LatlngRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> LatlngRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> LatlngRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> LatlngRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> LatlngRequest::playerId.name.validateNotFound()
 
                 latitude == null -> LatlngRequest::latitude.name.validateEmpty()
 
@@ -286,11 +286,11 @@ fun Route.putReady() {
             val message = when {
                 roomNo.isNullOrBlank() -> ReadyRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> ReadyRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> ReadyRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> ReadyRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> ReadyRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> ReadyRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> ReadyRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> ReadyRequest::playerId.name.validateNotFound()
 
                 status.isNullOrBlank() -> ReadyRequest::status.name.validateEmpty()
 
@@ -322,7 +322,7 @@ fun Route.putRoomOff() {
             val message = when {
                 roomNo.isNullOrBlank() -> RoomOffRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> RoomOffRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> RoomOffRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoom(roomNo) -> RoomOffRequest::roomNo.name.validateNotFound()
                 else -> {
                     DatabaseTransaction.putRoomOff(roomNo)
                     response.success = true
@@ -345,11 +345,11 @@ fun Route.putTeam() {
             val message = when {
                 roomNo.isNullOrBlank() -> TeamRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> TeamRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> TeamRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> TeamRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> TeamRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> TeamRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> TeamRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> TeamRequest::playerId.name.validateNotFound()
 
                 team.isNullOrBlank() -> TeamRequest::team.name.validateEmpty()
                 !team.validateTeam() -> TeamRequest::team.name.validateIncorrect()
@@ -382,11 +382,11 @@ fun Route.deletePlayerRoomInfo() {
             val message = when {
                 roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateEmpty()
                 roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.getCountRoomInfo(roomNo) == 0 -> RoomInfoRequest::roomNo.name.validateNotFound()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> RoomInfoRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> RoomInfoRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.deletePlayerRoomInfo(

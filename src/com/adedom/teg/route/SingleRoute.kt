@@ -22,7 +22,7 @@ fun Route.itemCollection() {
             val message = when {
                 playerId.isNullOrBlank() -> GetConstant.PLAYER_ID.validateEmpty()
                 playerId.toInt() <= 0 -> GetConstant.PLAYER_ID.validateIncorrect()
-                DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> GetConstant.PLAYER_ID.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId.toInt()) -> GetConstant.PLAYER_ID.validateNotFound()
 
                 else -> {
                     val backpack = DatabaseTransaction.getBackpack(playerId.toInt())
@@ -41,7 +41,7 @@ fun Route.itemCollection() {
             val message = when {
                 playerId == null -> ItemCollectionRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> ItemCollectionRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> ItemCollectionRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> ItemCollectionRequest::playerId.name.validateNotFound()
 
                 itemId == null -> ItemCollectionRequest::itemId.name.validateEmpty()
                 itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> ItemCollectionRequest::itemId.name.validateIncorrect()

@@ -46,11 +46,11 @@ fun Route.logActive() {
             val message = when {
                 logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
                 logKey.length != CommonConstant.LOGS_KEYS -> LogActiveRequest::logKey.name.validateIncorrect()
-                DatabaseTransaction.getCountLogActive(logKey) != 0 -> LogActiveRequest::logKey.name.validateIncorrect()
+                !DatabaseTransaction.validateLogActive(logKey) -> LogActiveRequest::logKey.name.validateIncorrect()
 
                 playerId == null -> LogActiveRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> LogActiveRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> LogActiveRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> LogActiveRequest::playerId.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.postLogActive(
@@ -72,7 +72,7 @@ fun Route.logActive() {
             val (logKey) = call.receive<LogActiveRequest>()
             val message = when {
                 logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
-                DatabaseTransaction.getCountLogActive(logKey) == 0 -> LogActiveRequest::logKey.name.validateNotFound()
+                DatabaseTransaction.validateLogActive(logKey) -> LogActiveRequest::logKey.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.putLogActive(logKey)

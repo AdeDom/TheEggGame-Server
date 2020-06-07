@@ -22,7 +22,7 @@ fun Route.getPlayer() {
             val message = when {
                 playerId.isNullOrBlank() -> GetConstant.PLAYER_ID.validateEmpty()
                 playerId.toInt() <= 0 -> GetConstant.PLAYER_ID.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> GetConstant.PLAYER_ID.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId.toInt()) -> GetConstant.PLAYER_ID.validateNotFound()
                 else -> {
                     val player = DatabaseTransaction.getPlayer(playerId.toInt())
                     response.success = true
@@ -50,7 +50,7 @@ fun Route.postSignIn() {
                 password.isNullOrBlank() -> SignInRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignInRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
-                DatabaseTransaction.getCountSignIn(
+                DatabaseTransaction.validateSignIn(
                     signInRequest = SignInRequest(
                         username = username,
                         password = password
@@ -85,13 +85,13 @@ fun Route.postSignUp() {
             val message = when {
                 username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
                 username.length < CommonConstant.MIN_USERNAME -> SignUpRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
-                DatabaseTransaction.getCountUsername(username) != 0 -> username.validateRepeatUsername()
+                !DatabaseTransaction.validateUsername(username) -> username.validateRepeatUsername()
 
                 password.isNullOrBlank() -> SignUpRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignUpRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 name.isNullOrBlank() -> SignUpRequest::name.name.validateEmpty()
-                DatabaseTransaction.getCountName(name) != 0 -> name.validateRepeatName()
+                !DatabaseTransaction.validateName(name) -> name.validateRepeatName()
 
                 gender == null -> SignUpRequest::gender.name.validateEmpty()
                 !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
@@ -126,7 +126,7 @@ fun Route.putPassword() {
             val message = when {
                 playerId == null -> PasswordRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> PasswordRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PasswordRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> PasswordRequest::playerId.name.validateNotFound()
 
                 oldPassword.isNullOrBlank() -> PasswordRequest::oldPassword.name.validateEmpty()
                 DatabaseTransaction.validatePasswordPlayer(
@@ -167,7 +167,7 @@ fun Route.putProfile() {
             val message = when {
                 playerId == null -> ProfileRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> ProfileRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> ProfileRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> ProfileRequest::playerId.name.validateNotFound()
 
                 name.isNullOrBlank() -> ProfileRequest::name.name.validateEmpty()
                 name.length < CommonConstant.MIN_NAME -> ProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
@@ -202,7 +202,7 @@ fun Route.putState() {
             val message = when {
                 playerId == null -> StateRequest::playerId.name.validateEmpty()
                 playerId <= 0 -> StateRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> StateRequest::playerId.name.validateNotFound()
+                DatabaseTransaction.validatePlayer(playerId) -> StateRequest::playerId.name.validateNotFound()
 
                 state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
 

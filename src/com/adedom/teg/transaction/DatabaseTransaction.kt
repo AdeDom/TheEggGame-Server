@@ -11,28 +11,36 @@ import org.joda.time.DateTime
 
 object DatabaseTransaction {
 
-    fun getCountPlayer(playerId: Int) = transaction {
-        Players.select { Players.playerId eq playerId }
+    fun validatePlayer(playerId: Int): Boolean = transaction {
+        val count = Players.select { Players.playerId eq playerId }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountRoom(roomNo: String) = transaction {
-        Rooms.select { Rooms.roomNo eq roomNo }
+    fun validateRoom(roomNo: String): Boolean = transaction {
+        val count = Rooms.select { Rooms.roomNo eq roomNo }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountRoomInfo(roomNo: String) = transaction {
-        RoomInfos.select { RoomInfos.roomNo eq roomNo }
+    fun validateRoomInfo(roomNo: String): Boolean = transaction {
+        val count = RoomInfos.select { RoomInfos.roomNo eq roomNo }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountLogActive(logKey: String) = transaction {
-        LogActives.select { LogActives.logKey eq logKey }
+    fun validateLogActive(logKey: String): Boolean = transaction {
+        val count = LogActives.select { LogActives.logKey eq logKey }
             .count()
             .toInt()
+
+        count == 0
     }
 
     fun validatePasswordPlayer(passwordRequest: PasswordRequest): Boolean {
@@ -46,25 +54,31 @@ object DatabaseTransaction {
         }
     }
 
-    fun getCountUsername(username: String) = transaction {
-        Players.select { Players.username eq username }
+    fun validateUsername(username: String): Boolean = transaction {
+        val count = Players.select { Players.username eq username }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountName(name: String) = transaction {
-        Players.select { Players.name eq name }
+    fun validateName(name: String): Boolean = transaction {
+        val count = Players.select { Players.name eq name }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountMulti(multiId: Int) = transaction {
-        Multis.select { Multis.multiId eq multiId }
+    fun validateMulti(multiId: Int): Boolean = transaction {
+        val count = Multis.select { Multis.multiId eq multiId }
             .count()
             .toInt()
+
+        count == 0
     }
 
-    fun getCountPeopleRoom(roomNo: String): Boolean = transaction {
+    fun validatePeopleRoom(roomNo: String): Boolean = transaction {
         addLogger(StdOutSqlLogger)
 
         val peopleRoom: Int = Rooms.slice(Rooms.people)
@@ -81,7 +95,7 @@ object DatabaseTransaction {
         peopleRoom < peopleRoomInfo
     }
 
-    fun getCountSignIn(signInRequest: SignInRequest): Boolean {
+    fun validateSignIn(signInRequest: SignInRequest): Boolean {
         val (username, password) = signInRequest
         return transaction {
             val count: Int = Players.select {
@@ -92,7 +106,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun getCountMultiRoomNo(roomNo: String): Boolean = transaction {
+    fun validateMultiRoomNo(roomNo: String): Boolean = transaction {
         val count = Multis.select { Multis.roomNo eq roomNo }
             .count()
             .toInt()
