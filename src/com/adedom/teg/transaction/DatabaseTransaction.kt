@@ -1,7 +1,10 @@
 package com.adedom.teg.transaction
 
 import com.adedom.teg.db.*
-import com.adedom.teg.models.*
+import com.adedom.teg.models.Multi
+import com.adedom.teg.models.Player
+import com.adedom.teg.models.Room
+import com.adedom.teg.models.RoomInfo
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.MultiScoreResponse
@@ -102,20 +105,18 @@ object DatabaseTransaction {
         count == 0
     }
 
-    //    todo join table
-    fun getPlayer(playerId: Int): Player {
-        val level = transaction {
-            ItemCollections.select { ItemCollections.playerId eq playerId }
-                .andWhere { ItemCollections.itemId eq 1 }
-                .map { ItemCollections.toItemCollection(it) }
-                .sumBy { it.qty!! }
-                .div(1000)
-        }
-        return transaction {
-            Players.select { Players.playerId eq playerId }
-                .map { Players.toPlayer(it, level) }
-                .single()
-        }
+    fun getPlayer(playerId: Int): Player = transaction {
+        (Players innerJoin ItemCollections).slice(
+            Players.playerId,
+            Players.username,
+            Players.name,
+            Players.image,
+            ItemCollections.level,
+            Players.state,
+            Players.gender
+        ).select { Players.playerId eq playerId }
+            .map { MapResponse.toPlayer(it) }
+            .single()
     }
 
     fun getMultis(roomNo: String): List<Multi> = transaction {

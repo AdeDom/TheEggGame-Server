@@ -1,9 +1,20 @@
 package com.adedom.teg.db
 
+import com.adedom.teg.models.Player
 import com.adedom.teg.models.RoomInfo
 import org.jetbrains.exposed.sql.ResultRow
 
 object MapResponse {
+
+    fun toPlayer(row: ResultRow) = Player(
+        playerId = row[Players.playerId],
+        username = row[Players.username],
+            name = row[Players.name],
+           image = row[Players.image],
+           level = row[ItemCollections.level]?.div(1000),
+           state = row[Players.state],
+          gender = row[Players.gender]
+    )
 
     fun toRoomInfo(row: ResultRow) = RoomInfo(
         roomNo = row[RoomInfos.roomNo],
