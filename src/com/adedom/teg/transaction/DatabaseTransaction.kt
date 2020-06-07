@@ -183,6 +183,12 @@ object DatabaseTransaction {
 
     }
 
+    fun getRooms(): List<Room> = transaction {
+        Rooms.select { Rooms.status eq "on" }
+            .orderBy(Rooms.roomId to SortOrder.ASC)
+            .map { Rooms.toRoom(it) }
+    }
+
     fun postSignIn(postSignIn: PostSignIn): Int? {
         val (username, password) = postSignIn
         return transaction {

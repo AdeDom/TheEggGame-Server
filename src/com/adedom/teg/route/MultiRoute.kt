@@ -1,10 +1,7 @@
 package com.adedom.teg.route
 
 import com.adedom.teg.request.*
-import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.MultiScoreResponse
-import com.adedom.teg.response.MultisResponse
-import com.adedom.teg.response.RoomResponse
+import com.adedom.teg.response.*
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import io.ktor.application.call
@@ -42,6 +39,20 @@ fun Route.getMultiScore() {
 fun Route.postRoom() {
 
     route("room") {
+        get("/") {
+            val response = RoomsResponse()
+            val message = when {
+                else -> {
+                    val listRoom = DatabaseTransaction.getRooms()
+                    response.room = listRoom
+                    response.success = true
+                    "Fetch rooms success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+
         post("/") {
             val response = RoomResponse()
             val (name, people, playerId) = call.receive<PostRoom>()
