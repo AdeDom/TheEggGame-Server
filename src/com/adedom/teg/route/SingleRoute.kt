@@ -28,11 +28,8 @@ fun Route.itemCollection() {
                 DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> GetConstant.PLAYER_ID.validateNotFound()
 
                 else -> {
-                    val (egg, eggI, eggII, eggIII) = DatabaseTransaction.getBackpack(playerId.toInt())
-                    response.egg = egg
-                    response.eggI = eggI
-                    response.eggII = eggII
-                    response.eggIII = eggIII
+                    val backpack = DatabaseTransaction.getBackpack(playerId.toInt())
+                    response.backpack = backpack
                     response.success = true
                     "Fetch backpack success"
                 }

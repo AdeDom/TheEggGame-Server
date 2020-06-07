@@ -88,7 +88,7 @@ fun Route.roomInfo() {
 
     route("room-info") {
         get("fetch-room-info{${GetConstant.ROOM_NO}}") {
-            val response = RoomInfosResponse()
+            val response = RoomInfoResponse()
             val roomNo = call.parameters[GetConstant.ROOM_NO]
             val message = when {
                 roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
