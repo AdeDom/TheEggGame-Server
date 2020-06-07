@@ -58,7 +58,7 @@ fun Route.room() {
                 name.isNullOrBlank() -> PostRoom::name.name.validateEmpty()
 
                 people.isNullOrBlank() -> PostRoom::people.name.validateEmpty()
-                people.toInt() < 2 || people.toInt() > 6 -> PostRoom::people.name.validateIncorrect()
+                people.toInt() < CommonConstant.MIN_PEOPLE || people.toInt() > CommonConstant.MAX_PEOPLE -> PostRoom::people.name.validateIncorrect()
 
                 playerId == null -> PostRoom::playerId.name.validateEmpty()
                 playerId <= 0 -> PostRoom::playerId.name.validateLessEqZero()

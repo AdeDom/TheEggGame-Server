@@ -4,10 +4,7 @@ import com.adedom.teg.request.PostItemCollection
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
-import com.adedom.teg.util.validateEmpty
-import com.adedom.teg.util.validateIncorrect
-import com.adedom.teg.util.validateLessEqZero
-import com.adedom.teg.util.validateNotFound
+import com.adedom.teg.util.*
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -47,7 +44,7 @@ fun Route.itemCollection() {
                 DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostItemCollection::playerId.name.validateNotFound()
 
                 itemId == null -> PostItemCollection::itemId.name.validateEmpty()
-                itemId <= 0 || itemId > 4 -> PostItemCollection::itemId.name.validateIncorrect()
+                itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> PostItemCollection::itemId.name.validateIncorrect()
 
                 qty == null -> PostItemCollection::qty.name.validateEmpty()
                 qty <= 0 -> PostItemCollection::qty.name.validateIncorrect()

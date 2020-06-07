@@ -43,13 +43,12 @@ fun Route.postSignIn() {
         post("/") {
             val response = SignInResponse()
             val (username, password) = call.receive<PostSignIn>()
-            val minAuth = 4
             val message = when {
                 username.isNullOrBlank() -> PostSignIn::username.name.validateEmpty()
-                username.length < minAuth -> PostSignIn::username.name validateGrateEq minAuth
+                username.length < CommonConstant.MIN_USERNAME -> PostSignIn::username.name validateGrateEq CommonConstant.MIN_USERNAME
 
                 password.isNullOrBlank() -> PostSignIn::password.name.validateEmpty()
-                password.length < minAuth -> PostSignIn::password.name validateGrateEq minAuth
+                password.length < CommonConstant.MIN_PASSWORD -> PostSignIn::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 DatabaseTransaction.getCountSignIn(
                     postSignIn = PostSignIn(
@@ -83,14 +82,13 @@ fun Route.postSignUp() {
         post("/") {
             val response = SignUpResponse()
             val (username, password, name, gender) = call.receive<PostSignUp>()
-            val minAuth = 4
             val message = when {
                 username.isNullOrBlank() -> PostSignUp::username.name.validateEmpty()
-                username.length < minAuth -> PostSignUp::username.name validateGrateEq minAuth
+                username.length < CommonConstant.MIN_USERNAME -> PostSignUp::username.name validateGrateEq CommonConstant.MIN_USERNAME
                 DatabaseTransaction.getCountUsername(username) != 0 -> username.validateRepeatUsername()
 
                 password.isNullOrBlank() -> PostSignUp::password.name.validateEmpty()
-                password.length < minAuth -> PostSignUp::password.name validateGrateEq minAuth
+                password.length < CommonConstant.MIN_PASSWORD -> PostSignUp::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 name.isNullOrBlank() -> PostSignUp::name.name.validateEmpty()
                 DatabaseTransaction.getCountName(name) != 0 -> name.validateRepeatName()
@@ -125,7 +123,6 @@ fun Route.putPassword() {
         put("/") {
             val response = BaseResponse()
             val (playerId, oldPassword, newPassword) = call.receive<PutPassword>()
-            val minPassword = 4
             val message = when {
                 playerId == null -> PutPassword::playerId.name.validateEmpty()
                 playerId <= 0 -> PutPassword::playerId.name.validateLessEqZero()
@@ -140,7 +137,7 @@ fun Route.putPassword() {
                 ) -> PutPassword::oldPassword.name.validateLessEqZero()
 
                 newPassword.isNullOrBlank() -> PutPassword::newPassword.name.validateEmpty()
-                newPassword.length < minPassword -> PutPassword::newPassword.name validateGrateEq minPassword
+                newPassword.length < CommonConstant.MIN_PASSWORD -> PutPassword::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 else -> {
                     DatabaseTransaction.putPassword(
@@ -167,14 +164,13 @@ fun Route.putProfile() {
         put("/") {
             val response = BaseResponse()
             val (playerId, name, gender) = call.receive<PutProfile>()
-            val minName = 4
             val message = when {
                 playerId == null -> PutProfile::playerId.name.validateEmpty()
                 playerId <= 0 -> PutProfile::playerId.name.validateLessEqZero()
                 DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutProfile::playerId.name.validateNotFound()
 
                 name.isNullOrBlank() -> PutProfile::name.name.validateEmpty()
-                name.length < minName -> PutProfile::name.name.validateGrateEq(minName)
+                name.length < CommonConstant.MIN_NAME -> PutProfile::name.name.validateGrateEq(CommonConstant.MIN_NAME)
 
                 gender.isNullOrBlank() -> PutProfile::gender.name.validateEmpty()
 
