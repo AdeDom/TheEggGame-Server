@@ -2,6 +2,7 @@ package com.adedom.teg.db
 
 object DatabaseConstant {
 
+    //table
     const val playerTable = "player"
     const val itemCollectionTable = "item_collection"
     const val logActiveTable = "log_active"
@@ -10,6 +11,7 @@ object DatabaseConstant {
     const val roomTable = "room"
     const val roomInfoTable = "room_info"
 
+    //primary key
     const val playerPk = "PK_Player_ID"
     const val itemCollectionPk = "PK_ItemCollection_ID"
     const val logActivePk = "PK_LogActive_ID"
@@ -18,6 +20,7 @@ object DatabaseConstant {
     const val roomPk = "PK_Room_ID"
     const val roomInfoPk = "PK_RoomInfo_ID"
 
+    //column
     const val playerId = "player_id"
     const val username = "username"
     const val password = "password"

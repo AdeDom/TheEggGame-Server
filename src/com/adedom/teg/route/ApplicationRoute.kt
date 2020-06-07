@@ -17,17 +17,15 @@ import io.ktor.routing.*
 fun Route.getPlayers() {
 
     route("players") {
-        val searchKey = "search"
-        val limitKey = "limit"
         get("fetch-players") {
             val response = RankResponse()
-            val search = call.parameters[searchKey]
-            val limit = call.parameters[limitKey]
+            val search = call.parameters[GetConstant.SEARCH]
+            val limit = call.parameters[GetConstant.LIMIT]
             val convertLimit = if (limit.isNullOrBlank()) 0 else limit.toInt()
             val message = when {
-                search == null -> searchKey.validateEmpty()
+                search == null -> GetConstant.SEARCH.validateEmpty()
 
-                limit == null -> limitKey.validateEmpty()
+                limit == null -> GetConstant.LIMIT.validateEmpty()
 
                 else -> {
                     val players = DatabaseTransaction.getPlayers(search, convertLimit)

@@ -449,39 +449,4 @@ object DatabaseTransaction {
         }
     }
 
-    fun fetchItemCollection(): List<ItemCollection> {
-        return transaction {
-            ItemCollections.selectAll()
-                .map { ItemCollections.toItemCollection(it) }
-        }
-    }
-
-    fun fetchLogActive(): List<LogActive> {
-        return transaction {
-            LogActives.selectAll()
-                .map { LogActives.toLogActive(it) }
-        }
-    }
-
-    fun fetchMulti(): List<Multi> {
-        return transaction {
-            Multis.selectAll()
-                .map { Multis.toMulti(it) }
-        }
-    }
-
-    fun fetchMultiCollection(): List<MultiCollection> {
-        return transaction {
-            MultiCollections.selectAll()
-                .map { MultiCollections.toMultiCollection(it) }
-        }
-    }
-
-    fun fetchRoom(): List<Room> {
-        return transaction {
-            Rooms.selectAll()
-                .map { Rooms.toRoom(it) }
-        }
-    }
-
 }

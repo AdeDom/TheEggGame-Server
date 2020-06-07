@@ -12,14 +12,13 @@ import io.ktor.routing.*
 fun Route.getMultiScore() {
 
     route("multi-score") {
-        val roomNoKey = "room_no"
-        get("fetch-score{$roomNoKey}") {
+        get("fetch-score{${GetConstant.ROOM_NO}}") {
             val response = MultiScoreResponse()
-            val roomNo = call.parameters[roomNoKey]
+            val roomNo = call.parameters[GetConstant.ROOM_NO]
             val message = when {
-                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
-                roomNo.toInt() <= 0 -> roomNoKey.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> roomNoKey.validateIncorrect()
+                roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
+                roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> GetConstant.ROOM_NO.validateIncorrect()
 
                 else -> {
                     val (teamA, teamB) = DatabaseTransaction.getMultiScore(roomNo)
@@ -89,14 +88,13 @@ fun Route.room() {
 fun Route.roomInfo() {
 
     route("room-info") {
-        val roomNoKey = "room_no"
-        get("fetch-room-info{$roomNoKey}") {
+        get("fetch-room-info{${GetConstant.ROOM_NO}}") {
             val response = RoomInfosResponse()
-            val roomNo = call.parameters[roomNoKey]
+            val roomNo = call.parameters[GetConstant.ROOM_NO]
             val message = when {
-                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
-                roomNo.toInt() <= 0 -> roomNoKey.validateLessEqZero()
-                DatabaseTransaction.getCountRoom(roomNo) == 0 -> roomNoKey.validateIncorrect()
+                roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
+                roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> GetConstant.ROOM_NO.validateIncorrect()
 
                 else -> {
                     val listRoomInfo = DatabaseTransaction.getRoomInfos(roomNo)
@@ -143,14 +141,13 @@ fun Route.roomInfo() {
 fun Route.multi() {
 
     route("multi") {
-        val roomNoKey = "room_no"
-        get("fetch-multis{$roomNoKey}") {
+        get("fetch-multis{${GetConstant.ROOM_NO}}") {
             val response = MultisResponse()
-            val roomNo = call.parameters[roomNoKey]
+            val roomNo = call.parameters[GetConstant.ROOM_NO]
             val message = when {
-                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
-                roomNo.toInt() <= 0 -> roomNoKey.validateIncorrect()
-                DatabaseTransaction.getCountMultiRoomNo(roomNo) -> roomNoKey.validateNotFound()
+                roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
+                roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateIncorrect()
+                DatabaseTransaction.getCountMultiRoomNo(roomNo) -> GetConstant.ROOM_NO.validateNotFound()
 
                 else -> {
                     val listMulti = DatabaseTransaction.getMultis(roomNo)

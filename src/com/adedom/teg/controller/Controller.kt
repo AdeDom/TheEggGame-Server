@@ -20,10 +20,6 @@ fun Route.controller() {
         putState()
     }
 
-    route("fetch-list") {
-        fetchList()
-    }
-
     route("single") {
         itemCollection()
     }

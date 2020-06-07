@@ -19,14 +19,13 @@ import io.ktor.routing.route
 fun Route.itemCollection() {
 
     route("item-collection") {
-        val playerIdKey = "player_id"
-        get("fetch-backpack{$playerIdKey}") {
+        get("fetch-backpack{${GetConstant.PLAYER_ID}}") {
             val response = BackpackResponse()
-            val playerId = call.parameters[playerIdKey]
+            val playerId = call.parameters[GetConstant.PLAYER_ID]
             val message = when {
-                playerId.isNullOrBlank() -> playerIdKey.validateEmpty()
-                playerId.toInt() <= 0 -> playerIdKey.validateIncorrect()
-                DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> playerIdKey.validateNotFound()
+                playerId.isNullOrBlank() -> GetConstant.PLAYER_ID.validateEmpty()
+                playerId.toInt() <= 0 -> GetConstant.PLAYER_ID.validateIncorrect()
+                DatabaseTransaction.getCountPlayer(playerId.toInt()) == 0 -> GetConstant.PLAYER_ID.validateNotFound()
 
                 else -> {
                     val (egg, eggI, eggII, eggIII) = DatabaseTransaction.getBackpack(playerId.toInt())
