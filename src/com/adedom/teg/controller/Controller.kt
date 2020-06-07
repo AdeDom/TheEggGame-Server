@@ -30,8 +30,8 @@ fun Route.controller() {
 
     route("multi") {
         getMultiScore()
-        postRoom()
-        postRoomInfo()
+        room()
+        roomInfo()
         multi()
         postMultiCollection()
         putLatlng()

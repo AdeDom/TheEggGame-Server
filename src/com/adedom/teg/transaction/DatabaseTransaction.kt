@@ -189,6 +189,26 @@ object DatabaseTransaction {
             .map { Rooms.toRoom(it) }
     }
 
+    fun getRoomInfos(roomNo: String): List<RoomInfo> = transaction {
+        (Players innerJoin ItemCollections innerJoin RoomInfos)
+            .slice(
+                RoomInfos.roomNo,
+                RoomInfos.latitude,
+                RoomInfos.longitude,
+                RoomInfos.team,
+                RoomInfos.status,
+                Players.playerId,
+                Players.name,
+                Players.image,
+                ItemCollections.qty.sum(),
+                Players.state,
+                Players.gender
+            ).select { RoomInfos.roomNo eq roomNo }
+            .groupBy(Players.playerId)
+            .orderBy(RoomInfos.infoId to SortOrder.ASC)
+            .map { MapResponse.toRoomInfo(it) }
+    }
+
     fun postSignIn(postSignIn: PostSignIn): Int? {
         val (username, password) = postSignIn
         return transaction {
@@ -461,13 +481,6 @@ object DatabaseTransaction {
         return transaction {
             Rooms.selectAll()
                 .map { Rooms.toRoom(it) }
-        }
-    }
-
-    fun fetchRoomInfo(): List<RoomInfo> {
-        return transaction {
-            RoomInfos.selectAll()
-                .map { RoomInfos.toRoomInfo(it) }
         }
     }
 

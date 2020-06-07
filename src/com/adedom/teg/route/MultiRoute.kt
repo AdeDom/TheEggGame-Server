@@ -36,7 +36,7 @@ fun Route.getMultiScore() {
 
 }
 
-fun Route.postRoom() {
+fun Route.room() {
 
     route("room") {
         get("/") {
@@ -86,9 +86,29 @@ fun Route.postRoom() {
 
 }
 
-fun Route.postRoomInfo() {
+fun Route.roomInfo() {
 
     route("room-info") {
+        val roomNoKey = "room_no"
+        get("fetch-room-info{$roomNoKey}") {
+            val response = RoomInfosResponse()
+            val roomNo = call.parameters[roomNoKey]
+            val message = when {
+                roomNo.isNullOrBlank() -> roomNoKey.validateEmpty()
+                roomNo.toInt() <= 0 -> roomNoKey.validateLessEqZero()
+                DatabaseTransaction.getCountRoom(roomNo) == 0 -> roomNoKey.validateIncorrect()
+
+                else -> {
+                    val listRoomInfo = DatabaseTransaction.getRoomInfos(roomNo)
+                    response.roomInfo = listRoomInfo
+                    response.success = true
+                    "Fetch room info success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
+
         post("/") {
             val response = BaseResponse()
             val (roomNo, playerId) = call.receive<PostRoomInfo>()

@@ -59,14 +59,4 @@ fun Route.fetchList() {
         call.respond(response)
     }
 
-    get("/room-info") {
-        val list = DatabaseTransaction.fetchRoomInfo()
-        val response = RoomInfosResponse(
-            roomInfo = list
-        )
-        response.success = true
-        response.message = "Fetch room info success"
-        call.respond(response)
-    }
-
 }
