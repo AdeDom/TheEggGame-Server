@@ -133,6 +133,33 @@ fun Route.roomInfo() {
             response.message = message
             call.respond(response)
         }
+
+        delete("/") {
+            val response = BaseResponse()
+            val (roomNo, playerId) = call.receive<RoomInfoRequest>()
+            val message = when {
+                roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateEmpty()
+                roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
+                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
+
+                playerId == null -> RoomInfoRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
+
+                else -> {
+                    DatabaseTransaction.deletePlayerRoomInfo(
+                        roomInfoRequest = RoomInfoRequest(
+                            roomNo = roomNo,
+                            playerId = playerId
+                        )
+                    )
+                    response.success = true
+                    "Delete room info success"
+                }
+            }
+            response.message = message
+            call.respond(response)
+        }
     }
 
 }
@@ -364,39 +391,6 @@ fun Route.putTeam() {
                     )
                     response.success = true
                     "Put team success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.deletePlayerRoomInfo() {
-
-    route("player-room-info") {
-        delete("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId) = call.receive<RoomInfoRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateEmpty()
-                roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> RoomInfoRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
-
-                else -> {
-                    DatabaseTransaction.deletePlayerRoomInfo(
-                        roomInfoRequest = RoomInfoRequest(
-                            roomNo = roomNo,
-                            playerId = playerId
-                        )
-                    )
-                    response.success = true
-                    "Delete player room info success"
                 }
             }
             response.message = message

@@ -34,7 +34,6 @@ fun Route.controller() {
         putReady()
         putRoomOff()
         putTeam()
-        deletePlayerRoomInfo()
     }
 
 }
