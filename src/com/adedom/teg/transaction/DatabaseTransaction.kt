@@ -409,6 +409,14 @@ object DatabaseTransaction {
     fun deletePlayerRoomInfo(deletePlayerRoomInfo: DeletePlayerRoomInfo) {
         val (roomNo, playerId) = deletePlayerRoomInfo
         transaction {
+            addLogger(StdOutSqlLogger)
+
+            val count = RoomInfos.select { RoomInfos.roomNo eq roomNo!! }
+                .count()
+                .toInt()
+
+            if (count == 1) Rooms.deleteWhere { Rooms.roomNo eq roomNo!! }
+
             RoomInfos.deleteWhere {
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }
