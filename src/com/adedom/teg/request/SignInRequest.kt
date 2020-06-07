@@ -1,6 +1,6 @@
 package com.adedom.teg.request
 
-data class PostSignIn(
+data class SignInRequest(
     val username: String? = null,
     val password: String? = null
 )

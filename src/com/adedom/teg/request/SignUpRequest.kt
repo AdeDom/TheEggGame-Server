@@ -1,7 +1,8 @@
 package com.adedom.teg.request
 
-data class PutProfile(
-    val playerId: Int? = null,
+data class SignUpRequest(
+    val username: String? = null,
+    val password: String? = null,
     val name: String? = null,
     val gender: String? = null
 )

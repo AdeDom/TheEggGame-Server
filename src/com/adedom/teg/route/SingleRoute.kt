@@ -1,6 +1,6 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.request.PostItemCollection
+import com.adedom.teg.request.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
@@ -37,25 +37,25 @@ fun Route.itemCollection() {
 
         post("/") {
             val response = BaseResponse()
-            val (playerId, itemId, qty, latitude, longitude) = call.receive<PostItemCollection>()
+            val (playerId, itemId, qty, latitude, longitude) = call.receive<ItemCollectionRequest>()
             val message = when {
-                playerId == null -> PostItemCollection::playerId.name.validateEmpty()
-                playerId <= 0 -> PostItemCollection::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostItemCollection::playerId.name.validateNotFound()
+                playerId == null -> ItemCollectionRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> ItemCollectionRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> ItemCollectionRequest::playerId.name.validateNotFound()
 
-                itemId == null -> PostItemCollection::itemId.name.validateEmpty()
-                itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> PostItemCollection::itemId.name.validateIncorrect()
+                itemId == null -> ItemCollectionRequest::itemId.name.validateEmpty()
+                itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> ItemCollectionRequest::itemId.name.validateIncorrect()
 
-                qty == null -> PostItemCollection::qty.name.validateEmpty()
-                qty <= 0 -> PostItemCollection::qty.name.validateIncorrect()
+                qty == null -> ItemCollectionRequest::qty.name.validateEmpty()
+                qty <= 0 -> ItemCollectionRequest::qty.name.validateIncorrect()
 
-                latitude == null -> PostItemCollection::latitude.name.validateEmpty()
+                latitude == null -> ItemCollectionRequest::latitude.name.validateEmpty()
 
-                longitude == null -> PostItemCollection::longitude.name.validateEmpty()
+                longitude == null -> ItemCollectionRequest::longitude.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.postItemCollection(
-                        postItemCollection = PostItemCollection(
+                        itemCollectionRequest = ItemCollectionRequest(
                             playerId = playerId,
                             itemId = itemId,
                             qty = qty,

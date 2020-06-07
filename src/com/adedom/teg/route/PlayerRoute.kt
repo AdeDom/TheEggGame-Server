@@ -42,16 +42,16 @@ fun Route.postSignIn() {
     route("sign-in") {
         post("/") {
             val response = SignInResponse()
-            val (username, password) = call.receive<PostSignIn>()
+            val (username, password) = call.receive<SignInRequest>()
             val message = when {
-                username.isNullOrBlank() -> PostSignIn::username.name.validateEmpty()
-                username.length < CommonConstant.MIN_USERNAME -> PostSignIn::username.name validateGrateEq CommonConstant.MIN_USERNAME
+                username.isNullOrBlank() -> SignInRequest::username.name.validateEmpty()
+                username.length < CommonConstant.MIN_USERNAME -> SignInRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
 
-                password.isNullOrBlank() -> PostSignIn::password.name.validateEmpty()
-                password.length < CommonConstant.MIN_PASSWORD -> PostSignIn::password.name validateGrateEq CommonConstant.MIN_PASSWORD
+                password.isNullOrBlank() -> SignInRequest::password.name.validateEmpty()
+                password.length < CommonConstant.MIN_PASSWORD -> SignInRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 DatabaseTransaction.getCountSignIn(
-                    postSignIn = PostSignIn(
+                    signInRequest = SignInRequest(
                         username = username,
                         password = password
                     )
@@ -59,7 +59,7 @@ fun Route.postSignIn() {
 
                 else -> {
                     val playerId = DatabaseTransaction.postSignIn(
-                        postSignIn = PostSignIn(
+                        signInRequest = SignInRequest(
                             username = username,
                             password = password
                         )
@@ -81,24 +81,24 @@ fun Route.postSignUp() {
     route("sign-up") {
         post("/") {
             val response = SignUpResponse()
-            val (username, password, name, gender) = call.receive<PostSignUp>()
+            val (username, password, name, gender) = call.receive<SignUpRequest>()
             val message = when {
-                username.isNullOrBlank() -> PostSignUp::username.name.validateEmpty()
-                username.length < CommonConstant.MIN_USERNAME -> PostSignUp::username.name validateGrateEq CommonConstant.MIN_USERNAME
+                username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
+                username.length < CommonConstant.MIN_USERNAME -> SignUpRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
                 DatabaseTransaction.getCountUsername(username) != 0 -> username.validateRepeatUsername()
 
-                password.isNullOrBlank() -> PostSignUp::password.name.validateEmpty()
-                password.length < CommonConstant.MIN_PASSWORD -> PostSignUp::password.name validateGrateEq CommonConstant.MIN_PASSWORD
+                password.isNullOrBlank() -> SignUpRequest::password.name.validateEmpty()
+                password.length < CommonConstant.MIN_PASSWORD -> SignUpRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
-                name.isNullOrBlank() -> PostSignUp::name.name.validateEmpty()
+                name.isNullOrBlank() -> SignUpRequest::name.name.validateEmpty()
                 DatabaseTransaction.getCountName(name) != 0 -> name.validateRepeatName()
 
-                gender == null -> PostSignUp::gender.name.validateEmpty()
-                !gender.validateGender() -> PostSignUp::gender.name.validateIncorrect()
+                gender == null -> SignUpRequest::gender.name.validateEmpty()
+                !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
 
                 else -> {
                     val playerId = DatabaseTransaction.postSignUp(
-                        postSignUp = PostSignUp(
+                        signUpRequest = SignUpRequest(
                             username = username,
                             password = password,
                             name = name,
@@ -122,26 +122,26 @@ fun Route.putPassword() {
     route("password") {
         put("/") {
             val response = BaseResponse()
-            val (playerId, oldPassword, newPassword) = call.receive<PutPassword>()
+            val (playerId, oldPassword, newPassword) = call.receive<PasswordRequest>()
             val message = when {
-                playerId == null -> PutPassword::playerId.name.validateEmpty()
-                playerId <= 0 -> PutPassword::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutPassword::playerId.name.validateNotFound()
+                playerId == null -> PasswordRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> PasswordRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PasswordRequest::playerId.name.validateNotFound()
 
-                oldPassword.isNullOrBlank() -> PutPassword::oldPassword.name.validateEmpty()
+                oldPassword.isNullOrBlank() -> PasswordRequest::oldPassword.name.validateEmpty()
                 DatabaseTransaction.validatePasswordPlayer(
-                    putPassword = PutPassword(
+                    passwordRequest = PasswordRequest(
                         playerId = playerId,
                         oldPassword = oldPassword
                     )
-                ) -> PutPassword::oldPassword.name.validateLessEqZero()
+                ) -> PasswordRequest::oldPassword.name.validateLessEqZero()
 
-                newPassword.isNullOrBlank() -> PutPassword::newPassword.name.validateEmpty()
-                newPassword.length < CommonConstant.MIN_PASSWORD -> PutPassword::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
+                newPassword.isNullOrBlank() -> PasswordRequest::newPassword.name.validateEmpty()
+                newPassword.length < CommonConstant.MIN_PASSWORD -> PasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 else -> {
                     DatabaseTransaction.putPassword(
-                        putPassword = PutPassword(
+                        passwordRequest = PasswordRequest(
                             playerId = playerId,
                             newPassword = newPassword
                         )
@@ -163,20 +163,20 @@ fun Route.putProfile() {
     route("profile") {
         put("/") {
             val response = BaseResponse()
-            val (playerId, name, gender) = call.receive<PutProfile>()
+            val (playerId, name, gender) = call.receive<ProfileRequest>()
             val message = when {
-                playerId == null -> PutProfile::playerId.name.validateEmpty()
-                playerId <= 0 -> PutProfile::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutProfile::playerId.name.validateNotFound()
+                playerId == null -> ProfileRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> ProfileRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> ProfileRequest::playerId.name.validateNotFound()
 
-                name.isNullOrBlank() -> PutProfile::name.name.validateEmpty()
-                name.length < CommonConstant.MIN_NAME -> PutProfile::name.name.validateGrateEq(CommonConstant.MIN_NAME)
+                name.isNullOrBlank() -> ProfileRequest::name.name.validateEmpty()
+                name.length < CommonConstant.MIN_NAME -> ProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
 
-                gender.isNullOrBlank() -> PutProfile::gender.name.validateEmpty()
+                gender.isNullOrBlank() -> ProfileRequest::gender.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putProfile(
-                        putProfile = PutProfile(
+                        profileRequest = ProfileRequest(
                             playerId = playerId,
                             name = name,
                             gender = gender
@@ -198,17 +198,17 @@ fun Route.putState() {
     route("state") {
         put("/") {
             val response = BaseResponse()
-            val (playerId, state) = call.receive<PutState>()
+            val (playerId, state) = call.receive<StateRequest>()
             val message = when {
-                playerId == null -> PutState::playerId.name.validateEmpty()
-                playerId <= 0 -> PutState::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutState::playerId.name.validateNotFound()
+                playerId == null -> StateRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> StateRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> StateRequest::playerId.name.validateNotFound()
 
-                state.isNullOrBlank() -> PutState::state.name.validateEmpty()
+                state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
 
                 else -> {
                     DatabaseTransaction.putState(
-                        putState = PutState(
+                        stateRequest = StateRequest(
                             playerId = playerId,
                             state = state
                         )

@@ -35,8 +35,8 @@ object DatabaseTransaction {
             .toInt()
     }
 
-    fun validatePasswordPlayer(putPassword: PutPassword): Boolean {
-        val (playerId, oldPassword, _) = putPassword
+    fun validatePasswordPlayer(passwordRequest: PasswordRequest): Boolean {
+        val (playerId, oldPassword, _) = passwordRequest
         return transaction {
             val count = Players.select {
                 Players.playerId eq playerId!! and (Players.password eq oldPassword.encryptSHA())
@@ -81,8 +81,8 @@ object DatabaseTransaction {
         peopleRoom < peopleRoomInfo
     }
 
-    fun getCountSignIn(postSignIn: PostSignIn): Boolean {
-        val (username, password) = postSignIn
+    fun getCountSignIn(signInRequest: SignInRequest): Boolean {
+        val (username, password) = signInRequest
         return transaction {
             val count: Int = Players.select {
                 Players.username eq username!! and (Players.password eq password.encryptSHA())
@@ -204,8 +204,8 @@ object DatabaseTransaction {
             .map { MapResponse.toRoomInfo(it) }
     }
 
-    fun postSignIn(postSignIn: PostSignIn): Int? {
-        val (username, password) = postSignIn
+    fun postSignIn(signInRequest: SignInRequest): Int? {
+        val (username, password) = signInRequest
         return transaction {
             Players.slice(Players.playerId)
                 .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
@@ -215,8 +215,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postSignUp(postSignUp: PostSignUp): Int? {
-        val (username, password, name, gender) = postSignUp
+    fun postSignUp(signUpRequest: SignUpRequest): Int? {
+        val (username, password, name, gender) = signUpRequest
         return transaction {
             Players.insert {
                 it[Players.username] = username!!
@@ -236,8 +236,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postLogActive(postLogActive: PostLogActive) {
-        val (logKey, playerId) = postLogActive
+    fun postLogActive(logActiveRequest: LogActiveRequest) {
+        val (logKey, playerId) = logActiveRequest
         transaction {
             LogActives.insert {
                 it[LogActives.logKey] = logKey!!
@@ -248,8 +248,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postItemCollection(postItemCollection: PostItemCollection) {
-        val (playerId, itemId, qty, latitude, longitude) = postItemCollection
+    fun postItemCollection(itemCollectionRequest: ItemCollectionRequest) {
+        val (playerId, itemId, qty, latitude, longitude) = itemCollectionRequest
         transaction {
             ItemCollections.insert {
                 it[ItemCollections.playerId] = playerId!!
@@ -262,8 +262,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postMulti(postMulti: PostMulti) {
-        val (roomNo, latitude, longitude) = postMulti
+    fun postMulti(multiRequest: MultiRequest) {
+        val (roomNo, latitude, longitude) = multiRequest
         transaction {
             Multis.insert {
                 it[Multis.roomNo] = roomNo!!
@@ -274,8 +274,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postMultiCollection(postMultiCollection: PostMultiCollection) {
-        val (multiId, roomNo, playerId, team, latitude, longitude) = postMultiCollection
+    fun postMultiCollection(multiCollectionRequest: MultiCollectionRequest) {
+        val (multiId, roomNo, playerId, team, latitude, longitude) = multiCollectionRequest
         transaction {
             Multis.update({ Multis.multiId eq multiId!! }) {
                 it[status] = "off"
@@ -292,8 +292,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postRoom(postRoom: PostRoom): String {
-        val (name, people, playerId) = postRoom
+    fun postRoom(roomRequest: RoomRequest): String {
+        val (name, people, playerId) = roomRequest
         return transaction {
             addLogger(StdOutSqlLogger)
 
@@ -330,8 +330,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun postRoomInfo(postRoomInfo: PostRoomInfo) {
-        val (roomNo, playerId) = postRoomInfo
+    fun postRoomInfo(roomInfoRequest: RoomInfoRequest) {
+        val (roomNo, playerId) = roomInfoRequest
         transaction {
             RoomInfos.insert {
                 it[RoomInfos.roomNo] = roomNo!!
@@ -345,8 +345,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putLatLng(putLatlng: PutLatlng) {
-        val (roomNo, playerId, latitude, longitude) = putLatlng
+    fun putLatLng(latlngRequest: LatlngRequest) {
+        val (roomNo, playerId, latitude, longitude) = latlngRequest
         transaction {
             RoomInfos.update({
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
@@ -357,8 +357,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putReady(putReady: PutReady) {
-        val (roomNo, playerId, status) = putReady
+    fun putReady(readyRequest: ReadyRequest) {
+        val (roomNo, playerId, status) = readyRequest
         transaction {
             RoomInfos.update({
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
@@ -374,8 +374,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putState(putState: PutState) {
-        val (playerId, state) = putState
+    fun putState(stateRequest: StateRequest) {
+        val (playerId, state) = stateRequest
         transaction {
             Players.update({ Players.playerId eq playerId!! }) {
                 it[Players.state] = state!!
@@ -383,8 +383,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putTeam(putTeam: PutTeam) {
-        val (roomNo, playerId, team) = putTeam
+    fun putTeam(teamRequest: TeamRequest) {
+        val (roomNo, playerId, team) = teamRequest
         transaction {
             RoomInfos.update({
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
@@ -404,8 +404,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putPassword(putPassword: PutPassword) {
-        val (playerId, _, newPassword) = putPassword
+    fun putPassword(passwordRequest: PasswordRequest) {
+        val (playerId, _, newPassword) = passwordRequest
         transaction {
             Players.update({
                 Players.playerId eq playerId!!
@@ -415,8 +415,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putProfile(putProfile: PutProfile) {
-        val (playerId, name, gender) = putProfile
+    fun putProfile(profileRequest: ProfileRequest) {
+        val (playerId, name, gender) = profileRequest
         transaction {
             Players.update({
                 Players.playerId eq playerId!!
@@ -427,8 +427,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun deletePlayerRoomInfo(deletePlayerRoomInfo: DeletePlayerRoomInfo) {
-        val (roomNo, playerId) = deletePlayerRoomInfo
+    fun deletePlayerRoomInfo(roomInfoRequest: RoomInfoRequest) {
+        val (roomNo, playerId) = roomInfoRequest
         transaction {
             addLogger(StdOutSqlLogger)
 

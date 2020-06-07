@@ -1,6 +1,6 @@
 package com.adedom.teg.request
 
-data class PostLogActive(
+data class LogActiveRequest(
     val logKey: String? = null,
     val playerId: Int? = null
 )

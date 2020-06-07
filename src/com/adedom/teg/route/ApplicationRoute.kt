@@ -1,7 +1,6 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.request.PostLogActive
-import com.adedom.teg.request.PutLogActive
+import com.adedom.teg.request.LogActiveRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankResponse
 import com.adedom.teg.transaction.DatabaseTransaction
@@ -43,19 +42,19 @@ fun Route.logActive() {
     route("log-active") {
         post("/") {
             val response = BaseResponse()
-            val (logKey, playerId) = call.receive<PostLogActive>()
+            val (logKey, playerId) = call.receive<LogActiveRequest>()
             val message = when {
-                logKey.isNullOrBlank() -> PostLogActive::logKey.name.validateEmpty()
-                logKey.length != CommonConstant.LOGS_KEYS -> PostLogActive::logKey.name.validateIncorrect()
-                DatabaseTransaction.getCountLogActive(logKey) != 0 -> PostLogActive::logKey.name.validateIncorrect()
+                logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
+                logKey.length != CommonConstant.LOGS_KEYS -> LogActiveRequest::logKey.name.validateIncorrect()
+                DatabaseTransaction.getCountLogActive(logKey) != 0 -> LogActiveRequest::logKey.name.validateIncorrect()
 
-                playerId == null -> PostLogActive::playerId.name.validateEmpty()
-                playerId <= 0 -> PostLogActive::playerId.name.validateLessEqZero()
-                DatabaseTransaction.getCountPlayer(playerId) == 0 -> PostLogActive::playerId.name.validateNotFound()
+                playerId == null -> LogActiveRequest::playerId.name.validateEmpty()
+                playerId <= 0 -> LogActiveRequest::playerId.name.validateLessEqZero()
+                DatabaseTransaction.getCountPlayer(playerId) == 0 -> LogActiveRequest::playerId.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.postLogActive(
-                        postLogActive = PostLogActive(
+                        logActiveRequest = LogActiveRequest(
                             logKey = logKey,
                             playerId = playerId
                         )
@@ -70,10 +69,10 @@ fun Route.logActive() {
 
         put("/") {
             val response = BaseResponse()
-            val (logKey) = call.receive<PutLogActive>()
+            val (logKey) = call.receive<LogActiveRequest>()
             val message = when {
-                logKey.isNullOrBlank() -> PutLogActive::logKey.name.validateEmpty()
-                DatabaseTransaction.getCountLogActive(logKey) == 0 -> PutLogActive::logKey.name.validateNotFound()
+                logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
+                DatabaseTransaction.getCountLogActive(logKey) == 0 -> LogActiveRequest::logKey.name.validateNotFound()
 
                 else -> {
                     DatabaseTransaction.putLogActive(logKey)

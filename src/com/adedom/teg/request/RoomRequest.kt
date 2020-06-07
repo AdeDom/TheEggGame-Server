@@ -1,6 +1,6 @@
 package com.adedom.teg.request
 
-data class PostRoom(
+data class RoomRequest(
     val name: String? = null,
     val people: String? = null,
     val playerId: Int? = null

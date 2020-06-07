@@ -1,7 +1,7 @@
 package com.adedom.teg.request
 
-data class PutReady(
+data class TeamRequest(
     val roomNo: String? = null,
     val playerId: Int? = null,
-    val status: String? = null
+    val team: String? = null
 )

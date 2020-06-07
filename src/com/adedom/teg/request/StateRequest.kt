@@ -1,6 +1,6 @@
 package com.adedom.teg.request
 
-data class PutState(
+data class StateRequest(
     val playerId: Int? = null,
     val state: String? = null
 )

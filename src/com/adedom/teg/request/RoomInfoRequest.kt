@@ -1,6 +1,6 @@
 package com.adedom.teg.request
 
-data class PostRoomInfo(
+data class RoomInfoRequest(
     val roomNo: String? = null,
     val playerId: Int? = null
 )
