@@ -8,7 +8,7 @@ fun Route.controller() {
 
     route("application") {
         getPlayers()
-        putLogActive()
+        logActive()
     }
 
     route("account") {

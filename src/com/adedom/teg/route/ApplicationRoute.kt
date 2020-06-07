@@ -43,7 +43,7 @@ fun Route.getPlayers() {
 
 }
 
-fun Route.putLogActive() {
+fun Route.logActive() {
 
     route("log-active") {
         post("/") {

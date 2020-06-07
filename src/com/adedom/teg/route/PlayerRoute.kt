@@ -133,12 +133,12 @@ fun Route.putPassword() {
                 DatabaseTransaction.getCountPlayer(playerId) == 0 -> PutPassword::playerId.name.validateNotFound()
 
                 oldPassword.isNullOrBlank() -> PutPassword::oldPassword.name.validateEmpty()
-                DatabaseTransaction.getCountPasswordPlayer(
+                DatabaseTransaction.validatePasswordPlayer(
                     putPassword = PutPassword(
                         playerId = playerId,
                         oldPassword = oldPassword
                     )
-                ) == 0 -> PutPassword::oldPassword.name.validateLessEqZero()
+                ) -> PutPassword::oldPassword.name.validateLessEqZero()
 
                 newPassword.isNullOrBlank() -> PutPassword::newPassword.name.validateEmpty()
                 newPassword.length < minPassword -> PutPassword::newPassword.name validateGrateEq minPassword

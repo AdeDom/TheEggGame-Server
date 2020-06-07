@@ -27,4 +27,12 @@ object Rooms : Table(name = DatabaseConstant.roomTable) {
         dateTime = row[dateTime].toDateFormat()
     )
 
+    fun toPeopleRoom(row: ResultRow) = Room(
+        people = row[people]
+    )
+
+    fun toRoomNo(row: ResultRow) = Room(
+        roomNo = row[roomNo]
+    )
+
 }

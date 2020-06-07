@@ -37,12 +37,14 @@ object DatabaseTransaction {
             .toInt()
     }
 
-    fun getCountPasswordPlayer(putPassword: PutPassword): Int {
+    fun validatePasswordPlayer(putPassword: PutPassword): Boolean {
         val (playerId, oldPassword, _) = putPassword
         return transaction {
-            Players.select {
+            val count = Players.select {
                 Players.playerId eq playerId!! and (Players.password eq oldPassword.encryptSHA())
             }.count().toInt()
+
+            count == 0
         }
     }
 
@@ -65,8 +67,11 @@ object DatabaseTransaction {
     }
 
     fun getCountPeopleRoom(roomNo: String): Boolean = transaction {
-        val peopleRoom: Int = Rooms.select { Rooms.roomNo eq roomNo }
-            .map { Rooms.toRoom(it) }
+        addLogger(StdOutSqlLogger)
+
+        val peopleRoom: Int = Rooms.slice(Rooms.people)
+            .select { Rooms.roomNo eq roomNo }
+            .map { Rooms.toPeopleRoom(it) }
             .single()
             .people
             ?.toInt() ?: 0
@@ -97,6 +102,7 @@ object DatabaseTransaction {
         count == 0
     }
 
+    //    todo join table
     fun getPlayer(playerId: Int): Player {
         val level = transaction {
             ItemCollections.select { ItemCollections.playerId eq playerId }
@@ -117,6 +123,7 @@ object DatabaseTransaction {
             .map { Multis.toMulti(it) }
     }
 
+    //    todo create and return json to object
     fun getBackpack(playerId: Int): BackpackResponse = transaction {
         val egg = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 1) }
             .map { ItemCollections.toItemCollection(it) }
@@ -179,9 +186,9 @@ object DatabaseTransaction {
     fun postSignIn(postSignIn: PostSignIn): Int? {
         val (username, password) = postSignIn
         return transaction {
-            Players.select {
-                Players.username eq username!! and (Players.password eq password.encryptSHA())
-            }.map { Players.toPlayerId(it) }
+            Players.slice(Players.playerId)
+                .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
+                .map { Players.toPlayerId(it) }
                 .single()
                 .playerId
         }
@@ -200,7 +207,11 @@ object DatabaseTransaction {
                 it[dateTime] = DateTime.now()
             }
 
-            Players.select { Players.username eq username!! }.map { Players.toPlayerId(it) }.single().playerId
+            Players.slice(Players.playerId)
+                .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
+                .map { Players.toPlayerId(it) }
+                .single()
+                .playerId
         }
     }
 
@@ -263,10 +274,13 @@ object DatabaseTransaction {
     fun postRoom(postRoom: PostRoom): String {
         val (name, people, playerId) = postRoom
         return transaction {
-            val roomNo: String = (Rooms.selectAll()
+            addLogger(StdOutSqlLogger)
+
+            val roomNo: String = (Rooms.slice(Rooms.roomNo)
+                .selectAll()
                 .orderBy(Rooms.roomId to SortOrder.DESC)
                 .limit(1)
-                .map { Rooms.toRoom(it) }
+                .map { Rooms.toRoomNo(it) }
                 .single()
                 .roomNo
                 ?.toInt()
