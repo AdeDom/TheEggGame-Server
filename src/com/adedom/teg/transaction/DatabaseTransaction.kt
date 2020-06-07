@@ -1,13 +1,9 @@
 package com.adedom.teg.transaction
 
 import com.adedom.teg.db.*
-import com.adedom.teg.models.Multi
-import com.adedom.teg.models.Player
-import com.adedom.teg.models.Room
-import com.adedom.teg.models.RoomInfo
+import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.response.BackpackResponse
-import com.adedom.teg.response.MultiScoreResponse
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
 import org.jetbrains.exposed.sql.*
@@ -145,7 +141,7 @@ object DatabaseTransaction {
         BackpackResponse(egg, eggI, eggII, eggIII)
     }
 
-    fun getMultiScore(roomNo: String): MultiScoreResponse = transaction {
+    fun getMultiScore(roomNo: String): Score = transaction {
         val teamA = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "A") }
             .count()
             .toInt()
@@ -154,7 +150,7 @@ object DatabaseTransaction {
             .count()
             .toInt()
 
-        MultiScoreResponse(teamA, teamB)
+        Score(teamA, teamB)
     }
 
     fun getPlayers(search: String, limit: Int): List<Player> = transaction {

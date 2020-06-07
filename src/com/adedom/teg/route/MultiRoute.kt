@@ -11,9 +11,9 @@ import io.ktor.routing.*
 
 fun Route.getMultiScore() {
 
-    route("multi-score") {
+    route("score") {
         get("fetch-score{${GetConstant.ROOM_NO}}") {
-            val response = MultiScoreResponse()
+            val response = ScoreResponse()
             val roomNo = call.parameters[GetConstant.ROOM_NO]
             val message = when {
                 roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateEmpty()
@@ -21,9 +21,8 @@ fun Route.getMultiScore() {
                 DatabaseTransaction.getCountRoom(roomNo) == 0 -> GetConstant.ROOM_NO.validateIncorrect()
 
                 else -> {
-                    val (teamA, teamB) = DatabaseTransaction.getMultiScore(roomNo)
-                    response.teamA = teamA
-                    response.teamB = teamB
+                    val score = DatabaseTransaction.getMultiScore(roomNo)
+                    response.score = score
                     response.success = true
                     "Fetch multi score success"
                 }
