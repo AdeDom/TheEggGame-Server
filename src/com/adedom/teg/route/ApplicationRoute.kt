@@ -46,23 +46,17 @@ fun Route.logActive() {
     route("log-active") {
         post("/") {
             val response = BaseResponse()
-            val (logKey, playerId) = call.receive<LogActiveRequest>()
+            val (logKey) = call.receive<LogActiveRequest>()
+            val playerId = call.player?.playerId
             val message = when {
+                playerId == null -> playerId.validateAccessToken()
+
                 logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
                 logKey.length != CommonConstant.LOGS_KEYS -> LogActiveRequest::logKey.name.validateIncorrect()
                 !DatabaseTransaction.validateLogActive(logKey) -> LogActiveRequest::logKey.name.validateIncorrect()
 
-                playerId == null -> LogActiveRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> LogActiveRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> LogActiveRequest::playerId.name.validateNotFound()
-
                 else -> {
-                    DatabaseTransaction.postLogActive(
-                        logActiveRequest = LogActiveRequest(
-                            logKey = logKey,
-                            playerId = playerId
-                        )
-                    )
+                    DatabaseTransaction.postLogActive(playerId, logKey)
                     response.success = true
                     "Post log active success"
                 }

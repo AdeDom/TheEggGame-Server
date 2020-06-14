@@ -246,15 +246,12 @@ object DatabaseTransaction {
         }
     }
 
-    fun postLogActive(logActiveRequest: LogActiveRequest) {
-        val (logKey, playerId) = logActiveRequest
-        transaction {
-            LogActives.insert {
-                it[LogActives.logKey] = logKey!!
-                it[LogActives.playerId] = playerId!!
-                it[dateTimeIn] = DateTime.now()
-                it[dateTimeOut] = DateTime.now()
-            }
+    fun postLogActive(playerId: Int, logKey: String) = transaction {
+        LogActives.insert {
+            it[LogActives.logKey] = logKey
+            it[LogActives.playerId] = playerId
+            it[dateTimeIn] = DateTime.now()
+            it[dateTimeOut] = DateTime.now()
         }
     }
 
