@@ -7,31 +7,34 @@ import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.response.SignUpResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
+import com.adedom.teg.util.jwt.JwtConfig
+import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
+import io.ktor.auth.authenticate
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
 
 fun Route.getPlayer() {
 
-    //todo JWT authentication
-    route("player") {
-        get("fetch-player{${GetConstant.PLAYER_ID}}") {
-            val response = PlayerResponse()
-            val playerId = call.parameters[GetConstant.PLAYER_ID]
-            val message = when {
-                playerId.isNullOrBlank() -> GetConstant.PLAYER_ID.validateEmpty()
-                playerId.toInt() <= 0 -> GetConstant.PLAYER_ID.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId.toInt()) -> GetConstant.PLAYER_ID.validateNotFound()
-                else -> {
-                    val player = DatabaseTransaction.getPlayer(playerId.toInt())
-                    response.success = true
-                    response.player = player
-                    "Fetch player success"
+    authenticate {
+        route("player") {
+            get("/") {
+                val response = PlayerResponse()
+                val playerId = call.player?.playerId
+                val message = when {
+                    playerId == null -> playerId.validateAccessToken()
+
+                    else -> {
+                        val player = DatabaseTransaction.getPlayer(playerId)
+                        response.success = true
+                        response.player = player
+                        "Fetch player success"
+                    }
                 }
+                response.message = message
+                call.respond(response)
             }
-            response.message = message
-            call.respond(response)
         }
     }
 
@@ -58,13 +61,13 @@ fun Route.postSignIn() {
                 ) -> "Username and password incorrect"
 
                 else -> {
-                    val playerId = DatabaseTransaction.postSignIn(
+                    val player = DatabaseTransaction.postSignIn(
                         signInRequest = SignInRequest(
                             username = username,
                             password = password
                         )
                     )
-                    response.playerId = playerId
+                    response.accessToken = JwtConfig.makeToken(player)
                     response.success = true
                     "Post sign in success"
                 }

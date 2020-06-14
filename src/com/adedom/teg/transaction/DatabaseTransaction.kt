@@ -5,6 +5,7 @@ import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
+import com.adedom.teg.util.jwt.PlayerPrincipal
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -218,14 +219,13 @@ object DatabaseTransaction {
             .map { MapResponse.toRoomInfo(it) }
     }
 
-    fun postSignIn(signInRequest: SignInRequest): Int? {
+    fun postSignIn(signInRequest: SignInRequest): PlayerPrincipal {
         val (username, password) = signInRequest
         return transaction {
-            Players.slice(Players.playerId)
+            Players.slice(Players.playerId, Players.username)
                 .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
-                .map { Players.toPlayerId(it) }
+                .map { MapResponse.toPlayerPrincipal(it) }
                 .single()
-                .playerId
         }
     }
 

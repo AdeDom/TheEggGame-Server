@@ -10,6 +10,8 @@ import java.util.*
 
 fun DateTime.toDateFormat() = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(toDate())
 
+fun Int?.validateAccessToken() = "Please check access token again"
+
 fun String?.validateEmpty() = "Please enter $this"
 
 fun String?.validateLessEqZero() = "Please check the $this again"

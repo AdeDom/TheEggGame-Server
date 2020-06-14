@@ -45,4 +45,8 @@ dependencies {
     // mysql
     implementation "mysql:mysql-connector-java:8.0.19"
     implementation "com.zaxxer:HikariCP:3.4.2"
+
+    // Authentication JWT
+    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+
 }
