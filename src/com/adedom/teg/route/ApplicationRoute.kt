@@ -65,15 +65,18 @@ fun Route.logActive() {
             call.respond(response)
         }
 
-        put("/") {
+        patch("/") {
             val response = BaseResponse()
             val (logKey) = call.receive<LogActiveRequest>()
+            val playerId = call.player?.playerId
             val message = when {
+                playerId == null -> playerId.validateAccessToken()
+
                 logKey.isNullOrBlank() -> LogActiveRequest::logKey.name.validateEmpty()
                 DatabaseTransaction.validateLogActive(logKey) -> LogActiveRequest::logKey.name.validateNotFound()
 
                 else -> {
-                    DatabaseTransaction.putLogActive(logKey)
+                    DatabaseTransaction.patchLogActive(logKey)
                     response.success = true
                     "Put log active success"
                 }

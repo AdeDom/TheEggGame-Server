@@ -398,13 +398,9 @@ object DatabaseTransaction {
         }
     }
 
-    fun putLogActive(logKey: String) {
-        transaction {
-            LogActives.update({
-                LogActives.logKey eq logKey
-            }) {
-                it[dateTimeOut] = DateTime.now()
-            }
+    fun patchLogActive(logKey: String) = transaction {
+        LogActives.update({ LogActives.logKey eq logKey }) {
+            it[dateTimeOut] = DateTime.now()
         }
     }
 
