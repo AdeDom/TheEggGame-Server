@@ -119,11 +119,11 @@ fun Route.postSignUp() {
 
 }
 
-fun Route.putPassword() {
+fun Route.patchPassword() {
 
     authenticate {
         route("password") {
-            put("/") {
+            patch("/") {
                 val response = BaseResponse()
                 val (oldPassword, newPassword) = call.receive<PasswordRequest>()
                 val playerId = call.player?.playerId
@@ -140,7 +140,7 @@ fun Route.putPassword() {
                     newPassword.length < CommonConstant.MIN_PASSWORD -> PasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                     else -> {
-                        DatabaseTransaction.putPassword(playerId, newPassword)
+                        DatabaseTransaction.patchPassword(playerId, newPassword)
                         response.success = true
                         "Put password success"
                     }
@@ -189,32 +189,29 @@ fun Route.putProfile() {
 
 }
 
-fun Route.putState() {
+fun Route.patchState() {
 
-    route("state") {
-        put("/") {
-            val response = BaseResponse()
-            val (playerId, state) = call.receive<StateRequest>()
-            val message = when {
-                playerId == null -> StateRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> StateRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> StateRequest::playerId.name.validateNotFound()
+    authenticate {
+        route("state") {
+            patch("/") {
+                val response = BaseResponse()
+                val (state) = call.receive<StateRequest>()
+                val playerId = call.player?.playerId
+                val message = when {
+                    playerId == null -> playerId.validateAccessToken()
 
-                state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
+                    state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
+                    !state.validateState() -> StateRequest::state.name.validateIncorrect()
 
-                else -> {
-                    DatabaseTransaction.putState(
-                        stateRequest = StateRequest(
-                            playerId = playerId,
-                            state = state
-                        )
-                    )
-                    response.success = true
-                    "Put state success"
+                    else -> {
+                        DatabaseTransaction.patchState(playerId, state)
+                        response.success = true
+                        "Put state success"
+                    }
                 }
+                response.message = message
+                call.respond(response)
             }
-            response.message = message
-            call.respond(response)
         }
     }
 

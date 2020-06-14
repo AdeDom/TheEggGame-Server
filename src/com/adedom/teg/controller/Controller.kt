@@ -15,9 +15,9 @@ fun Route.controller() {
         getPlayer()
         postSignIn()
         postSignUp()
-        putPassword()
+        patchPassword()
         putProfile()
-        putState()
+        patchState()
     }
 
     route("single") {

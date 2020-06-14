@@ -22,6 +22,8 @@ fun String?.validateGender() = (this == "M" || this == "F")
 
 fun String?.validateTeam() = (this == "A" || this == "B")
 
+fun String?.validateState() = (this == "online" || this == "offline")
+
 fun String?.validateIncorrect() = "$this Incorrect"
 
 fun String?.validateRepeatUsername() = "Username is $this repeat other in the egg game"

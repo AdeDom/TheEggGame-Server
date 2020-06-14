@@ -384,12 +384,9 @@ object DatabaseTransaction {
         }
     }
 
-    fun putState(stateRequest: StateRequest) {
-        val (playerId, state) = stateRequest
-        transaction {
-            Players.update({ Players.playerId eq playerId!! }) {
-                it[Players.state] = state!!
-            }
+    fun patchState(playerId: Int, state: String) = transaction {
+        Players.update({ Players.playerId eq playerId }) {
+            it[Players.state] = state
         }
     }
 
@@ -414,10 +411,8 @@ object DatabaseTransaction {
         }
     }
 
-    fun putPassword(playerId: Int, newPassword: String) = transaction {
-        Players.update({
-            Players.playerId eq playerId
-        }) {
+    fun patchPassword(playerId: Int, newPassword: String) = transaction {
+        Players.update({ Players.playerId eq playerId }) {
             it[password] = newPassword.encryptSHA()
         }
     }
