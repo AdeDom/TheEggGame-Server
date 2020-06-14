@@ -4,8 +4,11 @@ import com.adedom.teg.request.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
-import com.adedom.teg.util.*
+import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.jwt.player
+import com.adedom.teg.util.validateAccessToken
+import com.adedom.teg.util.validateEmpty
+import com.adedom.teg.util.validateIncorrect
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -35,11 +38,10 @@ fun Route.itemCollection() {
 
         post("/") {
             val response = BaseResponse()
-            val (playerId, itemId, qty, latitude, longitude) = call.receive<ItemCollectionRequest>()
+            val (itemId, qty, latitude, longitude) = call.receive<ItemCollectionRequest>()
+            val playerId = call.player?.playerId
             val message = when {
-                playerId == null -> ItemCollectionRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> ItemCollectionRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> ItemCollectionRequest::playerId.name.validateNotFound()
+                playerId == null -> playerId.validateAccessToken()
 
                 itemId == null -> ItemCollectionRequest::itemId.name.validateEmpty()
                 itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> ItemCollectionRequest::itemId.name.validateIncorrect()
@@ -53,13 +55,8 @@ fun Route.itemCollection() {
 
                 else -> {
                     DatabaseTransaction.postItemCollection(
-                        itemCollectionRequest = ItemCollectionRequest(
-                            playerId = playerId,
-                            itemId = itemId,
-                            qty = qty,
-                            latitude = latitude,
-                            longitude = longitude
-                        )
+                        playerId,
+                        ItemCollectionRequest(itemId = itemId, qty = qty, latitude = latitude, longitude = longitude)
                     )
                     response.success = true
                     "Post item collection success"

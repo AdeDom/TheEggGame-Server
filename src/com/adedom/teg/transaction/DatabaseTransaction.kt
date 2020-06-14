@@ -255,11 +255,11 @@ object DatabaseTransaction {
         }
     }
 
-    fun postItemCollection(itemCollectionRequest: ItemCollectionRequest) {
-        val (playerId, itemId, qty, latitude, longitude) = itemCollectionRequest
+    fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest) {
+        val (itemId, qty, latitude, longitude) = itemCollectionRequest
         transaction {
             ItemCollections.insert {
-                it[ItemCollections.playerId] = playerId!!
+                it[ItemCollections.playerId] = playerId
                 it[ItemCollections.itemId] = itemId!!
                 it[ItemCollections.qty] = qty!!
                 it[ItemCollections.latitude] = latitude!!
