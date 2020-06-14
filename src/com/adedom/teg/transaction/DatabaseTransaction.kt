@@ -229,7 +229,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun postSignUp(signUpRequest: SignUpRequest): Int? {
+    fun postSignUp(signUpRequest: SignUpRequest): PlayerPrincipal {
         val (username, password, name, gender) = signUpRequest
         return transaction {
             Players.insert {
@@ -242,11 +242,10 @@ object DatabaseTransaction {
                 it[dateTime] = DateTime.now()
             }
 
-            Players.slice(Players.playerId)
+            Players.slice(Players.playerId, Players.username)
                 .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
-                .map { Players.toPlayerId(it) }
+                .map { MapResponse.toPlayerPrincipal(it) }
                 .single()
-                .playerId
         }
     }
 

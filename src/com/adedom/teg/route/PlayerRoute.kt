@@ -4,7 +4,6 @@ import com.adedom.teg.request.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.response.SignInResponse
-import com.adedom.teg.response.SignUpResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.JwtConfig
@@ -83,7 +82,7 @@ fun Route.postSignUp() {
 
     route("sign-up") {
         post("/") {
-            val response = SignUpResponse()
+            val response = SignInResponse()
             val (username, password, name, gender) = call.receive<SignUpRequest>()
             val message = when {
                 username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
@@ -100,7 +99,7 @@ fun Route.postSignUp() {
                 !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
 
                 else -> {
-                    val playerId = DatabaseTransaction.postSignUp(
+                    val player = DatabaseTransaction.postSignUp(
                         signUpRequest = SignUpRequest(
                             username = username,
                             password = password,
@@ -108,7 +107,7 @@ fun Route.postSignUp() {
                             gender = gender
                         )
                     )
-                    response.playerId = playerId
+                    response.accessToken = JwtConfig.makeToken(player)
                     response.success = true
                     "Post sign up success"
                 }

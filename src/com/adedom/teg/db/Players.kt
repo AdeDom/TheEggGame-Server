@@ -18,8 +18,6 @@ object Players : Table(name = DatabaseConstant.playerTable) {
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(playerId, name = DatabaseConstant.playerPk)
 
-    fun toPlayerId(row: ResultRow) = Player(playerId = row[playerId])
-
     fun toPlayers(row: ResultRow) = Player(
         playerId = row[playerId],
         username = row[username],
