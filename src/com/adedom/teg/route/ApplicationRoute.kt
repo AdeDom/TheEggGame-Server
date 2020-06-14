@@ -78,7 +78,7 @@ fun Route.logActive() {
                 else -> {
                     DatabaseTransaction.patchLogActive(logKey)
                     response.success = true
-                    "Put log active success"
+                    "Patch log active success"
                 }
             }
             response.message = message
