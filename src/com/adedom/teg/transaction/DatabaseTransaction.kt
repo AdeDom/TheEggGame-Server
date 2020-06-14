@@ -44,15 +44,12 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun validatePasswordPlayer(passwordRequest: PasswordRequest): Boolean {
-        val (playerId, oldPassword, _) = passwordRequest
-        return transaction {
-            val count = Players.select {
-                Players.playerId eq playerId!! and (Players.password eq oldPassword.encryptSHA())
-            }.count().toInt()
+    fun validatePasswordPlayer(playerId: Int, oldPassword: String): Boolean = transaction {
+        val count = Players.select {
+            Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
+        }.count().toInt()
 
-            count == 0
-        }
+        count == 0
     }
 
     fun validateUsername(username: String): Boolean = transaction {
@@ -417,14 +414,11 @@ object DatabaseTransaction {
         }
     }
 
-    fun putPassword(passwordRequest: PasswordRequest) {
-        val (playerId, _, newPassword) = passwordRequest
-        transaction {
-            Players.update({
-                Players.playerId eq playerId!!
-            }) {
-                it[password] = newPassword.encryptSHA()
-            }
+    fun putPassword(playerId: Int, newPassword: String) = transaction {
+        Players.update({
+            Players.playerId eq playerId
+        }) {
+            it[password] = newPassword.encryptSHA()
         }
     }
 

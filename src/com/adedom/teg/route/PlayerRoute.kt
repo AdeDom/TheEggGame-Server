@@ -121,39 +121,33 @@ fun Route.postSignUp() {
 
 fun Route.putPassword() {
 
-    route("password") {
-        put("/") {
-            val response = BaseResponse()
-            val (playerId, oldPassword, newPassword) = call.receive<PasswordRequest>()
-            val message = when {
-                playerId == null -> PasswordRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> PasswordRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> PasswordRequest::playerId.name.validateNotFound()
+    authenticate {
+        route("password") {
+            put("/") {
+                val response = BaseResponse()
+                val (oldPassword, newPassword) = call.receive<PasswordRequest>()
+                val playerId = call.player?.playerId
+                val message = when {
+                    playerId == null -> playerId.validateAccessToken()
 
-                oldPassword.isNullOrBlank() -> PasswordRequest::oldPassword.name.validateEmpty()
-                DatabaseTransaction.validatePasswordPlayer(
-                    passwordRequest = PasswordRequest(
-                        playerId = playerId,
-                        oldPassword = oldPassword
-                    )
-                ) -> PasswordRequest::oldPassword.name.validateLessEqZero()
+                    oldPassword.isNullOrBlank() -> PasswordRequest::oldPassword.name.validateEmpty()
+                    DatabaseTransaction.validatePasswordPlayer(
+                        playerId,
+                        oldPassword
+                    ) -> PasswordRequest::oldPassword.name.validateLessEqZero()
 
-                newPassword.isNullOrBlank() -> PasswordRequest::newPassword.name.validateEmpty()
-                newPassword.length < CommonConstant.MIN_PASSWORD -> PasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
+                    newPassword.isNullOrBlank() -> PasswordRequest::newPassword.name.validateEmpty()
+                    newPassword.length < CommonConstant.MIN_PASSWORD -> PasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
-                else -> {
-                    DatabaseTransaction.putPassword(
-                        passwordRequest = PasswordRequest(
-                            playerId = playerId,
-                            newPassword = newPassword
-                        )
-                    )
-                    response.success = true
-                    "Put password success"
+                    else -> {
+                        DatabaseTransaction.putPassword(playerId, newPassword)
+                        response.success = true
+                        "Put password success"
+                    }
                 }
+                response.message = message
+                call.respond(response)
             }
-            response.message = message
-            call.respond(response)
         }
     }
 
