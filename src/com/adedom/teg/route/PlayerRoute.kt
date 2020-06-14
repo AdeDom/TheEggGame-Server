@@ -142,7 +142,7 @@ fun Route.patchPassword() {
                     else -> {
                         DatabaseTransaction.patchPassword(playerId, newPassword)
                         response.success = true
-                        "Put password success"
+                        "Patch password success"
                     }
                 }
                 response.message = message
@@ -205,7 +205,7 @@ fun Route.patchState() {
                     else -> {
                         DatabaseTransaction.patchState(playerId, state)
                         response.success = true
-                        "Put state success"
+                        "Patch state success"
                     }
                 }
                 response.message = message
