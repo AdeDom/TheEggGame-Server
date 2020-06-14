@@ -5,6 +5,7 @@ import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
+import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -16,17 +17,14 @@ import io.ktor.routing.route
 fun Route.itemCollection() {
 
     route("item-collection") {
-        get("fetch-backpack{${GetConstant.PLAYER_ID}}") {
+        get("/") {
             val response = BackpackResponse()
-            val playerId = call.parameters[GetConstant.PLAYER_ID]
+            val playerId = call.player?.playerId
             val message = when {
-                playerId.isNullOrBlank() -> GetConstant.PLAYER_ID.validateEmpty()
-                playerId.toInt() <= 0 -> GetConstant.PLAYER_ID.validateIncorrect()
-                DatabaseTransaction.validatePlayer(playerId.toInt()) -> GetConstant.PLAYER_ID.validateNotFound()
+                playerId == null -> playerId.validateAccessToken()
 
                 else -> {
-                    val backpack = DatabaseTransaction.getBackpack(playerId.toInt())
-                    response.backpack = backpack
+                    response.backpack = DatabaseTransaction.getBackpack(playerId)
                     response.success = true
                     "Fetch backpack success"
                 }

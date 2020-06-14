@@ -23,8 +23,10 @@ fun Route.controller() {
         patchState()
     }
 
-    route("single") {
-        itemCollection()
+    authenticate {
+        route("single") {
+            itemCollection()
+        }
     }
 
     route("multi") {
