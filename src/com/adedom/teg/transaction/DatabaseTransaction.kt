@@ -417,12 +417,10 @@ object DatabaseTransaction {
         }
     }
 
-    fun putProfile(profileRequest: ProfileRequest) {
-        val (playerId, name, gender) = profileRequest
+    fun putProfile(playerId: Int, profileRequest: ProfileRequest) {
+        val (name, gender) = profileRequest
         transaction {
-            Players.update({
-                Players.playerId eq playerId!!
-            }) {
+            Players.update({ Players.playerId eq playerId }) {
                 it[Players.name] = name!!
                 it[Players.gender] = gender!!
             }

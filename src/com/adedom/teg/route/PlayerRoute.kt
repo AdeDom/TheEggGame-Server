@@ -156,34 +156,33 @@ fun Route.patchPassword() {
 fun Route.putProfile() {
 
     //todo image profile
-    route("profile") {
-        put("/") {
-            val response = BaseResponse()
-            val (playerId, name, gender) = call.receive<ProfileRequest>()
-            val message = when {
-                playerId == null -> ProfileRequest::playerId.name.validateEmpty()
-                playerId <= 0 -> ProfileRequest::playerId.name.validateLessEqZero()
-                DatabaseTransaction.validatePlayer(playerId) -> ProfileRequest::playerId.name.validateNotFound()
+    authenticate {
+        route("profile") {
+            put("/") {
+                val response = BaseResponse()
+                val (name, gender) = call.receive<ProfileRequest>()
+                val playerId = call.player?.playerId
+                val message = when {
+                    playerId == null -> playerId.validateAccessToken()
 
-                name.isNullOrBlank() -> ProfileRequest::name.name.validateEmpty()
-                name.length < CommonConstant.MIN_NAME -> ProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
+                    name.isNullOrBlank() -> ProfileRequest::name.name.validateEmpty()
+                    name.length < CommonConstant.MIN_NAME -> ProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
 
-                gender.isNullOrBlank() -> ProfileRequest::gender.name.validateEmpty()
+                    gender.isNullOrBlank() -> ProfileRequest::gender.name.validateEmpty()
+                    !gender.validateGender() -> ProfileRequest::gender.name.validateIncorrect()
 
-                else -> {
-                    DatabaseTransaction.putProfile(
-                        profileRequest = ProfileRequest(
-                            playerId = playerId,
-                            name = name,
-                            gender = gender
+                    else -> {
+                        DatabaseTransaction.putProfile(
+                            playerId,
+                            ProfileRequest(name = name, gender = gender)
                         )
-                    )
-                    response.success = true
-                    "Put profile success"
+                        response.success = true
+                        "Put profile success"
+                    }
                 }
+                response.message = message
+                call.respond(response)
             }
-            response.message = message
-            call.respond(response)
         }
     }
 
