@@ -1,14 +1,17 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.route.*
+import io.ktor.auth.authenticate
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
 fun Route.controller() {
 
-    route("application") {
-        getPlayers()
-        logActive()
+    authenticate {
+        route("application") {
+            getPlayers()
+            logActive()
+        }
     }
 
     route("account") {

@@ -5,6 +5,7 @@ import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
+import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -13,12 +14,15 @@ import io.ktor.routing.*
 fun Route.getPlayers() {
 
     route("players") {
-        get("fetch-players") {
+        get {
             val response = RankResponse()
+            val playerId = call.player?.playerId
             val search = call.parameters[GetConstant.SEARCH]
             val limit = call.parameters[GetConstant.LIMIT]
             val convertLimit = if (limit.isNullOrBlank()) 0 else limit.toInt()
             val message = when {
+                playerId == null -> playerId.validateAccessToken()
+
                 search == null -> GetConstant.SEARCH.validateEmpty()
 
                 limit == null -> GetConstant.LIMIT.validateEmpty()
