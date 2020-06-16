@@ -1,6 +1,7 @@
 package com.adedom.teg
 
-import com.adedom.teg.controller.controller
+import com.adedom.teg.controller.connectionController
+import com.adedom.teg.controller.headerController
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -9,6 +10,7 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
@@ -63,7 +65,11 @@ fun Application.module() {
 
     install(Routing) {
         route("api") {
-            controller()
+            connectionController()
+
+            authenticate {
+                headerController()
+            }
         }
     }
 }

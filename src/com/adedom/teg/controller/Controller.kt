@@ -1,32 +1,33 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.route.*
-import io.ktor.auth.authenticate
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
-fun Route.controller() {
+fun Route.connectionController() {
 
-    authenticate {
-        route("application") {
-            getPlayers()
-            logActive()
-        }
+    route("account") {
+        postSignIn()
+        postSignUp()
+    }
+
+}
+
+fun Route.headerController() {
+    route("application") {
+        getPlayers()
+        logActive()
     }
 
     route("account") {
         getPlayer()
-        postSignIn()
-        postSignUp()
         patchPassword()
         putProfile()
         patchState()
     }
 
-    authenticate {
-        route("single") {
-            itemCollection()
-        }
+    route("single") {
+        itemCollection()
     }
 
     route("multi") {
@@ -40,5 +41,4 @@ fun Route.controller() {
         putRoomOff()
         putTeam()
     }
-
 }
