@@ -83,27 +83,29 @@ fun Application.module() {
             }
         }
 
-        route("test") {
-            get("/") {
-                call.respond("Hello AdeDom..")
-            }
+        get("test") {
+            call.respond("Hello AdeDom..")
+        }
 
-            get("/sample") {
-                val players = transaction {
-                    Players.selectAll()
-                        .map { row ->
-                            Player(
-                                playerId = row[Players.playerId],
-                                username = row[Players.username],
-                                name = row[Players.name],
-                                image = row[Players.image],
-                                state = row[Players.state],
-                                gender = row[Players.gender]
-                            )
-                        }
-                }
-                call.respond(players)
+        get("/dom/aun/dru") {
+            call.respond("dom aun dru")
+        }
+
+        get("sample") {
+            val players = transaction {
+                Players.selectAll()
+                    .map { row ->
+                        Player(
+                            playerId = row[Players.playerId],
+                            username = row[Players.username],
+                            name = row[Players.name],
+                            image = row[Players.image],
+                            state = row[Players.state],
+                            gender = row[Players.gender]
+                        )
+                    }
             }
+            call.respond(players)
         }
     }
 }
