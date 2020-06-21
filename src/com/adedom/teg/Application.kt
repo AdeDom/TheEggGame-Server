@@ -4,6 +4,8 @@ import com.adedom.teg.controller.connectionController
 import com.adedom.teg.controller.headerController
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Player
+import com.adedom.teg.util.DatabaseConfig
+import com.adedom.teg.util.DatabaseMode
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -30,13 +32,15 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun main() {
-    val port = 3306
-    val host = "192.168.43.22"
+
+//    val databaseConfig = DatabaseConfig(DatabaseMode.DEBUG)
+    val databaseConfig = DatabaseConfig(DatabaseMode.DEVELOP)
+
     val config = HikariConfig().apply {
-        jdbcUrl = "jdbc:mysql://$host:$port/the_egg_game"
+        jdbcUrl = "jdbc:mysql://${databaseConfig.host}:${databaseConfig.port}/${databaseConfig.databaseName}"
         driverClassName = "com.mysql.cj.jdbc.Driver"
-        username = "root"
-        password = "abc456"
+        username = databaseConfig.username
+        password = databaseConfig.password
         maximumPoolSize = 10
     }
     val dataSource = HikariDataSource(config)
@@ -44,8 +48,8 @@ fun main() {
 
     embeddedServer(
         factory = Netty,
-        port = port,
-        host = host,
+        port = databaseConfig.port,
+        host = databaseConfig.host,
         module = Application::module
     ).start(wait = true)
 }
