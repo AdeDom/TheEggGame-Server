@@ -20,7 +20,7 @@ class DatabaseConfig(mode: DatabaseMode) {
                 jdbcUrl = "jdbc:mysql://$host:$port/$databaseName"
             }
             DatabaseMode.DEVELOP -> {
-                port = 8080
+                port = System.getenv("PORT")?.toInt() ?: 8080
                 host = "0.0.0.0"
                 databaseName = "heroku_1393de2d66fc96b"
                 username = "bc162b7210edb9"
