@@ -14,6 +14,9 @@ apply plugin: 'application'
 group 'com.adedom.teg'
 version '0.0.1'
 mainClassName = "io.ktor.server.netty.EngineMain"
+task stage {
+    dependsOn installDist
+}
 
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
