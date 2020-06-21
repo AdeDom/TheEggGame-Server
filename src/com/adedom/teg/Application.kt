@@ -37,7 +37,7 @@ fun main() {
     val databaseConfig = DatabaseConfig(DatabaseMode.DEVELOP)
 
     val config = HikariConfig().apply {
-        jdbcUrl = "jdbc:mysql://${databaseConfig.host}:${databaseConfig.port}/${databaseConfig.databaseName}"
+        jdbcUrl = databaseConfig.jdbcUrl
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = databaseConfig.username
         password = databaseConfig.password
