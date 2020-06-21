@@ -1,1 +1,1 @@
-web:    java -jar target/helloworld.jar
+web: build/install/TheEggGame-Server/bin/TheEggGame-Server
