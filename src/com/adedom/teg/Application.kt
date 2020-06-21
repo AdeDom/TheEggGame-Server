@@ -81,7 +81,7 @@ fun Application.module() {
 
         route("test") {
             get("/") {
-                call.respond("Hello AdeDom")
+                call.respond("Hello AdeDom..")
             }
 
             get("/sample") {
