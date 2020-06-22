@@ -9,8 +9,6 @@ import com.adedom.teg.util.DatabaseMode
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -36,15 +34,18 @@ fun main() {
 //    val databaseConfig = DatabaseConfig(DatabaseMode.DEBUG)
     val databaseConfig = DatabaseConfig(DatabaseMode.DEVELOP)
 
-    val config = HikariConfig().apply {
-        jdbcUrl = databaseConfig.jdbcUrl
-        driverClassName = "com.mysql.cj.jdbc.Driver"
-        username = databaseConfig.username
-        password = databaseConfig.password
-        maximumPoolSize = 10
-    }
-    val dataSource = HikariDataSource(config)
-    Database.connect(dataSource)
+//    val config = HikariConfig().apply {
+//        jdbcUrl = databaseConfig.jdbcUrl
+//        driverClassName = "com.mysql.cj.jdbc.Driver"
+//        username = databaseConfig.username
+//        password = databaseConfig.password
+//        maximumPoolSize = 10
+//    }
+//    val dataSource = HikariDataSource(config)
+//    Database.connect(dataSource)
+
+    Database.connect("jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true", driver = "com.mysql.jdbc.Driver",
+        user = databaseConfig.username, password = databaseConfig.password)
 
     embeddedServer(
         factory = Netty,
