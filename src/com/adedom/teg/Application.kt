@@ -91,5 +91,10 @@ fun Application.module(testing: Boolean = false) {
             }
             call.respond(players)
         }
+
+        get("not") {
+            val response = BaseResponse(success = true, message = "Dru")
+            call.respond(response)
+        }
     }
 }
