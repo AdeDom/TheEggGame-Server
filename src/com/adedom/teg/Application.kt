@@ -4,8 +4,7 @@ import com.adedom.teg.controller.connectionController
 import com.adedom.teg.controller.headerController
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Player
-import com.adedom.teg.util.DatabaseConfig
-import com.adedom.teg.util.DatabaseMode
+import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -23,39 +22,22 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.route
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun main() {
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-//    val databaseConfig = DatabaseConfig(DatabaseMode.DEBUG)
-    val databaseConfig = DatabaseConfig(DatabaseMode.DEVELOP)
+@Suppress("unused") // Referenced in application.conf
+@kotlin.jvm.JvmOverloads
+fun Application.module(testing: Boolean = false) {
+    Database.connect(
+        "jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true",
+        driver = "com.mysql.jdbc.Driver",
+        user = "bc162b7210edb9",
+        password = "dae67b90"
+    )
 
-//    val config = HikariConfig().apply {
-//        jdbcUrl = databaseConfig.jdbcUrl
-//        driverClassName = "com.mysql.cj.jdbc.Driver"
-//        username = databaseConfig.username
-//        password = databaseConfig.password
-//        maximumPoolSize = 10
-//    }
-//    val dataSource = HikariDataSource(config)
-//    Database.connect(dataSource)
-
-    Database.connect("jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true", driver = "com.mysql.jdbc.Driver",
-        user = databaseConfig.username, password = databaseConfig.password)
-
-    embeddedServer(
-        factory = Netty,
-        port = databaseConfig.port,
-        host = databaseConfig.host,
-        module = Application::module
-    ).start(wait = true)
-}
-
-fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
     install(ContentNegotiation) {
@@ -88,8 +70,9 @@ fun Application.module() {
             call.respond("Hello AdeDom..")
         }
 
-        get("/dom/aun/dru") {
-            call.respond("dom aun dru")
+        get("/api/controller/action") {
+            val response = BaseResponse()
+            call.respond(response)
         }
 
         get("sample") {

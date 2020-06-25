@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
     }
-    
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -46,9 +46,6 @@ dependencies {
     implementation "io.ktor:ktor-jackson:$ktor_version"
 
     // mysql
-//    implementation "mysql:mysql-connector-java:8.0.19"
-//    implementation "com.zaxxer:HikariCP:3.4.2"
-
     implementation "mysql:mysql-connector-java:5.1.48"
 
     // Authentication JWT
