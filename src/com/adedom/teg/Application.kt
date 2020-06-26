@@ -2,6 +2,7 @@ package com.adedom.teg
 
 import com.adedom.teg.controller.connectionController
 import com.adedom.teg.controller.headerController
+import com.adedom.teg.di.authAppModule
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.adedom.teg.util.jwt.CommonJwt
@@ -21,6 +22,8 @@ import io.ktor.jackson.jackson
 import io.ktor.routing.Routing
 import io.ktor.routing.route
 import org.jetbrains.exposed.sql.Database
+import org.koin.ktor.ext.Koin
+import org.koin.logger.SLF4JLogger
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -60,6 +63,11 @@ fun Application.module() {
                 }
             }
         }
+    }
+
+    install(Koin) {
+        SLF4JLogger()
+        modules(authAppModule)
     }
 
     install(Routing) {

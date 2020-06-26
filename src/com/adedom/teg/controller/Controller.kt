@@ -7,8 +7,7 @@ import io.ktor.routing.route
 fun Route.connectionController() {
 
     route("account") {
-        postSignIn()
-        postSignUp()
+        authRoute()
     }
 
 }

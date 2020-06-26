@@ -1,12 +1,12 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.request.*
+import com.adedom.teg.request.PasswordRequest
+import com.adedom.teg.request.ProfileRequest
+import com.adedom.teg.request.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
-import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
-import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
@@ -27,86 +27,6 @@ fun Route.getPlayer() {
                     response.success = true
                     response.player = player
                     "Fetch player success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.postSignIn() {
-
-    route("sign-in") {
-        post("/") {
-            val response = SignInResponse()
-            val (username, password) = call.receive<SignInRequest>()
-            val message = when {
-                username.isNullOrBlank() -> SignInRequest::username.name.validateEmpty()
-                username.length < CommonConstant.MIN_USERNAME -> SignInRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
-
-                password.isNullOrBlank() -> SignInRequest::password.name.validateEmpty()
-                password.length < CommonConstant.MIN_PASSWORD -> SignInRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
-
-                DatabaseTransaction.validateSignIn(
-                    signInRequest = SignInRequest(
-                        username = username,
-                        password = password
-                    )
-                ) -> "Username and password incorrect"
-
-                else -> {
-                    val player = DatabaseTransaction.postSignIn(
-                        signInRequest = SignInRequest(
-                            username = username,
-                            password = password
-                        )
-                    )
-                    response.accessToken = JwtConfig.makeToken(player)
-                    response.success = true
-                    "Post sign in success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.postSignUp() {
-
-    route("sign-up") {
-        post("/") {
-            val response = SignInResponse()
-            val (username, password, name, gender) = call.receive<SignUpRequest>()
-            val message = when {
-                username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
-                username.length < CommonConstant.MIN_USERNAME -> SignUpRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
-                !DatabaseTransaction.validateUsername(username) -> username.validateRepeatUsername()
-
-                password.isNullOrBlank() -> SignUpRequest::password.name.validateEmpty()
-                password.length < CommonConstant.MIN_PASSWORD -> SignUpRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
-
-                name.isNullOrBlank() -> SignUpRequest::name.name.validateEmpty()
-                !DatabaseTransaction.validateName(name) -> name.validateRepeatName()
-
-                gender == null -> SignUpRequest::gender.name.validateEmpty()
-                !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
-
-                else -> {
-                    val player = DatabaseTransaction.postSignUp(
-                        signUpRequest = SignUpRequest(
-                            username = username,
-                            password = password,
-                            name = name,
-                            gender = gender
-                        )
-                    )
-                    response.accessToken = JwtConfig.makeToken(player)
-                    response.success = true
-                    "Post sign up success"
                 }
             }
             response.message = message
