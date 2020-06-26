@@ -8,6 +8,12 @@ interface AuthService {
 
     fun signIn(signInRequest: SignInRequest): PlayerPrincipal
 
+    fun validateSignIn(signInRequest: SignInRequest): Boolean
+
     fun signUp(signUpRequest: SignUpRequest): PlayerPrincipal
+
+    fun validateUsername(username: String): Boolean
+
+    fun validateName(name: String): Boolean
 
 }

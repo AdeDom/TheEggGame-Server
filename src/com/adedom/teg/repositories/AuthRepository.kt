@@ -24,6 +24,17 @@ class AuthRepository {
         }
     }
 
+    fun validateSignIn(signInRequest: SignInRequest): Boolean {
+        val (username, password) = signInRequest
+        return transaction {
+            val count: Int = Players.select {
+                Players.username eq username!! and (Players.password eq password.encryptSHA())
+            }.count().toInt()
+
+            count == 0
+        }
+    }
+
     fun postSignUp(signUpRequest: SignUpRequest): PlayerPrincipal {
         val (username, password, name, gender) = signUpRequest
         return transaction {
@@ -40,6 +51,22 @@ class AuthRepository {
                 .map { MapResponse.toPlayerPrincipal(it) }
                 .single()
         }
+    }
+
+    fun validateUsername(username: String): Boolean = transaction {
+        val count = Players.select { Players.username eq username }
+            .count()
+            .toInt()
+
+        count == 0
+    }
+
+    fun validateName(name: String): Boolean = transaction {
+        val count = Players.select { Players.name eq name }
+            .count()
+            .toInt()
+
+        count == 0
     }
 
 }

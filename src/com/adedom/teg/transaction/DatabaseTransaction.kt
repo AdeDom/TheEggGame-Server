@@ -51,22 +51,6 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun validateUsername(username: String): Boolean = transaction {
-        val count = Players.select { Players.username eq username }
-            .count()
-            .toInt()
-
-        count == 0
-    }
-
-    fun validateName(name: String): Boolean = transaction {
-        val count = Players.select { Players.name eq name }
-            .count()
-            .toInt()
-
-        count == 0
-    }
-
     fun validateMulti(multiId: Int): Boolean = transaction {
         val count = Multis.select { Multis.multiId eq multiId }
             .count()
@@ -90,17 +74,6 @@ object DatabaseTransaction {
             .toInt()
 
         peopleRoom < peopleRoomInfo
-    }
-
-    fun validateSignIn(signInRequest: SignInRequest): Boolean {
-        val (username, password) = signInRequest
-        return transaction {
-            val count: Int = Players.select {
-                Players.username eq username!! and (Players.password eq password.encryptSHA())
-            }.count().toInt()
-
-            count == 0
-        }
     }
 
     fun validateMultiRoomNo(roomNo: String): Boolean = transaction {

@@ -4,7 +4,6 @@ import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.AuthService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.JwtConfig
 import io.ktor.application.call
@@ -30,7 +29,7 @@ fun Route.authRoute() {
                 password.isNullOrBlank() -> SignInRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignInRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
-                DatabaseTransaction.validateSignIn(
+                service.validateSignIn(
                     signInRequest = SignInRequest(
                         username = username,
                         password = password
@@ -61,13 +60,13 @@ fun Route.authRoute() {
             val message = when {
                 username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
                 username.length < CommonConstant.MIN_USERNAME -> SignUpRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
-                !DatabaseTransaction.validateUsername(username) -> username.validateRepeatUsername()
+                !service.validateUsername(username) -> username.validateRepeatUsername()
 
                 password.isNullOrBlank() -> SignUpRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignUpRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 name.isNullOrBlank() -> SignUpRequest::name.name.validateEmpty()
-                !DatabaseTransaction.validateName(name) -> name.validateRepeatName()
+                !service.validateName(name) -> name.validateRepeatName()
 
                 gender == null -> SignUpRequest::gender.name.validateEmpty()
                 !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
