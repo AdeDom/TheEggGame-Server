@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun DateTime.toDateFormat() = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(toDate())
+fun DateTime.toDateFormat(): String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(toDate())
 
 fun Int?.validateAccessToken() = "Please check access token again"
 
@@ -38,7 +38,7 @@ fun String?.encryptSHA(): String {
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val byteArray = messageDigest.digest(this?.toByteArray())
         val bigInteger = BigInteger(1, byteArray)
-        sha = bigInteger.toString(16)
+        sha = bigInteger.toString(16).padStart(64, '0')
     } catch (e: NoSuchAlgorithmException) {
         e.printStackTrace()
     } catch (e: UnsupportedEncodingException) {

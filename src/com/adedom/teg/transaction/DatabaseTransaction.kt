@@ -232,9 +232,7 @@ object DatabaseTransaction {
             Players.insert {
                 it[Players.username] = username!!
                 it[Players.password] = password.encryptSHA()
-                it[Players.name] = name!!
-                it[image] = "empty"
-                it[state] = "online"
+                it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
                 it[dateTime] = DateTime.now()
             }
