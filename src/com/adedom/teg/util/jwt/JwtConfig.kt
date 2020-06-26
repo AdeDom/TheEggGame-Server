@@ -19,7 +19,6 @@ object JwtConfig {
         .withIssuer(CommonJwt.ISSUER)
         .withAudience(CommonJwt.AUDIENCE)
         .withClaim(CommonJwt.PLAYER_ID, player.playerId)
-        .withClaim(CommonJwt.USERNAME, player.username)
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 

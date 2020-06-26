@@ -8,8 +8,7 @@ import org.jetbrains.exposed.sql.ResultRow
 object MapResponse {
 
     fun toPlayerPrincipal(row: ResultRow) = PlayerPrincipal(
-        playerId = row[Players.playerId],
-        username = row[Players.username]
+        playerId = row[Players.playerId]
     )
 
     fun toPlayer(row: ResultRow) = Player(
