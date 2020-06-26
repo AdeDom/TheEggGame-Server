@@ -5,6 +5,8 @@ import com.adedom.teg.controller.headerController
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -22,12 +24,16 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
-    Database.connect(
-        url = "jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true",
-        driver = "com.mysql.jdbc.Driver",
-        user = "bc162b7210edb9",
+
+    val config = HikariConfig().apply {
+        jdbcUrl = "jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true"
+        driverClassName = "com.mysql.cj.jdbc.Driver"
+        username = "bc162b7210edb9"
         password = "dae67b90"
-    )
+        maximumPoolSize = 10
+    }
+    val dataSource = HikariDataSource(config)
+    Database.connect(dataSource)
 
     install(DefaultHeaders)
     install(CallLogging)
