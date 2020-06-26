@@ -2,6 +2,8 @@ package com.adedom.teg
 
 import com.adedom.teg.controller.connectionController
 import com.adedom.teg.controller.headerController
+import com.adedom.teg.util.DatabaseConfig
+import com.adedom.teg.util.DatabaseConfigMode
 import com.adedom.teg.util.jwt.CommonJwt
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -25,11 +27,14 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused")
 fun Application.module() {
 
+//    val databaseConfig = DatabaseConfig(DatabaseConfigMode.DEVELOP)
+    val databaseConfig = DatabaseConfig(DatabaseConfigMode.END_POINT)
+
     val config = HikariConfig().apply {
-        jdbcUrl = "jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_1393de2d66fc96b?reconnect=true"
+        jdbcUrl = databaseConfig.jdbcUrl
         driverClassName = "com.mysql.cj.jdbc.Driver"
-        username = "bc162b7210edb9"
-        password = "dae67b90"
+        username = databaseConfig.username
+        password = databaseConfig.password
         maximumPoolSize = 10
     }
     val dataSource = HikariDataSource(config)
