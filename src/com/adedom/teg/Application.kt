@@ -78,7 +78,7 @@ fun Application.module() {
             connectionController(service)
 
             authenticate {
-                headerController()
+                headerController(service)
             }
         }
     }

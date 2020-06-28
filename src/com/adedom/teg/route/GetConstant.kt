@@ -6,6 +6,6 @@ object GetConstant {
     const val SEARCH = "search"
     const val LIMIT = "limit"
     const val ROOM_NO = "room_no"
-    const val PLAYER_ID = "player_id"
+    const val IMAGE_FILE = "imageFile"
 
 }

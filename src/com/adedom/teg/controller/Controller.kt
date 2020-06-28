@@ -11,9 +11,13 @@ fun Route.connectionController(service: TegService) {
         authRoute(service)
     }
 
+    route("test") {
+        testRoute(service)
+    }
+
 }
 
-fun Route.headerController() {
+fun Route.headerController(service: TegService) {
     route("application") {
         getPlayers()
         logActive()
@@ -23,6 +27,7 @@ fun Route.headerController() {
         getPlayer()
         patchPassword()
         putProfile()
+        patchImageProfile(service)
         patchState()
     }
 

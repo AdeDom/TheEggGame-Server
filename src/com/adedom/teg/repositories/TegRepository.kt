@@ -4,13 +4,22 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
+import com.adedom.teg.route.GetConstant
+import com.adedom.teg.util.copyToSuspend
 import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.jwt.PlayerPrincipal
+import com.adedom.teg.util.toResourcesPathName
+import io.ktor.http.content.MultiPartData
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
+import io.ktor.http.content.streamProvider
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
+import java.io.File
 
 class TegRepository {
 
@@ -67,6 +76,27 @@ class TegRepository {
             .toInt()
 
         count == 0
+    }
+
+    suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData) {
+        multiPartData.forEachPart { part ->
+            if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+                val ext = File(part.originalFileName).extension
+                val imageName = "image-${System.currentTimeMillis()}.$ext"
+                val file = File(imageName.toResourcesPathName())
+                part.streamProvider().use { input ->
+                    file.outputStream().buffered().use { output ->
+                        input.copyToSuspend(output)
+                    }
+                }
+                transaction {
+                    Players.update({ Players.playerId eq playerId }) {
+                        it[image] = imageName
+                    }
+                }
+            }
+            part.dispose()
+        }
     }
 
 }
