@@ -3,7 +3,7 @@ package com.adedom.teg.route
 import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
 import com.adedom.teg.response.SignInResponse
-import com.adedom.teg.service.AuthService
+import com.adedom.teg.service.TegService
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.JwtConfig
 import io.ktor.application.call
@@ -12,11 +12,8 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.routing.route
-import org.koin.ktor.ext.inject
 
-fun Route.authRoute() {
-
-    val service: AuthService by inject()
+fun Route.authRoute(service: TegService) {
 
     route("sign-in") {
         post("/") {

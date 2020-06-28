@@ -1,13 +1,14 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.route.*
+import com.adedom.teg.service.TegService
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
-fun Route.connectionController() {
+fun Route.connectionController(service: TegService) {
 
     route("account") {
-        authRoute()
+        authRoute(service)
     }
 
 }

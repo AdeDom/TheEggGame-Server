@@ -2,7 +2,8 @@ package com.adedom.teg
 
 import com.adedom.teg.controller.connectionController
 import com.adedom.teg.controller.headerController
-import com.adedom.teg.di.authAppModule
+import com.adedom.teg.di.tegAppModule
+import com.adedom.teg.service.TegService
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.adedom.teg.util.jwt.CommonJwt
@@ -23,6 +24,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.route
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
+import org.koin.ktor.ext.inject
 import org.koin.logger.SLF4JLogger
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -67,12 +69,13 @@ fun Application.module() {
 
     install(Koin) {
         SLF4JLogger()
-        modules(authAppModule)
+        modules(tegAppModule)
     }
+    val service: TegService by inject()
 
     install(Routing) {
         route("api") {
-            connectionController()
+            connectionController(service)
 
             authenticate {
                 headerController()

@@ -1,11 +1,11 @@
 package com.adedom.teg.di
 
-import com.adedom.teg.repositories.AuthRepository
-import com.adedom.teg.service.AuthService
-import com.adedom.teg.service.AuthServiceImpl
+import com.adedom.teg.repositories.TegRepository
+import com.adedom.teg.service.TegService
+import com.adedom.teg.service.TegServiceImpl
 import org.koin.dsl.module
 
-val authAppModule = module {
-    single<AuthService> { AuthServiceImpl(get()) }
-    single { AuthRepository() }
+val tegAppModule = module {
+    single<TegService> { TegServiceImpl(get()) }
+    single { TegRepository() }
 }

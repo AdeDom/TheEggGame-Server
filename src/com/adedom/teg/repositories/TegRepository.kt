@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
-class AuthRepository {
+class TegRepository {
 
     fun postSignIn(signInRequest: SignInRequest): PlayerPrincipal {
         val (username, password) = signInRequest

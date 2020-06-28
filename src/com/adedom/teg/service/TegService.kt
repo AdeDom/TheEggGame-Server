@@ -4,7 +4,7 @@ import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
 import com.adedom.teg.util.jwt.PlayerPrincipal
 
-interface AuthService {
+interface TegService {
 
     fun signIn(signInRequest: SignInRequest): PlayerPrincipal
 
