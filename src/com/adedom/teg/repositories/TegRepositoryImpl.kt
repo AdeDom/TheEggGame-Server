@@ -54,7 +54,7 @@ class TegRepositoryImpl : TegRepository {
     override fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {
         var message = ""
         var playerPrincipal: PlayerPrincipal? = null
-        val (username, password, name, gender) = signUpRequest
+        val (username, password, name, _) = signUpRequest
         transaction {
             message = when {
                 !validateUsername(username!!) -> username.validateRepeatUsername()
@@ -93,8 +93,14 @@ class TegRepositoryImpl : TegRepository {
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData) {
         multiPartData.forEachPart { part ->
             if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+                val username = transaction {
+                    Players.slice(Players.username)
+                        .select { Players.playerId eq playerId }
+                        .map { it[Players.username] }
+                        .single()
+                }
                 val ext = File(part.originalFileName).extension
-                val imageName = "image-${System.currentTimeMillis()}.$ext"
+                val imageName = "image-$username.$ext"
                 val file = File(imageName.toResourcesPathName())
                 part.streamProvider().use { input ->
                     file.outputStream().buffered().use { output ->
