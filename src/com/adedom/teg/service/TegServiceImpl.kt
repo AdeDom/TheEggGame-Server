@@ -12,16 +12,8 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.postSignIn(signInRequest)
     }
 
-    override fun signUp(signUpRequest: SignUpRequest): PlayerPrincipal {
+    override fun signUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {
         return repository.postSignUp(signUpRequest)
-    }
-
-    override fun validateUsername(username: String): Boolean {
-        return repository.validateUsername(username)
-    }
-
-    override fun validateName(name: String): Boolean {
-        return repository.validateName(name)
     }
 
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData) {

@@ -9,11 +9,7 @@ interface TegRepository {
 
     fun postSignIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?>
 
-    fun postSignUp(signUpRequest: SignUpRequest): PlayerPrincipal
-
-    fun validateUsername(username: String): Boolean
-
-    fun validateName(name: String): Boolean
+    fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?>
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData)
 

@@ -9,11 +9,7 @@ interface TegService {
 
     fun signIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?>
 
-    fun signUp(signUpRequest: SignUpRequest): PlayerPrincipal
-
-    fun validateUsername(username: String): Boolean
-
-    fun validateName(name: String): Boolean
+    fun signUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?>
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData)
 

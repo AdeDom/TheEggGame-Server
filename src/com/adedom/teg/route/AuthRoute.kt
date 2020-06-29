@@ -53,19 +53,17 @@ fun Route.authRoute(service: TegService) {
             val message = when {
                 username.isNullOrBlank() -> SignUpRequest::username.name.validateEmpty()
                 username.length < CommonConstant.MIN_USERNAME -> SignUpRequest::username.name validateGrateEq CommonConstant.MIN_USERNAME
-                !service.validateUsername(username) -> username.validateRepeatUsername()
 
                 password.isNullOrBlank() -> SignUpRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignUpRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
                 name.isNullOrBlank() -> SignUpRequest::name.name.validateEmpty()
-                !service.validateName(name) -> name.validateRepeatName()
 
                 gender == null -> SignUpRequest::gender.name.validateEmpty()
                 !gender.validateGender() -> SignUpRequest::gender.name.validateIncorrect()
 
                 else -> {
-                    val player = service.signUp(
+                    val pair: Pair<String, PlayerPrincipal?> = service.signUp(
                         signUpRequest = SignUpRequest(
                             username = username,
                             password = password,
@@ -73,9 +71,11 @@ fun Route.authRoute(service: TegService) {
                             gender = gender
                         )
                     )
-                    response.accessToken = JwtConfig.makeToken(player)
-                    response.success = true
-                    "Post sign up success"
+                    if (pair.second != null) {
+                        response.accessToken = JwtConfig.makeToken(pair.second!!)
+                        response.success = true
+                    }
+                    pair.first
                 }
             }
             response.message = message

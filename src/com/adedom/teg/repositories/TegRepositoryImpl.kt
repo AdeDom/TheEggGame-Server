@@ -5,10 +5,8 @@ import com.adedom.teg.db.Players
 import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
 import com.adedom.teg.route.GetConstant
-import com.adedom.teg.util.copyToSuspend
-import com.adedom.teg.util.encryptSHA
+import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.PlayerPrincipal
-import com.adedom.teg.util.toResourcesPathName
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
@@ -28,7 +26,7 @@ class TegRepositoryImpl : TegRepository {
         var playerPrincipal: PlayerPrincipal? = null
         transaction {
             message = when {
-                validateSignIn(signInRequest) == 0 -> "Username and password incorrect"
+                validateSignIn(signInRequest) -> "Username and password incorrect"
                 else -> {
                     playerPrincipal = signIn(signInRequest)
                     "Post sign in success"
@@ -38,53 +36,58 @@ class TegRepositoryImpl : TegRepository {
         return Pair(message, playerPrincipal)
     }
 
-    private fun validateSignIn(signInRequest: SignInRequest): Int {
+    private fun validateSignIn(signInRequest: SignInRequest): Boolean {
         val (username, password) = signInRequest
         return Players.select {
             Players.username eq username!! and (Players.password eq password.encryptSHA())
-        }.count().toInt()
+        }.count().toInt() == 0
     }
 
     private fun signIn(signInRequest: SignInRequest): PlayerPrincipal {
         val (username, password) = signInRequest
-        return Players.slice(Players.playerId, Players.username)
+        return Players.slice(Players.playerId)
             .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
             .map { MapResponse.toPlayerPrincipal(it) }
             .single()
     }
 
-    override fun postSignUp(signUpRequest: SignUpRequest): PlayerPrincipal {
+    override fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {
+        var message = ""
+        var playerPrincipal: PlayerPrincipal? = null
         val (username, password, name, gender) = signUpRequest
-        return transaction {
-            Players.insert {
-                it[Players.username] = username!!
-                it[Players.password] = password.encryptSHA()
-                it[Players.name] = name!!.capitalize()
-                it[Players.gender] = gender!!
-                it[dateTime] = DateTime.now()
+        transaction {
+            message = when {
+                !validateUsername(username!!) -> username.validateRepeatUsername()
+                !validateName(name!!) -> name.validateRepeatName()
+                else -> {
+                    signUp(signUpRequest)
+                    playerPrincipal = signIn(SignInRequest(username, password))
+                    "Post sign up success"
+                }
             }
-
-            Players.slice(Players.playerId, Players.username)
-                .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
-                .map { MapResponse.toPlayerPrincipal(it) }
-                .single()
         }
+        return Pair(message, playerPrincipal)
     }
 
-    override fun validateUsername(username: String) = transaction {
-        val count = Players.select { Players.username eq username }
-            .count()
-            .toInt()
-
-        count == 0
+    private fun validateUsername(username: String): Boolean {
+        return Players.select { Players.username eq username }
+            .count().toInt() == 0
     }
 
-    override fun validateName(name: String): Boolean = transaction {
-        val count = Players.select { Players.name eq name }
-            .count()
-            .toInt()
+    private fun validateName(name: String): Boolean {
+        return Players.select { Players.name eq name }
+            .count().toInt() == 0
+    }
 
-        count == 0
+    private fun signUp(signUpRequest: SignUpRequest) {
+        val (username, password, name, gender) = signUpRequest
+        Players.insert {
+            it[Players.username] = username!!
+            it[Players.password] = password.encryptSHA()
+            it[Players.name] = name!!.capitalize()
+            it[Players.gender] = gender!!
+            it[dateTime] = DateTime.now()
+        }
     }
 
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData) {
