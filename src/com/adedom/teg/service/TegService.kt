@@ -7,9 +7,7 @@ import io.ktor.http.content.MultiPartData
 
 interface TegService {
 
-    fun signIn(signInRequest: SignInRequest): PlayerPrincipal
-
-    fun validateSignIn(signInRequest: SignInRequest): Boolean
+    fun signIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?>
 
     fun signUp(signUpRequest: SignUpRequest): PlayerPrincipal
 

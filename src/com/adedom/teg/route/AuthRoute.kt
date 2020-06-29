@@ -6,6 +6,7 @@ import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.TegService
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.JwtConfig
+import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -26,23 +27,18 @@ fun Route.authRoute(service: TegService) {
                 password.isNullOrBlank() -> SignInRequest::password.name.validateEmpty()
                 password.length < CommonConstant.MIN_PASSWORD -> SignInRequest::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
-                service.validateSignIn(
-                    signInRequest = SignInRequest(
-                        username = username,
-                        password = password
-                    )
-                ) -> "Username and password incorrect"
-
                 else -> {
-                    val player = service.signIn(
+                    val pair: Pair<String, PlayerPrincipal?> = service.signIn(
                         signInRequest = SignInRequest(
                             username = username,
                             password = password
                         )
                     )
-                    response.accessToken = JwtConfig.makeToken(player)
-                    response.success = true
-                    "Post sign in success"
+                    if (pair.second != null) {
+                        response.accessToken = JwtConfig.makeToken(pair.second!!)
+                        response.success = true
+                    }
+                    pair.first
                 }
             }
             response.message = message

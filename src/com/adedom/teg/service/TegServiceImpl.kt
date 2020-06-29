@@ -8,12 +8,8 @@ import io.ktor.http.content.MultiPartData
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
 
-    override fun signIn(signInRequest: SignInRequest): PlayerPrincipal {
+    override fun signIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?> {
         return repository.postSignIn(signInRequest)
-    }
-
-    override fun validateSignIn(signInRequest: SignInRequest): Boolean {
-        return repository.validateSignIn(signInRequest)
     }
 
     override fun signUp(signUpRequest: SignUpRequest): PlayerPrincipal {
