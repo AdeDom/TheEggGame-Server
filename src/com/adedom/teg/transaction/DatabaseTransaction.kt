@@ -5,6 +5,7 @@ import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
+import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -106,7 +107,7 @@ object DatabaseTransaction {
     fun getBackpack(playerId: Int): Backpack = transaction {
         val egg = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 1) }
             .map { ItemCollections.toItemCollection(it) }
-            .sumBy { it.qty!! } / 1000
+            .sumBy { it.qty!! }.toLevel()
 
         val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
             .map { ItemCollections.toItemCollection(it) }
@@ -158,7 +159,7 @@ object DatabaseTransaction {
             CommonConstant.LIMIT_ONE_HUNDRED -> query.limit(CommonConstant.LIMIT_ONE_HUNDRED)
         }
 
-        query.map { Players.toPlayers(it) }
+        query.map { MapResponse.toPlayers(it) }
 
     }
 
@@ -179,7 +180,7 @@ object DatabaseTransaction {
                 Players.playerId,
                 Players.name,
                 Players.image,
-                ItemCollections.qty.sum(),
+                ItemCollections.level,
                 Players.state,
                 Players.gender
             ).select { RoomInfos.roomNo eq roomNo }

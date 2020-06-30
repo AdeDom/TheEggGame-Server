@@ -78,3 +78,9 @@ suspend fun InputStream.copyToSuspend(
 }
 
 fun String.toResourcesPathName(): String = "teg-file/$this"
+
+fun Int?.toLevel(): Int? = this?.div(1000).let { if (it == 0) 1 else it }
+
+fun String?.toImage(): String? {
+    return "https://the-egg-game.herokuapp.com/api/image/$this"
+}

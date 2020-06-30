@@ -14,7 +14,7 @@ import io.ktor.routing.*
 fun Route.getPlayers() {
 
     route("players") {
-        get {
+        get("") {
             val response = RankResponse()
             val playerId = call.player?.playerId
             val search = call.parameters[GetConstant.SEARCH]

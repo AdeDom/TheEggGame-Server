@@ -11,8 +11,8 @@ fun Route.connectionController(service: TegService) {
         authRoute(service)
     }
 
-    route("test") {
-        testRoute(service)
+    route("image") {
+        imageRoute()
     }
 
 }
