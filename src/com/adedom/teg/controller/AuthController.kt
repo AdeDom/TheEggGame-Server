@@ -1,4 +1,4 @@
-package com.adedom.teg.route
+package com.adedom.teg.controller
 
 import com.adedom.teg.request.SignInRequest
 import com.adedom.teg.request.SignUpRequest
@@ -14,7 +14,16 @@ import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.routing.route
 
-fun Route.authRoute(service: TegService) {
+fun Route.authController(service: TegService) {
+
+    route("auth") {
+        signIn(service)
+        signUp(service)
+    }
+
+}
+
+fun Route.signIn(service: TegService) {
 
     route("sign-in") {
         post("/") {
@@ -46,7 +55,11 @@ fun Route.authRoute(service: TegService) {
         }
     }
 
-    route("sign-up") {
+}
+
+fun Route.signUp(service: TegService) {
+
+        route("sign-up") {
         post("/") {
             val response = SignInResponse()
             val (username, password, name, gender) = call.receive<SignUpRequest>()

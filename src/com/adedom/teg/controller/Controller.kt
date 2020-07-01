@@ -5,18 +5,6 @@ import com.adedom.teg.service.TegService
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
-fun Route.connectionController(service: TegService) {
-
-    route("account") {
-        authRoute(service)
-    }
-
-    route("image") {
-        imageRoute()
-    }
-
-}
-
 fun Route.headerController(service: TegService) {
     route("application") {
         getPlayers()

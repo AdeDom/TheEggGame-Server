@@ -1,7 +1,8 @@
 package com.adedom.teg
 
-import com.adedom.teg.controller.connectionController
+import com.adedom.teg.controller.authController
 import com.adedom.teg.controller.headerController
+import com.adedom.teg.controller.imageController
 import com.adedom.teg.di.tegAppModule
 import com.adedom.teg.service.TegService
 import com.adedom.teg.util.DatabaseConfig
@@ -75,7 +76,8 @@ fun Application.module() {
 
     install(Routing) {
         route("api") {
-            connectionController(service)
+            authController(service)
+            imageController()
 
             authenticate {
                 headerController(service)
