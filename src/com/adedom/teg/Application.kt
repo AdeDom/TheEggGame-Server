@@ -21,6 +21,7 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
+import io.ktor.locations.Locations
 import io.ktor.routing.Routing
 import io.ktor.routing.route
 import org.jetbrains.exposed.sql.Database
@@ -48,6 +49,7 @@ fun Application.module() {
 
     install(DefaultHeaders)
     install(CallLogging)
+    install(Locations)
     install(ContentNegotiation) {
         jackson {
         }
@@ -75,10 +77,10 @@ fun Application.module() {
     val service: TegService by inject()
 
     install(Routing) {
-        route("api") {
-            authController(service)
-            imageController()
+        imageController()
+        authController(service)
 
+        route("api") {
             authenticate {
                 headerController(service)
             }

@@ -56,4 +56,7 @@ dependencies {
     implementation "org.koin:koin-ktor:2.1.6"
     implementation "org.koin:koin-logger-slf4j:2.1.6"
 
+    // location request service
+    implementation "io.ktor:ktor-locations:$ktor_version"
+
 }

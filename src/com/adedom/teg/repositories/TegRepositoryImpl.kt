@@ -2,8 +2,8 @@ package com.adedom.teg.repositories
 
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
-import com.adedom.teg.request.SignInRequest
-import com.adedom.teg.request.SignUpRequest
+import com.adedom.teg.request.auth.SignInRequest
+import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.PlayerPrincipal
