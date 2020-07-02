@@ -1,7 +1,10 @@
 package com.adedom.teg.response
 
+import com.adedom.teg.data.BASE_RESPONSE_MESSAGE
 import com.adedom.teg.models.Room
 
 data class RoomsResponse(
+    var success: Boolean = false,
+    var message: String? = BASE_RESPONSE_MESSAGE,
     var room: List<Room>? = null
-) : BaseResponse()
+)
