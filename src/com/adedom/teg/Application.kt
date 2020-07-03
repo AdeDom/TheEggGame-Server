@@ -1,5 +1,6 @@
 package com.adedom.teg
 
+import com.adedom.teg.controller.accountController
 import com.adedom.teg.controller.authController
 import com.adedom.teg.controller.headerController
 import com.adedom.teg.controller.imageController
@@ -79,9 +80,13 @@ fun Application.module() {
         imageController()
         authController(service)
 
+        authenticate {
+            accountController(service)
+        }
+
         route("api") {
             authenticate {
-                headerController(service)
+                headerController()
             }
         }
     }

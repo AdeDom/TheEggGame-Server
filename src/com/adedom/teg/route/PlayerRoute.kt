@@ -5,13 +5,11 @@ import com.adedom.teg.request.ProfileRequest
 import com.adedom.teg.request.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
-import com.adedom.teg.service.TegService
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
-import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.*
 
@@ -93,29 +91,6 @@ fun Route.putProfile() {
                     )
                     response.success = true
                     "Put profile success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.patchImageProfile(service: TegService) {
-
-    route("image-profile") {
-        patch("/") {
-            val playerId = call.player?.playerId
-            val multipart = call.receiveMultipart()
-            val response = BaseResponse()
-            val message: String = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                else -> {
-                    service.changeImageProfile(playerId, multipart)
-                    response.success = true
-                    "Patch image profile success"
                 }
             }
             response.message = message

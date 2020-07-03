@@ -2,6 +2,7 @@ package com.adedom.teg.repositories
 
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
+import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.route.GetConstant
@@ -90,9 +91,11 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData) {
+    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?> {
+        var message = ""
+        var imageProfile: ImageProfile? = null
         multiPartData.forEachPart { part ->
-            if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+            message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
                 val username = transaction {
                     Players.slice(Players.username)
                         .select { Players.playerId eq playerId }
@@ -112,9 +115,14 @@ class TegRepositoryImpl : TegRepository {
                         it[image] = imageName
                     }
                 }
+                imageProfile = ImageProfile()
+                "Patch image profile success"
+            } else {
+                "Not found image file"
             }
             part.dispose()
         }
+        return Pair(message, imageProfile)
     }
 
 }

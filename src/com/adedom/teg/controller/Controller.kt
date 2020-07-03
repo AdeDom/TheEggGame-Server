@@ -1,11 +1,10 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.route.*
-import com.adedom.teg.service.TegService
 import io.ktor.routing.Route
 import io.ktor.routing.route
 
-fun Route.headerController(service: TegService) {
+fun Route.headerController() {
     route("application") {
         getPlayers()
         logActive()
@@ -15,7 +14,6 @@ fun Route.headerController(service: TegService) {
         getPlayer()
         patchPassword()
         putProfile()
-        patchImageProfile(service)
         patchState()
     }
 
