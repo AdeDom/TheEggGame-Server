@@ -1,5 +1,7 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.data.ApiConstant
+import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.request.account.ImageProfile
@@ -9,6 +11,13 @@ import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.PlayerPrincipal
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.post
+import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
@@ -20,6 +29,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
 import java.io.File
+import java.util.*
 
 class TegRepositoryImpl : TegRepository {
 
@@ -105,12 +115,14 @@ class TegRepositoryImpl : TegRepository {
                 }
                 val ext = File(part.originalFileName).extension
                 val imageName = "image-$username.$ext"
+
                 val file = File(imageName.toResourcesPathName())
                 part.streamProvider().use { input ->
                     file.outputStream().buffered().use { output ->
                         input.copyToSuspend(output)
                     }
                 }
+
                 transaction {
                     Players.update({ Players.playerId eq playerId }) {
                         it[image] = imageName
@@ -134,12 +146,28 @@ class TegRepositoryImpl : TegRepository {
         var imageProfile: ImageProfileV2? = null
         multiPartData.forEachPart { part ->
             message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+                val username = transaction {
+                    Players.slice(Players.username)
+                        .select { Players.playerId eq playerId }
+                        .map { it[Players.username] }
+                        .single()
+                }
                 val ext = File(part.originalFileName).extension
-                val imageName = "image-${System.currentTimeMillis()}.$ext"
-                val file = File(imageName.toResourcesPathName())
-                part.streamProvider().use { input ->
-                    file.outputStream().buffered().use { output ->
-                        input.copyToSuspend(output)
+                val imageName = "image-$username.$ext"
+
+                val byteArray = part.streamProvider().readBytes()
+                val encodeToString = Base64.getEncoder().encodeToString(byteArray)
+                HttpClient(Apache).post<HttpResponse> {
+                    url("${BASE_IMAGE}upload-image.php")
+                    body = MultiPartFormDataContent(formData {
+                        append(ApiConstant.name, imageName)
+                        append(ApiConstant.image, encodeToString)
+                    })
+                }
+
+                transaction {
+                    Players.update({ Players.playerId eq playerId }) {
+                        it[image] = imageName
                     }
                 }
                 imageProfile = ImageProfileV2()

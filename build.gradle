@@ -59,4 +59,7 @@ dependencies {
     // location request service
     implementation "io.ktor:ktor-locations:$ktor_version"
 
+    // client
+    implementation "io.ktor:ktor-client-apache:$ktor_version"
+
 }
