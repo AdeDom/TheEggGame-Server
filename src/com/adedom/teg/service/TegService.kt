@@ -1,6 +1,7 @@
 package com.adedom.teg.service
 
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.ImageProfileV2
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -13,5 +14,7 @@ interface TegService {
     fun signUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?>
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?>
+
+    suspend fun changeImageProfileV2(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfileV2?>
 
 }

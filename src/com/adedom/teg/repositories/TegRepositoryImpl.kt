@@ -3,6 +3,7 @@ package com.adedom.teg.repositories
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.ImageProfileV2
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.route.GetConstant
@@ -116,6 +117,32 @@ class TegRepositoryImpl : TegRepository {
                     }
                 }
                 imageProfile = ImageProfile()
+                "Patch image profile success"
+            } else {
+                "Not found image file"
+            }
+            part.dispose()
+        }
+        return Pair(message, imageProfile)
+    }
+
+    override suspend fun changeImageProfileV2(
+        playerId: Int,
+        multiPartData: MultiPartData
+    ): Pair<String, ImageProfileV2?> {
+        var message = ""
+        var imageProfile: ImageProfileV2? = null
+        multiPartData.forEachPart { part ->
+            message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+                val ext = File(part.originalFileName).extension
+                val imageName = "image-${System.currentTimeMillis()}.$ext"
+                val file = File(imageName.toResourcesPathName())
+                part.streamProvider().use { input ->
+                    file.outputStream().buffered().use { output ->
+                        input.copyToSuspend(output)
+                    }
+                }
+                imageProfile = ImageProfileV2()
                 "Patch image profile success"
             } else {
                 "Not found image file"
