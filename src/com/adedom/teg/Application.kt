@@ -3,7 +3,6 @@ package com.adedom.teg
 import com.adedom.teg.controller.accountController
 import com.adedom.teg.controller.authController
 import com.adedom.teg.controller.headerController
-import com.adedom.teg.controller.imageController
 import com.adedom.teg.di.tegAppModule
 import com.adedom.teg.service.TegService
 import com.adedom.teg.util.DatabaseConfig
@@ -77,7 +76,6 @@ fun Application.module() {
     val service: TegService by inject()
 
     install(Routing) {
-        imageController()
         authController(service)
 
         authenticate {
