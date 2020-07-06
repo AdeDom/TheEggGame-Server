@@ -34,14 +34,6 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun validateLogActive(logKey: String): Boolean = transaction {
-        val count = LogActives.select { LogActives.logKey eq logKey }
-            .count()
-            .toInt()
-
-        count == 0
-    }
-
     fun validateMulti(multiId: Int): Boolean = transaction {
         val count = Multis.select { Multis.multiId eq multiId }
             .count()
@@ -272,12 +264,6 @@ object DatabaseTransaction {
             }) {
                 it[RoomInfos.team] = team!!
             }
-        }
-    }
-
-    fun patchLogActive(logKey: String) = transaction {
-        LogActives.update({ LogActives.logKey eq logKey }) {
-            it[dateTimeOut] = DateTime.now()
         }
     }
 

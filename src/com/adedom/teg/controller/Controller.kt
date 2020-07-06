@@ -5,10 +5,6 @@ import io.ktor.routing.Route
 import io.ktor.routing.route
 
 fun Route.headerController() {
-    route("application") {
-        logActive()
-    }
-
     route("single") {
         itemCollection()
     }

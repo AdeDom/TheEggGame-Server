@@ -5,10 +5,10 @@ import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import com.adedom.teg.util.validateEmpty
+import com.adedom.teg.util.validateFlagLogActive
 import com.adedom.teg.util.validateIncorrect
 import io.ktor.application.call
 import io.ktor.locations.get
@@ -44,18 +44,18 @@ fun Route.applicationController(service: TegService) {
 
     post<LogActiveRequest> {
         val response = BaseResponse()
-        val (logKey) = call.receive<LogActiveRequest>()
+        val (flagLogActive) = call.receive<LogActiveRequest>()
         val playerId = call.player?.playerId
         val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
-            logKey.isNullOrBlank() -> it::logKey.name.validateEmpty()
-            logKey.length != CommonConstant.LOGS_KEYS -> it::logKey.name.validateIncorrect()
+            flagLogActive == null -> it::flagLogActive.name.validateEmpty()
+            !flagLogActive.validateFlagLogActive() -> it::flagLogActive.name.validateIncorrect()
 
             else -> {
                 val service = service.postLogActive(
                     playerId,
-                    LogActiveRequest(logKey)
+                    LogActiveRequest(flagLogActive)
                 )
                 response.success = service.success
                 service.message

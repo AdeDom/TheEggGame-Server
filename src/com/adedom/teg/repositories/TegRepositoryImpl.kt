@@ -270,28 +270,33 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse {
-        val (logKey) = logActiveRequest
+        val (flagLogActive) = logActiveRequest
         val response = BaseResponse()
 
-        val isValidateLogActive: Boolean = transaction {
-            LogActives.select { LogActives.logKey eq logKey!! }
-                .count().toInt() == 0
-        }
-
-        if (isValidateLogActive) {
+        if (flagLogActive == 1) {
             transaction {
                 LogActives.insert {
-                    it[LogActives.logKey] = logKey!!
                     it[LogActives.playerId] = playerId
                     it[dateTimeIn] = DateTime.now()
                 }
             }
+        } else if (flagLogActive == 0) {
+            transaction {
+                val logActive = LogActives.slice(LogActives.logId)
+                    .select { LogActives.playerId eq playerId }
+                    .orderBy(LogActives.logId to SortOrder.DESC)
+                    .limit(1)
+                    .map { MapResponse.toLogActiveId(it) }
+                    .single()
 
-            response.success = true
-            response.message = "Post log active success"
-        } else {
-            response.message = "Log key repeat"
+                LogActives.update({ LogActives.logId eq logActive.logId!! }) {
+                    it[dateTimeOut] = DateTime.now()
+                }
+            }
         }
+
+        response.success = true
+        response.message = "Log active success"
 
         return response
     }

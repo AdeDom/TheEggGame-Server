@@ -10,4 +10,4 @@ data class RankPlayersRequest(
 )
 
 @Location("/api/application/log-active")
-data class LogActiveRequest(val logKey: String? = null)
+data class LogActiveRequest(val flagLogActive: Int? = null)

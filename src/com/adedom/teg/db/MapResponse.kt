@@ -1,5 +1,6 @@
 package com.adedom.teg.db
 
+import com.adedom.teg.models.LogActive
 import com.adedom.teg.models.Player
 import com.adedom.teg.models.RoomInfo
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -45,6 +46,10 @@ object MapResponse {
         level = row[ItemCollections.level].toLevel(),
         state = row[Players.state],
         gender = row[Players.gender]
+    )
+
+    fun toLogActiveId(row: ResultRow) = LogActive(
+        logId = row[LogActives.logId]
     )
 
 }
