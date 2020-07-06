@@ -1,5 +1,6 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -13,5 +14,7 @@ interface TegRepository {
     fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?>
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?>
+
+    fun fetchPlayerInfo(playerId: Int): Pair<String, Player?>
 
 }

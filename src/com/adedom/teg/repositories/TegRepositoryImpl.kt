@@ -2,8 +2,10 @@ package com.adedom.teg.repositories
 
 import com.adedom.teg.data.ApiConstant
 import com.adedom.teg.data.BASE_IMAGE
+import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
+import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -147,6 +149,26 @@ class TegRepositoryImpl : TegRepository {
             part.dispose()
         }
         return Pair(message, imageProfile)
+    }
+
+    override fun fetchPlayerInfo(playerId: Int): Pair<String, Player?> {
+        var message = ""
+        var playerInfo: Player? = null
+        playerInfo = transaction {
+            (Players innerJoin ItemCollections).slice(
+                Players.playerId,
+                Players.username,
+                Players.name,
+                Players.image,
+                ItemCollections.level,
+                Players.state,
+                Players.gender
+            ).select { Players.playerId eq playerId }
+                .map { MapResponse.toPlayer(it) }
+                .single()
+        }
+        message = "Fetch player success"
+        return Pair(message, playerInfo)
     }
 
 }

@@ -1,5 +1,6 @@
 package com.adedom.teg.service
 
+import com.adedom.teg.models.Player
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
@@ -19,6 +20,10 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
 
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?> {
         return repository.changeImageProfile(playerId, multiPartData)
+    }
+
+    override fun fetchPlayerInfo(playerId: Int): Pair<String, Player?> {
+        return repository.fetchPlayerInfo(playerId)
     }
 
 }

@@ -85,20 +85,6 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun getPlayer(playerId: Int): Player = transaction {
-        (Players innerJoin ItemCollections).slice(
-            Players.playerId,
-            Players.username,
-            Players.name,
-            Players.image,
-            ItemCollections.level,
-            Players.state,
-            Players.gender
-        ).select { Players.playerId eq playerId }
-            .map { MapResponse.toPlayer(it) }
-            .single()
-    }
-
     fun getMultis(roomNo: String): List<Multi> = transaction {
         Multis.select { Multis.roomNo eq roomNo }
             .map { Multis.toMulti(it) }
