@@ -13,7 +13,6 @@ fun Route.headerController() {
     route("account") {
         patchPassword()
         putProfile()
-        patchState()
     }
 
     route("single") {

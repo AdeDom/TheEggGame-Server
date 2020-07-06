@@ -2,7 +2,6 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.PasswordRequest
 import com.adedom.teg.request.ProfileRequest
-import com.adedom.teg.request.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
@@ -70,32 +69,6 @@ fun Route.putProfile() {
                     )
                     response.success = true
                     "Put profile success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.patchState() {
-
-    route("state") {
-        patch("/") {
-            val response = BaseResponse()
-            val (state) = call.receive<StateRequest>()
-            val playerId = call.player?.playerId
-            val message = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
-                !state.validateState() -> StateRequest::state.name.validateIncorrect()
-
-                else -> {
-                    DatabaseTransaction.patchState(playerId, state)
-                    response.success = true
-                    "Patch state success"
                 }
             }
             response.message = message

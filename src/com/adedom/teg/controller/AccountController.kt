@@ -3,11 +3,16 @@ package com.adedom.teg.controller
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.PlayerInfo
+import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.service.TegService
+import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
+import com.adedom.teg.util.validateEmpty
+import com.adedom.teg.util.validateIncorrect
+import com.adedom.teg.util.validateState
 import io.ktor.application.call
 import io.ktor.locations.get
 import io.ktor.locations.patch
@@ -47,6 +52,25 @@ fun Route.accountController(service: TegService) {
                     response.playerInfo = pair.second
                 }
                 pair.first
+            }
+        }
+        response.message = message
+        call.respond(response)
+    }
+
+    patch<StateRequest> { request ->
+        val response = BaseResponse()
+        val playerId = call.player?.playerId
+        val message = when {
+            playerId == null -> playerId.validateAccessToken()
+
+            request.state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
+            !request.state.validateState() -> StateRequest::state.name.validateIncorrect()
+
+            else -> {
+                DatabaseTransaction.patchState(playerId, request.state)
+                response.success = true
+                "Patch state success"
             }
         }
         response.message = message
