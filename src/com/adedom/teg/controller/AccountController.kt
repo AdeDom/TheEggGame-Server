@@ -1,13 +1,11 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.models.Player
-import com.adedom.teg.request.account.ChangePasswordRequest
-import com.adedom.teg.request.account.ImageProfile
-import com.adedom.teg.request.account.PlayerInfo
-import com.adedom.teg.request.account.StateRequest
+import com.adedom.teg.request.account.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.service.TegService
+import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
@@ -21,7 +19,7 @@ import io.ktor.routing.Route
 
 fun Route.accountController(service: TegService) {
 
-    patch<ImageProfile> {
+    put<ImageProfile> {
         val playerId = call.player?.playerId
         val multipart = call.receiveMultipart()
         val response = BaseResponse()
@@ -95,6 +93,32 @@ fun Route.accountController(service: TegService) {
                 )
                 response.success = service.success
                 service.message
+            }
+        }
+        response.message = message
+        call.respond(response)
+    }
+
+    put<ChangeProfileRequest> {
+        val response = BaseResponse()
+        val (name, gender) = call.receive<ChangeProfileRequest>()
+        val playerId = call.player?.playerId
+        val message = when {
+            playerId == null -> playerId.validateAccessToken()
+
+            name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateEmpty()
+            name.length < CommonConstant.MIN_NAME -> ChangeProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
+
+            gender.isNullOrBlank() -> ChangeProfileRequest::gender.name.validateEmpty()
+            !gender.validateGender() -> ChangeProfileRequest::gender.name.validateIncorrect()
+
+            else -> {
+                DatabaseTransaction.putProfile(
+                    playerId,
+                    ChangeProfileRequest(name = name, gender = gender)
+                )
+                response.success = true
+                "Put profile success"
             }
         }
         response.message = message

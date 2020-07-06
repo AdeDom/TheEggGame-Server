@@ -10,10 +10,6 @@ fun Route.headerController() {
         logActive()
     }
 
-    route("account") {
-        putProfile()
-    }
-
     route("single") {
         itemCollection()
     }

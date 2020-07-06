@@ -3,6 +3,7 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
+import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
@@ -324,7 +325,7 @@ object DatabaseTransaction {
         }
     }
 
-    fun putProfile(playerId: Int, profileRequest: ProfileRequest) {
+    fun putProfile(playerId: Int, profileRequest: ChangeProfileRequest) {
         val (name, gender) = profileRequest
         transaction {
             Players.update({ Players.playerId eq playerId }) {

@@ -16,3 +16,9 @@ data class ChangePasswordRequest(
     val oldPassword: String? = null,
     val newPassword: String? = null
 )
+
+@Location("/api/account/change-profile")
+data class ChangeProfileRequest(
+    val name: String? = null,
+    val gender: String? = null
+)
