@@ -75,6 +75,7 @@ fun Application.module() {
     }
     val service: TegService by inject()
 
+//    todo re-check transaction (insert,update,delete) [completed=1],[failed=0]
     install(Routing) {
         authController(service)
 

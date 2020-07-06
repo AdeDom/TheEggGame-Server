@@ -7,7 +7,6 @@ import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import com.adedom.teg.util.validateEmpty
@@ -68,9 +67,9 @@ fun Route.accountController(service: TegService) {
             !request.state.validateState() -> StateRequest::state.name.validateIncorrect()
 
             else -> {
-                DatabaseTransaction.patchState(playerId, request.state)
-                response.success = true
-                "Patch state success"
+                val service: BaseResponse = service.playerState(playerId, request.state)
+                response.success = service.success
+                service.message
             }
         }
         response.message = message

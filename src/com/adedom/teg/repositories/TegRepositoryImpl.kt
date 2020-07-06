@@ -9,6 +9,7 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
+import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -169,6 +170,20 @@ class TegRepositoryImpl : TegRepository {
         }
         message = "Fetch player success"
         return Pair(message, playerInfo)
+    }
+
+    override fun playerState(playerId: Int, state: String): BaseResponse {
+        val response = BaseResponse()
+        val transaction: Int = transaction {
+            Players.update({ Players.playerId eq playerId }) {
+                it[Players.state] = state
+            }
+        }
+        if (transaction == 1) {
+            response.success = true
+            response.message = "Patch state success"
+        }
+        return response
     }
 
 }
