@@ -12,7 +12,7 @@ object LogActives : Table(name = DatabaseConstant.logActiveTable) {
     val logKey = varchar(name = DatabaseConstant.logKey, length = 50)
     val playerId = integer(name = DatabaseConstant.playerId)
     val dateTimeIn = datetime(name = DatabaseConstant.dateTimeIn)
-    val dateTimeOut = datetime(name = DatabaseConstant.dateTimeOut)
+    val dateTimeOut = datetime(name = DatabaseConstant.dateTimeOut).nullable()
 
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(logId, name = DatabaseConstant.logActivePk)
@@ -22,7 +22,7 @@ object LogActives : Table(name = DatabaseConstant.logActiveTable) {
         logKey = row[logKey],
         playerId = row[playerId],
         dateTimeIn = row[dateTimeIn].toDateFormat(),
-        dateTimeOut = row[dateTimeOut].toDateFormat()
+        dateTimeOut = row[dateTimeOut]?.toDateFormat()
     )
 
 }

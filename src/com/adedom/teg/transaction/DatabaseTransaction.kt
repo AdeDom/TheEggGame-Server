@@ -143,7 +143,6 @@ object DatabaseTransaction {
             it[LogActives.logKey] = logKey
             it[LogActives.playerId] = playerId
             it[dateTimeIn] = DateTime.now()
-            it[dateTimeOut] = DateTime.now()
         }
     }
 

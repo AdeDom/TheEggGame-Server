@@ -8,3 +8,6 @@ data class RankPlayersRequest(
     val search: String? = null,
     val limit: String? = null
 )
+
+@Location("/api/application/log-active")
+data class LogActiveRequest(val logKey: String? = null)
