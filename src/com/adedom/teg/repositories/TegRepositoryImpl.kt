@@ -127,7 +127,7 @@ class TegRepositoryImpl : TegRepository {
                 val byteArray = part.streamProvider().readBytes()
                 val encodeToString = Base64.getEncoder().encodeToString(byteArray)
                 HttpClient(Apache).post<HttpResponse> {
-                    url("${BASE_IMAGE}upload-image.php")
+                    url("${BASE_IMAGE}/upload-image.php")
                     body = MultiPartFormDataContent(formData {
                         append(ApiConstant.name, imageName)
                         append(ApiConstant.image, encodeToString)

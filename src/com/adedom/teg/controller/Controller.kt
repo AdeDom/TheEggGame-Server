@@ -11,7 +11,6 @@ fun Route.headerController() {
     }
 
     route("account") {
-        getPlayer()
         patchPassword()
         putProfile()
         patchState()

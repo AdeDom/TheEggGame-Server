@@ -1,6 +1,6 @@
 package com.adedom.teg.util
 
-import com.adedom.teg.data.BASE_URL
+import com.adedom.teg.data.BASE_IMAGE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -80,8 +80,8 @@ suspend fun InputStream.copyToSuspend(
 
 fun String.toResourcesPathName(): String = "teg-file/$this"
 
-fun Int?.toLevel(): Int? = this?.div(1000).let { if (it == 0) 1 else it }
+fun Int?.toLevel(): Int? = this?.div(1000) ?: 1
 
 fun String?.toImage(): String? {
-    return "${BASE_URL}/api/image/$this"
+    return "${BASE_IMAGE}/$this"
 }

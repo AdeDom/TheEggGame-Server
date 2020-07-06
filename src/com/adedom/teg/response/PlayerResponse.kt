@@ -6,5 +6,5 @@ import com.adedom.teg.models.Player
 data class PlayerResponse(
     var success: Boolean = false,
     var message: String? = BASE_RESPONSE_MESSAGE,
-    var player: Player? = null
+    var playerInfo: Player? = null
 )

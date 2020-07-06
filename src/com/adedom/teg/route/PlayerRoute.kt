@@ -4,37 +4,16 @@ import com.adedom.teg.request.PasswordRequest
 import com.adedom.teg.request.ProfileRequest
 import com.adedom.teg.request.StateRequest
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.*
-
-fun Route.getPlayer() {
-
-    route("player") {
-        get("/") {
-            val response = PlayerResponse()
-            val playerId = call.player?.playerId
-            val message = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                else -> {
-                    val player = DatabaseTransaction.getPlayer(playerId)
-                    response.success = true
-                    response.player = player
-                    "Fetch player success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
+import io.ktor.routing.Route
+import io.ktor.routing.patch
+import io.ktor.routing.put
+import io.ktor.routing.route
 
 fun Route.patchPassword() {
 
