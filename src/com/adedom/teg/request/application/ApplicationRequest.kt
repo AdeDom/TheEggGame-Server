@@ -6,5 +6,5 @@ import io.ktor.locations.Location
 data class RankPlayers(
     val rank: String? = null,
     val search: String? = null,
-    val limit: Int? = null
+    val limit: String? = null
 )

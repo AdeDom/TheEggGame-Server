@@ -2,44 +2,16 @@ package com.adedom.teg.route
 
 import com.adedom.teg.request.LogActiveRequest
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.RankResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.*
-
-fun Route.getPlayers() {
-
-    route("players") {
-        get("") {
-            val response = RankResponse()
-            val playerId = call.player?.playerId
-            val search = call.parameters[GetConstant.SEARCH]
-            val limit = call.parameters[GetConstant.LIMIT]
-            val convertLimit = if (limit.isNullOrBlank()) 0 else limit.toInt()
-            val message = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                search == null -> GetConstant.SEARCH.validateEmpty()
-
-                limit == null -> GetConstant.LIMIT.validateEmpty()
-
-                else -> {
-                    val players = DatabaseTransaction.getPlayers(search, convertLimit)
-                    response.players = players
-                    response.success = true
-                    "Fetch players success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
+import io.ktor.routing.Route
+import io.ktor.routing.patch
+import io.ktor.routing.post
+import io.ktor.routing.route
 
 fun Route.logActive() {
 
