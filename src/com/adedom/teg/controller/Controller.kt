@@ -11,7 +11,6 @@ fun Route.headerController() {
     }
 
     route("account") {
-        patchPassword()
         putProfile()
     }
 

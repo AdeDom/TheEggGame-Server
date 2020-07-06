@@ -1,6 +1,5 @@
 package com.adedom.teg.route
 
-import com.adedom.teg.request.PasswordRequest
 import com.adedom.teg.request.ProfileRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
@@ -10,41 +9,8 @@ import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import io.ktor.routing.patch
 import io.ktor.routing.put
 import io.ktor.routing.route
-
-fun Route.patchPassword() {
-
-    route("password") {
-        patch("/") {
-            val response = BaseResponse()
-            val (oldPassword, newPassword) = call.receive<PasswordRequest>()
-            val playerId = call.player?.playerId
-            val message = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                oldPassword.isNullOrBlank() -> PasswordRequest::oldPassword.name.validateEmpty()
-                DatabaseTransaction.validatePasswordPlayer(
-                    playerId,
-                    oldPassword
-                ) -> PasswordRequest::oldPassword.name.validateLessEqZero()
-
-                newPassword.isNullOrBlank() -> PasswordRequest::newPassword.name.validateEmpty()
-                newPassword.length < CommonConstant.MIN_PASSWORD -> PasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
-
-                else -> {
-                    DatabaseTransaction.patchPassword(playerId, newPassword)
-                    response.success = true
-                    "Patch password success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
 
 fun Route.putProfile() {
 

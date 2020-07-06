@@ -10,3 +10,9 @@ class PlayerInfo
 
 @Location("/api/account/state/{state}")
 data class StateRequest(val state: String? = null)
+
+@Location("/api/account/change-password")
+data class ChangePasswordRequest(
+    val oldPassword: String? = null,
+    val newPassword: String? = null
+)
