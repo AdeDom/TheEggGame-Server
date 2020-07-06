@@ -4,6 +4,7 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -29,5 +30,7 @@ interface TegRepository {
     fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse
 
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse
+
+    fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse
 
 }

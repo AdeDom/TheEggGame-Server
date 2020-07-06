@@ -5,7 +5,6 @@ import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
@@ -47,17 +46,19 @@ fun Route.applicationController(service: TegService) {
         val response = BaseResponse()
         val (logKey) = call.receive<LogActiveRequest>()
         val playerId = call.player?.playerId
-        val message = when {
+        val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
             logKey.isNullOrBlank() -> it::logKey.name.validateEmpty()
             logKey.length != CommonConstant.LOGS_KEYS -> it::logKey.name.validateIncorrect()
-            !DatabaseTransaction.validateLogActive(logKey) -> it::logKey.name.validateIncorrect()
 
             else -> {
-                DatabaseTransaction.postLogActive(playerId, logKey)
-                response.success = true
-                "Post log active success"
+                val service = service.postLogActive(
+                    playerId,
+                    LogActiveRequest(logKey)
+                )
+                response.success = service.success
+                service.message
             }
         }
         response.message = message

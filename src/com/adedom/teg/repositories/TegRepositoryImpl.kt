@@ -3,12 +3,14 @@ package com.adedom.teg.repositories
 import com.adedom.teg.data.ApiConstant
 import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.ItemCollections
+import com.adedom.teg.db.LogActives
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -263,6 +265,33 @@ class TegRepositoryImpl : TegRepository {
         response.success = true
         response.message = "Fetch rank players success"
         response.rankPlayers = rankPlayers
+
+        return response
+    }
+
+    override fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse {
+        val (logKey) = logActiveRequest
+        val response = BaseResponse()
+
+        val isValidateLogActive: Boolean = transaction {
+            LogActives.select { LogActives.logKey eq logKey!! }
+                .count().toInt() == 0
+        }
+
+        if (isValidateLogActive) {
+            transaction {
+                LogActives.insert {
+                    it[LogActives.logKey] = logKey!!
+                    it[LogActives.playerId] = playerId
+                    it[dateTimeIn] = DateTime.now()
+                }
+            }
+
+            response.success = true
+            response.message = "Post log active success"
+        } else {
+            response.message = "Log key repeat"
+        }
 
         return response
     }

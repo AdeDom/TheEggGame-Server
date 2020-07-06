@@ -138,14 +138,6 @@ object DatabaseTransaction {
             .map { MapResponse.toRoomInfo(it) }
     }
 
-    fun postLogActive(playerId: Int, logKey: String) = transaction {
-        LogActives.insert {
-            it[LogActives.logKey] = logKey
-            it[LogActives.playerId] = playerId
-            it[dateTimeIn] = DateTime.now()
-        }
-    }
-
     fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest) {
         val (itemId, qty, latitude, longitude) = itemCollectionRequest
         transaction {
