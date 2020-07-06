@@ -1,9 +1,8 @@
 package com.adedom.teg.controller
 
-import com.adedom.teg.request.application.RankPlayers
+import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import com.adedom.teg.util.validateEmpty
@@ -15,7 +14,7 @@ import io.ktor.routing.Route
 
 fun Route.applicationController(service: TegService) {
 
-    get<RankPlayers> { request ->
+    get<RankPlayersRequest> { request ->
         val response = RankPlayersResponse()
         val playerId = call.player?.playerId
         val search: String? = request.search
@@ -23,15 +22,15 @@ fun Route.applicationController(service: TegService) {
         val message = when {
             playerId == null -> playerId.validateAccessToken()
 
-            search == null -> RankPlayers::search.name.validateEmpty()
+            search == null -> RankPlayersRequest::search.name.validateEmpty()
 
-            limit <= 0 -> RankPlayers::limit.name.validateIncorrect()
+            limit <= 0 -> RankPlayersRequest::limit.name.validateIncorrect()
 
             else -> {
-                val players = DatabaseTransaction.getPlayers(search, limit)
-                response.rankPlayers = players
-                response.success = true
-                "Fetch players success"
+                val service: RankPlayersResponse = service.fetchRankPlayers(request)
+                response.success = service.success
+                response.rankPlayers = service.rankPlayers
+                service.message
             }
         }
         response.message = message

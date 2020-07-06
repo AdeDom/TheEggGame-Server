@@ -9,10 +9,13 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.route.GetConstant
+import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.validateRepeatName
@@ -28,11 +31,8 @@ import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.http.content.streamProvider
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
 import java.io.File
 import java.util.*
@@ -227,6 +227,43 @@ class TegRepositoryImpl : TegRepository {
             response.success = true
             response.message = "Change profile success"
         }
+        return response
+    }
+
+    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {
+        val (_, search, limit) = rankPlayersRequest
+        val response = RankPlayersResponse()
+
+        val rankPlayers: List<Player> = transaction {
+            addLogger(StdOutSqlLogger)
+
+            val query = (Players innerJoin ItemCollections)
+                .slice(
+                    Players.playerId,
+                    Players.username,
+                    Players.name,
+                    Players.image,
+                    ItemCollections.level,
+                    Players.state,
+                    Players.gender
+                )
+                .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
+                .groupBy(Players.playerId)
+                .orderBy(ItemCollections.level to SortOrder.DESC, (Players.playerId to SortOrder.ASC))
+
+            when (limit?.toInt()) {
+                CommonConstant.LIMIT_TEN -> query.limit(CommonConstant.LIMIT_TEN)
+                CommonConstant.LIMIT_FIFTY -> query.limit(CommonConstant.LIMIT_FIFTY)
+                CommonConstant.LIMIT_ONE_HUNDRED -> query.limit(CommonConstant.LIMIT_ONE_HUNDRED)
+            }
+
+            query.map { MapResponse.toPlayers(it) }
+        }
+
+        response.success = true
+        response.message = "Fetch rank players success"
+        response.rankPlayers = rankPlayers
+
         return response
     }
 

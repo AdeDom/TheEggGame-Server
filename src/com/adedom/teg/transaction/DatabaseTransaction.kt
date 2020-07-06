@@ -3,7 +3,6 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
-import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -111,33 +110,6 @@ object DatabaseTransaction {
             .toInt()
 
         Score(teamA, teamB)
-    }
-
-    fun getPlayers(search: String, limit: Int): List<Player> = transaction {
-        addLogger(StdOutSqlLogger)
-
-        val query = (Players innerJoin ItemCollections)
-            .slice(
-                Players.playerId,
-                Players.username,
-                Players.name,
-                Players.image,
-                ItemCollections.level,
-                Players.state,
-                Players.gender
-            )
-            .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
-            .groupBy(Players.playerId)
-            .orderBy(ItemCollections.level to SortOrder.DESC, (Players.playerId to SortOrder.ASC))
-
-        when (limit) {
-            CommonConstant.LIMIT_TEN -> query.limit(CommonConstant.LIMIT_TEN)
-            CommonConstant.LIMIT_FIFTY -> query.limit(CommonConstant.LIMIT_FIFTY)
-            CommonConstant.LIMIT_ONE_HUNDRED -> query.limit(CommonConstant.LIMIT_ONE_HUNDRED)
-        }
-
-        query.map { MapResponse.toPlayers(it) }
-
     }
 
     fun getRooms(): List<Room> = transaction {

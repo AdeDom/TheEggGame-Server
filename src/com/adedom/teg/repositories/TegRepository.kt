@@ -4,9 +4,11 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.http.content.MultiPartData
 
@@ -25,5 +27,7 @@ interface TegRepository {
     fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse
 
     fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse
+
+    fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse
 
 }
