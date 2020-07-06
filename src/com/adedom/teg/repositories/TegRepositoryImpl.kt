@@ -6,6 +6,7 @@ import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Player
+import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -182,6 +183,32 @@ class TegRepositoryImpl : TegRepository {
         if (transaction == 1) {
             response.success = true
             response.message = "Patch state success"
+        }
+        return response
+    }
+
+    override fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse {
+        val (oldPassword, newPassword) = changePasswordRequest
+        val response = BaseResponse()
+
+        val isValidatePassword: Boolean = transaction {
+            Players.select {
+                Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
+            }.count().toInt() == 0
+        }
+
+        if (isValidatePassword) {
+            response.message = "Password incorrect"
+        } else {
+            val transaction: Int = transaction {
+                Players.update({ Players.playerId eq playerId }) {
+                    it[password] = newPassword.encryptSHA()
+                }
+            }
+            if (transaction == 1) {
+                response.success = true
+                response.message = "Change password success"
+            }
         }
         return response
     }

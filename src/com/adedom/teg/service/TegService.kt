@@ -1,6 +1,7 @@
 package com.adedom.teg.service
 
 import com.adedom.teg.models.Player
+import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -19,5 +20,7 @@ interface TegService {
     fun fetchPlayerInfo(playerId: Int): Pair<String, Player?>
 
     fun playerState(playerId: Int, state: String): BaseResponse
+
+    fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse
 
 }

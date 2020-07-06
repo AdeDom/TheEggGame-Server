@@ -4,7 +4,6 @@ import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
 import com.adedom.teg.util.CommonConstant
-import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,14 +39,6 @@ object DatabaseTransaction {
         val count = LogActives.select { LogActives.logKey eq logKey }
             .count()
             .toInt()
-
-        count == 0
-    }
-
-    fun validatePasswordPlayer(playerId: Int, oldPassword: String): Boolean = transaction {
-        val count = Players.select {
-            Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
-        }.count().toInt()
 
         count == 0
     }
@@ -330,12 +321,6 @@ object DatabaseTransaction {
     fun patchLogActive(logKey: String) = transaction {
         LogActives.update({ LogActives.logKey eq logKey }) {
             it[dateTimeOut] = DateTime.now()
-        }
-    }
-
-    fun patchPassword(playerId: Int, newPassword: String) = transaction {
-        Players.update({ Players.playerId eq playerId }) {
-            it[password] = newPassword.encryptSHA()
         }
     }
 

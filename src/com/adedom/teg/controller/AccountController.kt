@@ -1,14 +1,13 @@
 package com.adedom.teg.controller
 
 import com.adedom.teg.models.Player
-import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.ChangePasswordRequest
+import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.PlayerInfo
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
@@ -81,22 +80,21 @@ fun Route.accountController(service: TegService) {
         val response = BaseResponse()
         val (oldPassword, newPassword) = call.receive<ChangePasswordRequest>()
         val playerId = call.player?.playerId
-        val message = when {
+        val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
             oldPassword.isNullOrBlank() -> ChangePasswordRequest::oldPassword.name.validateEmpty()
-            DatabaseTransaction.validatePasswordPlayer(
-                playerId,
-                oldPassword
-            ) -> ChangePasswordRequest::oldPassword.name.validateLessEqZero()
 
             newPassword.isNullOrBlank() -> ChangePasswordRequest::newPassword.name.validateEmpty()
             newPassword.length < CommonConstant.MIN_PASSWORD -> ChangePasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
             else -> {
-                DatabaseTransaction.patchPassword(playerId, newPassword)
-                response.success = true
-                "Patch password success"
+                val service: BaseResponse = service.changePassword(
+                    playerId,
+                    ChangePasswordRequest(oldPassword, newPassword)
+                )
+                response.success = service.success
+                service.message
             }
         }
         response.message = message
