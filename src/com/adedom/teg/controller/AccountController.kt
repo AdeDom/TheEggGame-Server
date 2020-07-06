@@ -5,7 +5,6 @@ import com.adedom.teg.request.account.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import io.ktor.application.call
@@ -103,7 +102,7 @@ fun Route.accountController(service: TegService) {
         val response = BaseResponse()
         val (name, gender) = call.receive<ChangeProfileRequest>()
         val playerId = call.player?.playerId
-        val message = when {
+        val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
             name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateEmpty()
@@ -113,12 +112,12 @@ fun Route.accountController(service: TegService) {
             !gender.validateGender() -> ChangeProfileRequest::gender.name.validateIncorrect()
 
             else -> {
-                DatabaseTransaction.putProfile(
+                val service: BaseResponse = service.changeProfile(
                     playerId,
-                    ChangeProfileRequest(name = name, gender = gender)
+                    ChangeProfileRequest(name, gender)
                 )
-                response.success = true
-                "Put profile success"
+                response.success = service.success
+                service.message
             }
         }
         response.message = message

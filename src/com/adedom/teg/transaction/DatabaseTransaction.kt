@@ -3,7 +3,6 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
-import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
@@ -302,12 +301,6 @@ object DatabaseTransaction {
         }
     }
 
-    fun patchState(playerId: Int, state: String) = transaction {
-        Players.update({ Players.playerId eq playerId }) {
-            it[Players.state] = state
-        }
-    }
-
     fun putTeam(teamRequest: TeamRequest) {
         val (roomNo, playerId, team) = teamRequest
         transaction {
@@ -322,16 +315,6 @@ object DatabaseTransaction {
     fun patchLogActive(logKey: String) = transaction {
         LogActives.update({ LogActives.logKey eq logKey }) {
             it[dateTimeOut] = DateTime.now()
-        }
-    }
-
-    fun putProfile(playerId: Int, profileRequest: ChangeProfileRequest) {
-        val (name, gender) = profileRequest
-        transaction {
-            Players.update({ Players.playerId eq playerId }) {
-                it[Players.name] = name!!
-                it[Players.gender] = gender!!
-            }
         }
     }
 

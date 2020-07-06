@@ -2,6 +2,7 @@ package com.adedom.teg.repositories
 
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
+import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -22,5 +23,7 @@ interface TegRepository {
     fun playerState(playerId: Int, state: String): BaseResponse
 
     fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse
+
+    fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse
 
 }

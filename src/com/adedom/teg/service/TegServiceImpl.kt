@@ -3,6 +3,7 @@ package com.adedom.teg.service
 import com.adedom.teg.models.Player
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ChangePasswordRequest
+import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -34,6 +35,10 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
 
     override fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse {
         return repository.changePassword(playerId, changePasswordRequest)
+    }
+
+    override fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse {
+        return repository.changeProfile(playerId, changeProfileRequest)
     }
 
 }

@@ -7,6 +7,7 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
+import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
@@ -209,6 +210,22 @@ class TegRepositoryImpl : TegRepository {
                 response.success = true
                 response.message = "Change password success"
             }
+        }
+        return response
+    }
+
+    override fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse {
+        val response = BaseResponse()
+        val (name, gender) = changeProfileRequest
+        val transaction: Int = transaction {
+            Players.update({ Players.playerId eq playerId }) {
+                it[Players.name] = name!!.capitalize()
+                it[Players.gender] = gender!!
+            }
+        }
+        if (transaction == 1) {
+            response.success = true
+            response.message = "Change profile success"
         }
         return response
     }
