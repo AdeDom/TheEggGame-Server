@@ -15,7 +15,6 @@ import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.response.SignInResponse
-import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.http.content.MultiPartData
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
@@ -24,7 +23,7 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.postSignIn(signInRequest)
     }
 
-    override fun signUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {
+    override fun signUp(signUpRequest: SignUpRequest): SignInResponse {
         return repository.postSignUp(signUpRequest)
     }
 

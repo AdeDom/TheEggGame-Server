@@ -5,8 +5,6 @@ import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.TegService
 import com.adedom.teg.util.*
-import com.adedom.teg.util.jwt.JwtConfig
-import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.application.call
 import io.ktor.locations.post
 import io.ktor.request.receive
@@ -52,19 +50,10 @@ fun Route.authController(service: TegService) {
             !gender.validateGender() -> request::gender.name.validateIncorrect()
 
             else -> {
-                val pair: Pair<String, PlayerPrincipal?> = service.signUp(
-                    signUpRequest = SignUpRequest(
-                        username = username,
-                        password = password,
-                        name = name,
-                        gender = gender
-                    )
-                )
-                if (pair.second != null) {
-                    response.accessToken = JwtConfig.makeToken(pair.second!!)
-                    response.success = true
-                }
-                pair.first
+                val service: SignInResponse = service.signUp(SignUpRequest(username, password, name, gender))
+                response.success = service.success
+                response.accessToken = service.accessToken
+                service.message
             }
         }
         response.message = message

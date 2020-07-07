@@ -78,43 +78,40 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {
-        var message = ""
-        var playerPrincipal: PlayerPrincipal? = null
-        val (username, password, name, _) = signUpRequest
-        transaction {
-            message = when {
-                !validateUsername(username!!) -> username.validateRepeatUsername()
-                !validateName(name!!) -> name.validateRepeatName()
-                else -> {
-                    signUp(signUpRequest)
-                    playerPrincipal = signIn(SignInRequest(username, password))
-                    "Post sign up success"
+    override fun postSignUp(signUpRequest: SignUpRequest): SignInResponse {
+        val response = SignInResponse()
+        val (username, password, name, gender) = signUpRequest
+
+        val isValidateUsername: Boolean = transaction {
+            Players.select { Players.username eq username!! }
+                .count().toInt() == 0
+        }
+
+        val isValidateName: Boolean = transaction {
+            Players.select { Players.name eq name!! }
+                .count().toInt() == 0
+        }
+
+        when {
+            !isValidateUsername -> response.message = username.validateRepeatUsername()
+            !isValidateName -> response.message = name.validateRepeatName()
+            else -> {
+                transaction {
+                    Players.insert {
+                        it[Players.username] = username!!
+                        it[Players.password] = password.encryptSHA()
+                        it[Players.name] = name!!.capitalize()
+                        it[Players.gender] = gender!!
+                        it[dateTime] = DateTime.now()
+                    }
                 }
+                response.success = true
+                response.message = "Post sign up success"
+                response.accessToken = JwtConfig.makeToken(signIn(SignInRequest(username, password)))
             }
         }
-        return Pair(message, playerPrincipal)
-    }
 
-    private fun validateUsername(username: String): Boolean {
-        return Players.select { Players.username eq username }
-            .count().toInt() == 0
-    }
-
-    private fun validateName(name: String): Boolean {
-        return Players.select { Players.name eq name }
-            .count().toInt() == 0
-    }
-
-    private fun signUp(signUpRequest: SignUpRequest) {
-        val (username, password, name, gender) = signUpRequest
-        Players.insert {
-            it[Players.username] = username!!
-            it[Players.password] = password.encryptSHA()
-            it[Players.name] = name!!.capitalize()
-            it[Players.gender] = gender!!
-            it[dateTime] = DateTime.now()
-        }
+        return response
     }
 
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?> {
