@@ -5,9 +5,6 @@ import io.ktor.routing.Route
 import io.ktor.routing.route
 
 fun Route.headerController() {
-    route("single") {
-        itemCollection()
-    }
 
     route("multi") {
         getMultiScore()
@@ -20,4 +17,5 @@ fun Route.headerController() {
         putRoomOff()
         putTeam()
     }
+
 }

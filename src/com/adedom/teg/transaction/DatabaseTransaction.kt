@@ -6,6 +6,7 @@ import com.adedom.teg.models.Room
 import com.adedom.teg.models.RoomInfo
 import com.adedom.teg.models.Score
 import com.adedom.teg.request.*
+import com.adedom.teg.request.single.ItemCollectionRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
