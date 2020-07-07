@@ -6,6 +6,7 @@ import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.LogActives
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
+import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
@@ -14,6 +15,7 @@ import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
+import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.route.GetConstant
@@ -297,6 +299,34 @@ class TegRepositoryImpl : TegRepository {
 
         response.success = true
         response.message = "Log active success"
+
+        return response
+    }
+
+    override fun fetchItemCollection(playerId: Int): BackpackResponse {
+        val response = BackpackResponse()
+
+        val backpack: Backpack = transaction {
+            val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
+                .map { ItemCollections.toItemCollection(it) }
+                .sumBy { it.qty!! }
+
+            val eggII =
+                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 3) }
+                    .map { ItemCollections.toItemCollection(it) }
+                    .sumBy { it.qty!! }
+
+            val eggIII =
+                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 4) }
+                    .map { ItemCollections.toItemCollection(it) }
+                    .sumBy { it.qty!! }
+
+            Backpack(eggI, eggII, eggIII)
+        }
+
+        response.success = true
+        response.message = "Fetch item collection success"
+        response.backpack = backpack
 
         return response
     }

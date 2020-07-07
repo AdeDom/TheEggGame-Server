@@ -1,7 +1,10 @@
 package com.adedom.teg.transaction
 
 import com.adedom.teg.db.*
-import com.adedom.teg.models.*
+import com.adedom.teg.models.Multi
+import com.adedom.teg.models.Room
+import com.adedom.teg.models.RoomInfo
+import com.adedom.teg.models.Score
 import com.adedom.teg.request.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -69,22 +72,6 @@ object DatabaseTransaction {
     fun getMultis(roomNo: String): List<Multi> = transaction {
         Multis.select { Multis.roomNo eq roomNo }
             .map { Multis.toMulti(it) }
-    }
-
-    fun getBackpack(playerId: Int): Backpack = transaction {
-        val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
-            .map { ItemCollections.toItemCollection(it) }
-            .sumBy { it.qty!! }
-
-        val eggII = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 3) }
-            .map { ItemCollections.toItemCollection(it) }
-            .sumBy { it.qty!! }
-
-        val eggIII = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 4) }
-            .map { ItemCollections.toItemCollection(it) }
-            .sumBy { it.qty!! }
-
-        Backpack(eggI, eggII, eggIII)
     }
 
     fun getMultiScore(roomNo: String): Score = transaction {

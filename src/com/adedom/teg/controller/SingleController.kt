@@ -3,7 +3,6 @@ package com.adedom.teg.controller
 import com.adedom.teg.request.single.ItemCollection
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import io.ktor.application.call
@@ -20,9 +19,10 @@ fun Route.singleController(service: TegService) {
             playerId == null -> playerId.validateAccessToken()
 
             else -> {
-                response.backpack = DatabaseTransaction.getBackpack(playerId)
-                response.success = true
-                "Fetch backpack success"
+                val service: BackpackResponse = service.fetchItemCollection(playerId)
+                response.success = service.success
+                response.backpack = service.backpack
+                service.message
             }
         }
         response.message = message

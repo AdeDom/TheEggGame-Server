@@ -8,6 +8,7 @@ import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
+import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -32,5 +33,7 @@ interface TegService {
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse
 
     fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse
+
+    fun fetchItemCollection(playerId: Int): BackpackResponse
 
 }
