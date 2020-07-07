@@ -15,6 +15,7 @@ import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
+import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
@@ -327,6 +328,27 @@ class TegRepositoryImpl : TegRepository {
         response.success = true
         response.message = "Fetch item collection success"
         response.backpack = backpack
+
+        return response
+    }
+
+    override fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
+        val response = BaseResponse()
+        val (itemId, qty, latitude, longitude) = itemCollectionRequest
+
+        transaction {
+            ItemCollections.insert {
+                it[ItemCollections.playerId] = playerId
+                it[ItemCollections.itemId] = itemId!!
+                it[ItemCollections.qty] = qty!!
+                it[ItemCollections.latitude] = latitude!!
+                it[ItemCollections.longitude] = longitude!!
+                it[dateTime] = DateTime.now()
+            }
+        }
+
+        response.success = true
+        response.message = "Post item collection success"
 
         return response
     }

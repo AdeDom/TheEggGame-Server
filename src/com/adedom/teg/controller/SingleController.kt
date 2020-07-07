@@ -4,7 +4,6 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.service.TegService
-import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
@@ -54,12 +53,12 @@ fun Route.singleController(service: TegService) {
             longitude == null -> it::longitude.name.validateEmpty()
 
             else -> {
-                DatabaseTransaction.postItemCollection(
+                val service: BaseResponse = service.postItemCollection(
                     playerId,
-                    ItemCollectionRequest(itemId = itemId, qty = qty, latitude = latitude, longitude = longitude)
+                    ItemCollectionRequest(itemId, qty, latitude, longitude)
                 )
-                response.success = true
-                "Post item collection success"
+                response.success = service.success
+                service.message
             }
         }
         response.message = message

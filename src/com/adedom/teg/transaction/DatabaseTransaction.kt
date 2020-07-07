@@ -6,7 +6,6 @@ import com.adedom.teg.models.Room
 import com.adedom.teg.models.RoomInfo
 import com.adedom.teg.models.Score
 import com.adedom.teg.request.*
-import com.adedom.teg.request.single.ItemCollectionRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -111,20 +110,6 @@ object DatabaseTransaction {
             .groupBy(Players.playerId)
             .orderBy(RoomInfos.infoId to SortOrder.ASC)
             .map { MapResponse.toRoomInfo(it) }
-    }
-
-    fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest) {
-        val (itemId, qty, latitude, longitude) = itemCollectionRequest
-        transaction {
-            ItemCollections.insert {
-                it[ItemCollections.playerId] = playerId
-                it[ItemCollections.itemId] = itemId!!
-                it[ItemCollections.qty] = qty!!
-                it[ItemCollections.latitude] = latitude!!
-                it[ItemCollections.longitude] = longitude!!
-                it[dateTime] = DateTime.now()
-            }
-        }
     }
 
     fun postMulti(multiRequest: MultiRequest) {
