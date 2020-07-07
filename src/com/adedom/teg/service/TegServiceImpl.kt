@@ -14,12 +14,13 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
+import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.http.content.MultiPartData
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
 
-    override fun signIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?> {
+    override fun signIn(signInRequest: SignInRequest): SignInResponse {
         return repository.postSignIn(signInRequest)
     }
 

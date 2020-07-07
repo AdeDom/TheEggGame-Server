@@ -26,17 +26,10 @@ fun Route.authController(service: TegService) {
             password.length < CommonConstant.MIN_PASSWORD -> request::password.name validateGrateEq CommonConstant.MIN_PASSWORD
 
             else -> {
-                val pair: Pair<String, PlayerPrincipal?> = service.signIn(
-                    signInRequest = SignInRequest(
-                        username = username,
-                        password = password
-                    )
-                )
-                if (pair.second != null) {
-                    response.accessToken = JwtConfig.makeToken(pair.second!!)
-                    response.success = true
-                }
-                pair.first
+                val service: SignInResponse = service.signIn(SignInRequest(username, password))
+                response.success = service.success
+                response.accessToken = service.accessToken
+                service.message
             }
         }
         response.message = message

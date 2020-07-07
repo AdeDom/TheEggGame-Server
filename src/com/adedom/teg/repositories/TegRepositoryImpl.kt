@@ -20,9 +20,11 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
+import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
+import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.validateRepeatName
 import com.adedom.teg.util.validateRepeatUsername
@@ -45,34 +47,35 @@ import java.util.*
 
 class TegRepositoryImpl : TegRepository {
 
-    override fun postSignIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?> {
-        var message = ""
-        var playerPrincipal: PlayerPrincipal? = null
-        transaction {
-            message = when {
-                validateSignIn(signInRequest) -> "Username and password incorrect"
-                else -> {
-                    playerPrincipal = signIn(signInRequest)
-                    "Post sign in success"
-                }
-            }
-        }
-        return Pair(message, playerPrincipal)
-    }
-
-    private fun validateSignIn(signInRequest: SignInRequest): Boolean {
+    override fun postSignIn(signInRequest: SignInRequest): SignInResponse {
+        val response = SignInResponse()
         val (username, password) = signInRequest
-        return Players.select {
-            Players.username eq username!! and (Players.password eq password.encryptSHA())
-        }.count().toInt() == 0
+
+        val isValidateSignIn: Boolean = transaction {
+            Players.select {
+                Players.username eq username!! and (Players.password eq password.encryptSHA())
+            }.count().toInt() == 0
+        }
+
+        if (isValidateSignIn) {
+            response.message = "Username and password incorrect"
+        } else {
+            response.success = true
+            response.message = "Post sign in success"
+            response.accessToken = JwtConfig.makeToken(signIn(signInRequest))
+        }
+
+        return response
     }
 
     private fun signIn(signInRequest: SignInRequest): PlayerPrincipal {
         val (username, password) = signInRequest
-        return Players.slice(Players.playerId)
-            .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
-            .map { MapResponse.toPlayerPrincipal(it) }
-            .single()
+        return transaction {
+            Players.slice(Players.playerId)
+                .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
+                .map { MapResponse.toPlayerPrincipal(it) }
+                .single()
+        }
     }
 
     override fun postSignUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?> {

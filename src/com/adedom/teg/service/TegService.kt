@@ -13,12 +13,13 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
+import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import io.ktor.http.content.MultiPartData
 
 interface TegService {
 
-    fun signIn(signInRequest: SignInRequest): Pair<String, PlayerPrincipal?>
+    fun signIn(signInRequest: SignInRequest): SignInResponse
 
     fun signUp(signUpRequest: SignUpRequest): Pair<String, PlayerPrincipal?>
 
