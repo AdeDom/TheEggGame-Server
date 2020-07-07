@@ -1,9 +1,6 @@
 package com.adedom.teg
 
-import com.adedom.teg.controller.accountController
-import com.adedom.teg.controller.applicationController
-import com.adedom.teg.controller.authController
-import com.adedom.teg.controller.headerController
+import com.adedom.teg.controller.*
 import com.adedom.teg.di.tegAppModule
 import com.adedom.teg.service.TegService
 import com.adedom.teg.util.DatabaseConfig
@@ -83,6 +80,7 @@ fun Application.module() {
         authenticate {
             accountController(service)
             applicationController(service)
+            singleController(service)
         }
 
         route("api") {

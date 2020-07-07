@@ -3,7 +3,6 @@ package com.adedom.teg.transaction
 import com.adedom.teg.db.*
 import com.adedom.teg.models.*
 import com.adedom.teg.request.*
-import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -73,10 +72,6 @@ object DatabaseTransaction {
     }
 
     fun getBackpack(playerId: Int): Backpack = transaction {
-        val egg = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 1) }
-            .map { ItemCollections.toItemCollection(it) }
-            .sumBy { it.qty!! }.toLevel()
-
         val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
             .map { ItemCollections.toItemCollection(it) }
             .sumBy { it.qty!! }
@@ -89,7 +84,7 @@ object DatabaseTransaction {
             .map { ItemCollections.toItemCollection(it) }
             .sumBy { it.qty!! }
 
-        Backpack(egg, eggI, eggII, eggIII)
+        Backpack(eggI, eggII, eggIII)
     }
 
     fun getMultiScore(roomNo: String): Score = transaction {

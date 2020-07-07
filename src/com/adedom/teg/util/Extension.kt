@@ -82,8 +82,6 @@ suspend fun InputStream.copyToSuspend(
 
 fun String.toResourcesPathName(): String = "teg-file/$this"
 
-fun Int?.toLevel(): Int? = this?.div(1000) ?: 1
+fun Int?.toLevel(): Int = this?.div(1000) ?: 1
 
-fun String?.toImage(): String? {
-    return "${BASE_IMAGE}/$this"
-}
+fun String?.toImage(): String = "${BASE_IMAGE}/$this"

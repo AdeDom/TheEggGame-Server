@@ -1,7 +1,6 @@
 package com.adedom.teg.route
 
 import com.adedom.teg.request.ItemCollectionRequest
-import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.transaction.DatabaseTransaction
 import com.adedom.teg.util.CommonConstant
@@ -13,29 +12,12 @@ import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 
 fun Route.itemCollection() {
 
     route("item-collection") {
-        get("/") {
-            val response = BackpackResponse()
-            val playerId = call.player?.playerId
-            val message = when {
-                playerId == null -> playerId.validateAccessToken()
-
-                else -> {
-                    response.backpack = DatabaseTransaction.getBackpack(playerId)
-                    response.success = true
-                    "Fetch backpack success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-
         post("/") {
             val response = BaseResponse()
             val (itemId, qty, latitude, longitude) = call.receive<ItemCollectionRequest>()
