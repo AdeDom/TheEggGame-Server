@@ -5,6 +5,7 @@ import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -34,8 +35,8 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.fetchPlayerInfo(playerId)
     }
 
-    override fun playerState(playerId: Int, state: String): BaseResponse {
-        return repository.playerState(playerId, state)
+    override fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse {
+        return repository.playerState(playerId, stateRequest)
     }
 
     override fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse {

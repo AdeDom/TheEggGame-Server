@@ -4,6 +4,7 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -25,7 +26,7 @@ interface TegRepository {
 
     fun fetchPlayerInfo(playerId: Int): Pair<String, Player?>
 
-    fun playerState(playerId: Int, state: String): BaseResponse
+    fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse
 
     fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse
 

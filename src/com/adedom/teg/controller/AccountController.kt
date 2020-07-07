@@ -64,7 +64,10 @@ fun Route.accountController(service: TegService) {
             !request.state.validateState() -> StateRequest::state.name.validateIncorrect()
 
             else -> {
-                val service: BaseResponse = service.playerState(playerId, request.state)
+                val service: BaseResponse = service.playerState(
+                    playerId,
+                    StateRequest(request.state)
+                )
                 response.success = service.success
                 service.message
             }

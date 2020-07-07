@@ -11,6 +11,7 @@ import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -179,8 +180,9 @@ class TegRepositoryImpl : TegRepository {
         return Pair(message, playerInfo)
     }
 
-    override fun playerState(playerId: Int, state: String): BaseResponse {
+    override fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse {
         val response = BaseResponse()
+        val (state) = stateRequest
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.state] = state
