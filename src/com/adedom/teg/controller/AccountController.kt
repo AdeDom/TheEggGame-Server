@@ -1,6 +1,5 @@
 package com.adedom.teg.controller
 
-import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
@@ -35,19 +34,17 @@ fun Route.accountController(service: TegService) {
         call.respond(response)
     }
 
-    get<PlayerInfo> {
+    get<PlayerInfoRequest> {
         val response = PlayerResponse()
         val playerId = call.player?.playerId
-        val message: String = when {
+        val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
             else -> {
-                val pair: Pair<String, Player?> = service.fetchPlayerInfo(playerId)
-                if (pair.second != null) {
-                    response.success = true
-                    response.playerInfo = pair.second
-                }
-                pair.first
+                val service: PlayerResponse = service.fetchPlayerInfo(playerId)
+                response.success = service.success
+                response.playerInfo = service.playerInfo
+                service.message
             }
         }
         response.message = message

@@ -1,6 +1,5 @@
 package com.adedom.teg.service
 
-import com.adedom.teg.models.Player
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
@@ -11,10 +10,7 @@ import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
-import com.adedom.teg.response.BackpackResponse
-import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.response.SignInResponse
+import com.adedom.teg.response.*
 import io.ktor.http.content.MultiPartData
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
@@ -31,7 +27,7 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.changeImageProfile(playerId, multiPartData)
     }
 
-    override fun fetchPlayerInfo(playerId: Int): Pair<String, Player?> {
+    override fun fetchPlayerInfo(playerId: Int): PlayerResponse {
         return repository.fetchPlayerInfo(playerId)
     }
 

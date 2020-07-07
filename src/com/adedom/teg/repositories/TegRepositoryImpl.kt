@@ -17,10 +17,7 @@ import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
-import com.adedom.teg.response.BackpackResponse
-import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.response.SignInResponse
+import com.adedom.teg.response.*
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.encryptSHA
@@ -125,7 +122,7 @@ class TegRepositoryImpl : TegRepository {
                         .map { it[Players.username] }
                         .single()
                 }
-                val ext = File(part.originalFileName).extension
+                val ext = File(part.originalFileName!!).extension
                 val imageName = "image-$username.$ext"
 
 //                val file = File(imageName.toResourcesPathName())
@@ -160,10 +157,9 @@ class TegRepositoryImpl : TegRepository {
         return Pair(message, imageProfile)
     }
 
-    override fun fetchPlayerInfo(playerId: Int): Pair<String, Player?> {
-        var message = ""
-        var playerInfo: Player? = null
-        playerInfo = transaction {
+    override fun fetchPlayerInfo(playerId: Int): PlayerResponse {
+        val response = PlayerResponse()
+        val playerInfo: Player = transaction {
             (Players innerJoin ItemCollections).slice(
                 Players.playerId,
                 Players.username,
@@ -176,8 +172,12 @@ class TegRepositoryImpl : TegRepository {
                 .map { MapResponse.toPlayer(it) }
                 .single()
         }
-        message = "Fetch player success"
-        return Pair(message, playerInfo)
+
+        response.success = true
+        response.message = "Fetch player success"
+        response.playerInfo = playerInfo
+
+        return response
     }
 
     override fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse {

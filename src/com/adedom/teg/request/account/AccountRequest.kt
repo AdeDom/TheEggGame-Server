@@ -6,7 +6,7 @@ import io.ktor.locations.Location
 class ImageProfile
 
 @Location("/api/account/player-info")
-class PlayerInfo
+class PlayerInfoRequest
 
 @Location("/api/account/state/{state}")
 data class StateRequest(val state: String? = null)
