@@ -21,13 +21,13 @@ fun Route.accountController(service: TegService) {
         val playerId = call.player?.playerId
         val multipart = call.receiveMultipart()
         val response = BaseResponse()
-        val message: String = when {
+        val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
             else -> {
-                val pair: Pair<String, ImageProfile?> = service.changeImageProfile(playerId, multipart)
-                if (pair.second != null) response.success = true
-                pair.first
+                val service: BaseResponse = service.changeImageProfile(playerId, multipart)
+                response.success = service.success
+                service.message
             }
         }
         response.message = message

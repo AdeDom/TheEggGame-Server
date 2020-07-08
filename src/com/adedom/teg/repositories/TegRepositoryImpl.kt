@@ -10,7 +10,6 @@ import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.Player
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
-import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
@@ -25,6 +24,7 @@ import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.validateRepeatName
 import com.adedom.teg.util.validateRepeatUsername
+import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -32,6 +32,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.post
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readText
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
@@ -111,11 +112,11 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?> {
-        var message = ""
-        var imageProfile: ImageProfile? = null
+    //    todo resize image
+    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse {
+        val response = BaseResponse()
         multiPartData.forEachPart { part ->
-            message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+            response.message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
                 val username = transaction {
                     Players.slice(Players.username)
                         .select { Players.playerId eq playerId }
@@ -134,7 +135,7 @@ class TegRepositoryImpl : TegRepository {
 
                 val byteArray = part.streamProvider().readBytes()
                 val encodeToString = Base64.getEncoder().encodeToString(byteArray)
-                HttpClient(Apache).post<HttpResponse> {
+                val httpResponse = HttpClient(Apache).post<HttpResponse> {
                     url("${BASE_IMAGE}/upload-image.php")
                     body = MultiPartFormDataContent(formData {
                         append(ApiConstant.name, imageName)
@@ -142,19 +143,22 @@ class TegRepositoryImpl : TegRepository {
                     })
                 }
 
-                transaction {
-                    Players.update({ Players.playerId eq playerId }) {
-                        it[image] = imageName
+                val baseResponse: BaseResponse = Gson().fromJson(httpResponse.readText(), BaseResponse::class.java)
+                if (baseResponse.success) {
+                    val transaction: Int = transaction {
+                        Players.update({ Players.playerId eq playerId }) {
+                            it[image] = imageName
+                        }
                     }
+                    if (transaction == 1) response.success = baseResponse.success
                 }
-                imageProfile = ImageProfile()
-                "Patch image profile success"
+                baseResponse.message
             } else {
                 "Not found image file"
             }
             part.dispose()
         }
-        return Pair(message, imageProfile)
+        return response
     }
 
     override fun fetchPlayerInfo(playerId: Int): PlayerResponse {

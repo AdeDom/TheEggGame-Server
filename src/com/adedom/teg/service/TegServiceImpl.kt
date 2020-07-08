@@ -3,7 +3,6 @@ package com.adedom.teg.service
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
-import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
@@ -23,7 +22,7 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.postSignUp(signUpRequest)
     }
 
-    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?> {
+    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse {
         return repository.changeImageProfile(playerId, multiPartData)
     }
 

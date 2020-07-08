@@ -62,4 +62,6 @@ dependencies {
     // client
     implementation "io.ktor:ktor-client-apache:$ktor_version"
 
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 }

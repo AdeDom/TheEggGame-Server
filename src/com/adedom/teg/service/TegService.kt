@@ -2,7 +2,6 @@ package com.adedom.teg.service
 
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
-import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
@@ -18,7 +17,7 @@ interface TegService {
 
     fun signUp(signUpRequest: SignUpRequest): SignInResponse
 
-    suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): Pair<String, ImageProfile?>
+    suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse
 
     fun fetchPlayerInfo(playerId: Int): PlayerResponse
 
