@@ -4,7 +4,7 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.service.teg.TegService
-import com.adedom.teg.util.CommonConstant
+import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import com.adedom.teg.util.validateIncorrect
@@ -42,7 +42,7 @@ fun Route.singleController(service: TegService) {
             playerId == null -> playerId.validateAccessToken()
 
             itemId == null -> it::itemId.name.validateIsNullOrBlank()
-            itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> it::itemId.name.validateIncorrect()
+            itemId <= 0 || itemId > TegConstant.MAX_ITEM -> it::itemId.name.validateIncorrect()
 
             qty == null -> it::qty.name.validateIsNullOrBlank()
             qty <= 0 -> it::qty.name.validateIncorrect()

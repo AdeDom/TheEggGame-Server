@@ -4,7 +4,7 @@ import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.auth.AuthService
-import com.adedom.teg.util.CommonConstant
+import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.validateGrateEq
 import com.adedom.teg.util.validateIsNullOrBlank
 import io.ktor.application.*
@@ -21,10 +21,10 @@ fun Route.authController(service: AuthService) {
         val (username, password) = call.receive<SignInRequest>()
         val message = when {
             username.isNullOrBlank() -> request::username.name.validateIsNullOrBlank()
-            username.length < CommonConstant.MIN_USERNAME -> request::username.name validateGrateEq CommonConstant.MIN_USERNAME
+            username.length < TegConstant.MIN_USERNAME -> request::username.name validateGrateEq TegConstant.MIN_USERNAME
 
             password.isNullOrBlank() -> request::password.name.validateIsNullOrBlank()
-            password.length < CommonConstant.MIN_PASSWORD -> request::password.name validateGrateEq CommonConstant.MIN_PASSWORD
+            password.length < TegConstant.MIN_PASSWORD -> request::password.name validateGrateEq TegConstant.MIN_PASSWORD
 
             else -> {
                 val service: SignInResponse = service.signIn(SignInRequest(username, password))

@@ -1,6 +1,6 @@
 package com.adedom.teg.util
 
-object CommonConstant {
+object TegConstant {
 
     const val LIMIT_TEN = 10
     const val LIMIT_FIFTY = 50

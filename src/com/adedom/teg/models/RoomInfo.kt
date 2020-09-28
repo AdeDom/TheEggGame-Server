@@ -6,7 +6,7 @@ data class RoomInfo(
     val longitude: Double? = null,
     val team: String? = null,
     val status: String? = null,
-    val playerId: Int? = null,
+    val playerId: String? = null,
     val name: String? = null,
     val image: String? = null,
     val level: Int? = null,

@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.jodatime.datetime
 object LogActives : Table(name = DatabaseConstant.logActiveTable) {
 
     val logId = integer(name = DatabaseConstant.logId).autoIncrement()
-    val playerId = integer(name = DatabaseConstant.playerId)
+    val playerId = varchar(name = DatabaseConstant.playerId, length = 50)
     val dateTimeIn = datetime(name = DatabaseConstant.dateTimeIn)
     val dateTimeOut = datetime(name = DatabaseConstant.dateTimeOut).nullable()
 

@@ -7,7 +7,7 @@ object RoomInfos : Table(name = DatabaseConstant.roomInfoTable) {
 
     val infoId = integer(name = DatabaseConstant.infoId).autoIncrement()
     val roomNo = varchar(name = DatabaseConstant.roomNo, length = 10)
-    val playerId = integer(name = DatabaseConstant.playerId).references(Players.playerId)
+    val playerId = varchar(name = DatabaseConstant.playerId, length = 50).references(Players.playerId)
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)
     val team = varchar(name = DatabaseConstant.team, length = 5)

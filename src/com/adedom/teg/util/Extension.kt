@@ -35,6 +35,10 @@ fun String?.validateState() = (this == "online" || this == "offline")
 
 fun String?.validateIncorrect() = "$this Incorrect"
 
+fun String?.toMessageGender() = "$this incorrect. Please enter M or F"
+
+fun String?.toMessageRepeat() = "$this repeat. Please enter other..."
+
 fun String?.validateRepeatUsername() = "Username is $this repeat other in the egg game"
 
 fun String?.validateRepeatName() = "Name is $this repeat other in the egg game"

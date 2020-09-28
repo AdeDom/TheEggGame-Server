@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.sum
 object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
 
     val collectionId = ItemCollections.integer(name = DatabaseConstant.collectionId).autoIncrement()
-    val playerId = ItemCollections.integer(name = DatabaseConstant.playerId).references(Players.playerId)
+    val playerId = ItemCollections.varchar(name = DatabaseConstant.playerId, length = 50).references(Players.playerId)
     val itemId = ItemCollections.integer(name = DatabaseConstant.itemId)
     val qty = ItemCollections.integer(name = DatabaseConstant.qty)
     val latitude = ItemCollections.double(name = DatabaseConstant.latitude)

@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 
 object DatabaseTransaction {
 
-    fun validatePlayer(playerId: Int): Boolean = transaction {
+    fun validatePlayer(playerId: String): Boolean = transaction {
         val count = Players.select { Players.playerId eq playerId }
             .count()
             .toInt()

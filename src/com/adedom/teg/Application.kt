@@ -64,7 +64,7 @@ fun Application.module() {
             verifier(JwtConfig.verifier)
             realm = CommonJwt.REALM
             validate {
-                val playerId = it.payload.getClaim(CommonJwt.PLAYER_ID).asInt()
+                val playerId = it.payload.getClaim(CommonJwt.PLAYER_ID).asString()
                 if (playerId != null) {
                     PlayerPrincipal(playerId)
                 } else {

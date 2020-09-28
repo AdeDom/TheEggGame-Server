@@ -14,26 +14,29 @@ import io.ktor.http.content.*
 
 interface TegRepository {
 
+    // if repeat return ture
+    fun isUsernameRepeat(): Boolean
+
     fun postSignIn(signInRequest: SignInRequest): SignInResponse
 
     fun postSignUp(signUpRequest: SignUpRequest): SignUpResponse
 
-    suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse
+    suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse
 
-    fun fetchPlayerInfo(playerId: Int): PlayerResponse
+    fun fetchPlayerInfo(playerId: String): PlayerResponse
 
-    fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse
+    fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse
 
-    fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse
+    fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse
 
-    fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse
+    fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse
 
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse
 
-    fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse
+    fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse
 
-    fun fetchItemCollection(playerId: Int): BackpackResponse
+    fun fetchItemCollection(playerId: String): BackpackResponse
 
-    fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest): BaseResponse
+    fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse
 
 }

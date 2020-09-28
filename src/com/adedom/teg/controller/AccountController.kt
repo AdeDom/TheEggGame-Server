@@ -80,7 +80,7 @@ fun Route.accountController(service: TegService) {
             oldPassword.isNullOrBlank() -> ChangePasswordRequest::oldPassword.name.validateIsNullOrBlank()
 
             newPassword.isNullOrBlank() -> ChangePasswordRequest::newPassword.name.validateIsNullOrBlank()
-            newPassword.length < CommonConstant.MIN_PASSWORD -> ChangePasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
+            newPassword.length < TegConstant.MIN_PASSWORD -> ChangePasswordRequest::newPassword.name validateGrateEq TegConstant.MIN_PASSWORD
 
             else -> {
                 val service: BaseResponse = service.changePassword(
@@ -103,7 +103,7 @@ fun Route.accountController(service: TegService) {
             playerId == null -> playerId.validateAccessToken()
 
             name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateIsNullOrBlank()
-            name.length < CommonConstant.MIN_NAME -> ChangeProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
+            name.length < TegConstant.MIN_NAME -> ChangeProfileRequest::name.name.validateGrateEq(TegConstant.MIN_NAME)
 
             gender.isNullOrBlank() -> ChangeProfileRequest::gender.name.validateIsNullOrBlank()
             !gender.validateGender() -> ChangeProfileRequest::gender.name.validateIncorrect()

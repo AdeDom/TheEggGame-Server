@@ -58,10 +58,9 @@ fun Route.room() {
                 name.isNullOrBlank() -> RoomRequest::name.name.validateIsNullOrBlank()
 
                 people.isNullOrBlank() -> RoomRequest::people.name.validateIsNullOrBlank()
-                people.toInt() < CommonConstant.MIN_PEOPLE || people.toInt() > CommonConstant.MAX_PEOPLE -> RoomRequest::people.name.validateIncorrect()
+                people.toInt() < TegConstant.MIN_PEOPLE || people.toInt() > TegConstant.MAX_PEOPLE -> RoomRequest::people.name.validateIncorrect()
 
                 playerId == null -> RoomRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> RoomRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> RoomRequest::playerId.name.validateNotFound()
 
                 else -> {
@@ -116,7 +115,6 @@ fun Route.roomInfo() {
                 DatabaseTransaction.validatePeopleRoom(roomNo) -> "People in room is maximum"
 
                 playerId == null -> RoomInfoRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
 
                 else -> {
@@ -143,7 +141,6 @@ fun Route.roomInfo() {
                 DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> RoomInfoRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> RoomInfoRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
 
                 else -> {
@@ -233,7 +230,6 @@ fun Route.postMultiCollection() {
                 DatabaseTransaction.validateRoomInfo(roomNo) -> MultiCollectionRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> MultiCollectionRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> MultiCollectionRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> MultiCollectionRequest::playerId.name.validateNotFound()
 
                 team.isNullOrBlank() -> MultiCollectionRequest::team.name.validateIsNullOrBlank()
@@ -277,7 +273,6 @@ fun Route.putLatlng() {
                 DatabaseTransaction.validateRoomInfo(roomNo) -> LatlngRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> LatlngRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> LatlngRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> LatlngRequest::playerId.name.validateNotFound()
 
                 latitude == null -> LatlngRequest::latitude.name.validateIsNullOrBlank()
@@ -316,7 +311,6 @@ fun Route.putReady() {
                 DatabaseTransaction.validateRoomInfo(roomNo) -> ReadyRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> ReadyRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> ReadyRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> ReadyRequest::playerId.name.validateNotFound()
 
                 status.isNullOrBlank() -> ReadyRequest::status.name.validateIsNullOrBlank()
@@ -375,7 +369,6 @@ fun Route.putTeam() {
                 DatabaseTransaction.validateRoomInfo(roomNo) -> TeamRequest::roomNo.name.validateNotFound()
 
                 playerId == null -> TeamRequest::playerId.name.validateIsNullOrBlank()
-                playerId <= 0 -> TeamRequest::playerId.name.validateLessEqZero()
                 DatabaseTransaction.validatePlayer(playerId) -> TeamRequest::playerId.name.validateNotFound()
 
                 team.isNullOrBlank() -> TeamRequest::team.name.validateIsNullOrBlank()

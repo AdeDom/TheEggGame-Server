@@ -19,7 +19,7 @@ import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.*
 import com.adedom.teg.route.GetConstant
-import com.adedom.teg.util.CommonConstant
+import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -39,6 +39,10 @@ import java.io.File
 import java.util.*
 
 class TegRepositoryImpl : TegRepository {
+
+    override fun isUsernameRepeat(): Boolean {
+        return false
+    }
 
     override fun postSignIn(signInRequest: SignInRequest): SignInResponse {
         val response = SignInResponse()
@@ -95,7 +99,7 @@ class TegRepositoryImpl : TegRepository {
                         it[Players.password] = password.encryptSHA()
                         it[Players.name] = name!!.capitalize()
                         it[Players.gender] = gender!!
-                        it[dateTime] = DateTime.now()
+                        it[dateTimeCreated] = System.currentTimeMillis()
                     }
                 }
                 response.success = true
@@ -108,7 +112,7 @@ class TegRepositoryImpl : TegRepository {
     }
 
     //    todo resize image
-    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse {
+    override suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse {
         val response = BaseResponse()
         multiPartData.forEachPart { part ->
             response.message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
@@ -156,7 +160,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun fetchPlayerInfo(playerId: Int): PlayerResponse {
+    override fun fetchPlayerInfo(playerId: String): PlayerResponse {
         val response = PlayerResponse()
         val playerInfo: Player = transaction {
             (Players innerJoin ItemCollections).slice(
@@ -179,7 +183,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse {
+    override fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse {
         val response = BaseResponse()
         val (state) = stateRequest
         val transaction: Int = transaction {
@@ -194,7 +198,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse {
+    override fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse {
         val (oldPassword, newPassword) = changePasswordRequest
         val response = BaseResponse()
 
@@ -220,7 +224,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse {
+    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse {
         val response = BaseResponse()
         val (name, gender) = changeProfileRequest
         val transaction: Int = transaction {
@@ -258,9 +262,9 @@ class TegRepositoryImpl : TegRepository {
                 .orderBy(ItemCollections.level to SortOrder.DESC, (Players.playerId to SortOrder.ASC))
 
             when (limit?.toInt()) {
-                CommonConstant.LIMIT_TEN -> query.limit(CommonConstant.LIMIT_TEN)
-                CommonConstant.LIMIT_FIFTY -> query.limit(CommonConstant.LIMIT_FIFTY)
-                CommonConstant.LIMIT_ONE_HUNDRED -> query.limit(CommonConstant.LIMIT_ONE_HUNDRED)
+                TegConstant.LIMIT_TEN -> query.limit(TegConstant.LIMIT_TEN)
+                TegConstant.LIMIT_FIFTY -> query.limit(TegConstant.LIMIT_FIFTY)
+                TegConstant.LIMIT_ONE_HUNDRED -> query.limit(TegConstant.LIMIT_ONE_HUNDRED)
             }
 
             query.map { MapResponse.toPlayers(it) }
@@ -273,7 +277,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse {
+    override fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse {
         val (flagLogActive) = logActiveRequest
         val response = BaseResponse()
 
@@ -305,7 +309,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun fetchItemCollection(playerId: Int): BackpackResponse {
+    override fun fetchItemCollection(playerId: String): BackpackResponse {
         val response = BackpackResponse()
 
         val backpack: Backpack = transaction {
@@ -333,7 +337,7 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
+    override fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
         val response = BaseResponse()
         val (itemId, qty, latitude, longitude) = itemCollectionRequest
 

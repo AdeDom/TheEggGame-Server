@@ -3,7 +3,7 @@ package com.adedom.teg.models
 data class MultiCollection(
     val collectionId: Int? = null,
     val roomNo: String? = null,
-    val playerId: Int? = null,
+    val playerId: String? = null,
     val score: Int? = null,
     val team: String? = null,
     val latitude: Double? = null,

@@ -15,23 +15,23 @@ import io.ktor.http.content.*
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
 
-    override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse {
+    override suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse {
         return repository.changeImageProfile(playerId, multiPartData)
     }
 
-    override fun fetchPlayerInfo(playerId: Int): PlayerResponse {
+    override fun fetchPlayerInfo(playerId: String): PlayerResponse {
         return repository.fetchPlayerInfo(playerId)
     }
 
-    override fun playerState(playerId: Int, stateRequest: StateRequest): BaseResponse {
+    override fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse {
         return repository.playerState(playerId, stateRequest)
     }
 
-    override fun changePassword(playerId: Int, changePasswordRequest: ChangePasswordRequest): BaseResponse {
+    override fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse {
         return repository.changePassword(playerId, changePasswordRequest)
     }
 
-    override fun changeProfile(playerId: Int, changeProfileRequest: ChangeProfileRequest): BaseResponse {
+    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse {
         return repository.changeProfile(playerId, changeProfileRequest)
     }
 
@@ -39,15 +39,15 @@ class TegServiceImpl(private val repository: TegRepository) : TegService {
         return repository.fetchRankPlayers(rankPlayersRequest)
     }
 
-    override fun postLogActive(playerId: Int, logActiveRequest: LogActiveRequest): BaseResponse {
+    override fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse {
         return repository.postLogActive(playerId, logActiveRequest)
     }
 
-    override fun fetchItemCollection(playerId: Int): BackpackResponse {
+    override fun fetchItemCollection(playerId: String): BackpackResponse {
         return repository.fetchItemCollection(playerId)
     }
 
-    override fun postItemCollection(playerId: Int, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
+    override fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
         return repository.postItemCollection(playerId, itemCollectionRequest)
     }
 
