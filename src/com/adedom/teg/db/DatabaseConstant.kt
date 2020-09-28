@@ -47,5 +47,8 @@ object DatabaseConstant {
     const val roomId = "room_id"
     const val people = "people"
     const val infoId = "info_id"
+    const val birthdate = "birthdate"
+    const val dateTimeCreated = "date_time_created"
+    const val dateTimeUpdated = "date_time_updated"
 
 }
