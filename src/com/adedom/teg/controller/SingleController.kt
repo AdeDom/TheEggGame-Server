@@ -3,18 +3,17 @@ package com.adedom.teg.controller
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.service.TegService
+import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.CommonConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
-import com.adedom.teg.util.validateEmpty
 import com.adedom.teg.util.validateIncorrect
-import io.ktor.application.call
-import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.Route
+import com.adedom.teg.util.validateIsNullOrBlank
+import io.ktor.application.*
+import io.ktor.locations.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 fun Route.singleController(service: TegService) {
 
@@ -42,15 +41,15 @@ fun Route.singleController(service: TegService) {
         val message = when {
             playerId == null -> playerId.validateAccessToken()
 
-            itemId == null -> it::itemId.name.validateEmpty()
+            itemId == null -> it::itemId.name.validateIsNullOrBlank()
             itemId <= 0 || itemId > CommonConstant.MAX_ITEM -> it::itemId.name.validateIncorrect()
 
-            qty == null -> it::qty.name.validateEmpty()
+            qty == null -> it::qty.name.validateIsNullOrBlank()
             qty <= 0 -> it::qty.name.validateIncorrect()
 
-            latitude == null -> it::latitude.name.validateEmpty()
+            latitude == null -> it::latitude.name.validateIsNullOrBlank()
 
-            longitude == null -> it::longitude.name.validateEmpty()
+            longitude == null -> it::longitude.name.validateIsNullOrBlank()
 
             else -> {
                 val service: BaseResponse = service.postItemCollection(

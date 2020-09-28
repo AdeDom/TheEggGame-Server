@@ -1,6 +1,6 @@
-package com.adedom.teg.response
+package com.adedom.teg.controller.auth.model
 
-data class SignInResponse(
+data class SignUpResponse(
     var success: Boolean = false,
     var message: String? = null,
     var accessToken: String? = null

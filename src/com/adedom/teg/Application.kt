@@ -1,8 +1,14 @@
 package com.adedom.teg
 
-import com.adedom.teg.controller.*
-import com.adedom.teg.di.tegAppModule
-import com.adedom.teg.service.TegService
+import com.adedom.teg.controller.accountController
+import com.adedom.teg.controller.applicationController
+import com.adedom.teg.controller.auth.authController
+import com.adedom.teg.controller.headerController
+import com.adedom.teg.controller.singleController
+import com.adedom.teg.di.getBusinessModule
+import com.adedom.teg.di.getDataModule
+import com.adedom.teg.service.auth.AuthService
+import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.adedom.teg.util.jwt.CommonJwt
@@ -10,18 +16,13 @@ import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
-import io.ktor.auth.jwt.jwt
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
-import io.ktor.jackson.jackson
-import io.ktor.locations.Locations
-import io.ktor.routing.Routing
-import io.ktor.routing.route
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
+import io.ktor.features.*
+import io.ktor.gson.*
+import io.ktor.locations.*
+import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
@@ -29,11 +30,11 @@ import org.koin.logger.SLF4JLogger
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@KtorExperimentalLocationsAPI
 fun Application.module() {
 
-//    val databaseConfig = DatabaseConfig(DatabaseConfigMode.DEVELOP)
+    // database mysql
     val databaseConfig = DatabaseConfig(DatabaseConfigMode.END_POINT)
-
     val config = HikariConfig().apply {
         jdbcUrl = databaseConfig.jdbcUrl
         driverClassName = "com.mysql.cj.jdbc.Driver"
@@ -44,14 +45,20 @@ fun Application.module() {
     val dataSource = HikariDataSource(config)
     Database.connect(dataSource)
 
+    // start project
     install(DefaultHeaders)
     install(CallLogging)
+
+    // route location
     install(Locations)
+
+    // gson convertor json
     install(ContentNegotiation) {
-        jackson {
+        gson {
         }
     }
 
+    // jwt
     install(Authentication) {
         jwt {
             verifier(JwtConfig.verifier)
@@ -67,15 +74,17 @@ fun Application.module() {
         }
     }
 
+    // koin dependencies injection
     install(Koin) {
         SLF4JLogger()
-        modules(tegAppModule)
+        modules(getDataModule, getBusinessModule)
     }
     val service: TegService by inject()
+    val authService: AuthService by inject()
 
-//    todo re-check transaction (insert,update,delete) [completed=1],[failed=0]
+    // route
     install(Routing) {
-        authController(service)
+        authController(authService)
 
         authenticate {
             accountController(service)

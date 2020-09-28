@@ -1,5 +1,7 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.controller.auth.model.SignUpRequest
+import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.data.ApiConstant
 import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.ItemCollections
@@ -14,7 +16,6 @@ import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
-import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.*
 import com.adedom.teg.route.GetConstant
@@ -25,18 +26,12 @@ import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.validateRepeatName
 import com.adedom.teg.util.validateRepeatUsername
 import com.google.gson.Gson
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.post
-import io.ktor.client.request.url
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.content.MultiPartData
-import io.ktor.http.content.PartData
-import io.ktor.http.content.forEachPart
-import io.ktor.http.content.streamProvider
+import io.ktor.client.*
+import io.ktor.client.engine.apache.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
+import io.ktor.http.content.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -76,8 +71,8 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun postSignUp(signUpRequest: SignUpRequest): SignInResponse {
-        val response = SignInResponse()
+    override fun postSignUp(signUpRequest: SignUpRequest): SignUpResponse {
+        val response = SignUpResponse()
         val (username, password, name, gender) = signUpRequest
 
         val isValidateUsername: Boolean = transaction {

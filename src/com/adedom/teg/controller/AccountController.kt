@@ -3,17 +3,14 @@ package com.adedom.teg.controller
 import com.adedom.teg.request.account.*
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
-import com.adedom.teg.service.TegService
+import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
-import io.ktor.application.call
-import io.ktor.locations.get
-import io.ktor.locations.patch
-import io.ktor.locations.put
-import io.ktor.request.receive
-import io.ktor.request.receiveMultipart
-import io.ktor.response.respond
-import io.ktor.routing.Route
+import io.ktor.application.*
+import io.ktor.locations.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 fun Route.accountController(service: TegService) {
 
@@ -57,7 +54,7 @@ fun Route.accountController(service: TegService) {
         val message = when {
             playerId == null -> playerId.validateAccessToken()
 
-            request.state.isNullOrBlank() -> StateRequest::state.name.validateEmpty()
+            request.state.isNullOrBlank() -> StateRequest::state.name.validateIsNullOrBlank()
             !request.state.validateState() -> StateRequest::state.name.validateIncorrect()
 
             else -> {
@@ -80,9 +77,9 @@ fun Route.accountController(service: TegService) {
         val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
-            oldPassword.isNullOrBlank() -> ChangePasswordRequest::oldPassword.name.validateEmpty()
+            oldPassword.isNullOrBlank() -> ChangePasswordRequest::oldPassword.name.validateIsNullOrBlank()
 
-            newPassword.isNullOrBlank() -> ChangePasswordRequest::newPassword.name.validateEmpty()
+            newPassword.isNullOrBlank() -> ChangePasswordRequest::newPassword.name.validateIsNullOrBlank()
             newPassword.length < CommonConstant.MIN_PASSWORD -> ChangePasswordRequest::newPassword.name validateGrateEq CommonConstant.MIN_PASSWORD
 
             else -> {
@@ -105,10 +102,10 @@ fun Route.accountController(service: TegService) {
         val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
-            name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateEmpty()
+            name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateIsNullOrBlank()
             name.length < CommonConstant.MIN_NAME -> ChangeProfileRequest::name.name.validateGrateEq(CommonConstant.MIN_NAME)
 
-            gender.isNullOrBlank() -> ChangeProfileRequest::gender.name.validateEmpty()
+            gender.isNullOrBlank() -> ChangeProfileRequest::gender.name.validateIsNullOrBlank()
             !gender.validateGender() -> ChangeProfileRequest::gender.name.validateIncorrect()
 
             else -> {

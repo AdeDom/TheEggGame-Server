@@ -4,18 +4,17 @@ import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.service.TegService
+import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
-import com.adedom.teg.util.validateEmpty
 import com.adedom.teg.util.validateFlagLogActive
 import com.adedom.teg.util.validateIncorrect
-import io.ktor.application.call
-import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.Route
+import com.adedom.teg.util.validateIsNullOrBlank
+import io.ktor.application.*
+import io.ktor.locations.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 fun Route.applicationController(service: TegService) {
 
@@ -27,7 +26,7 @@ fun Route.applicationController(service: TegService) {
         val message = when {
             playerId == null -> playerId.validateAccessToken()
 
-            search == null -> RankPlayersRequest::search.name.validateEmpty()
+            search == null -> RankPlayersRequest::search.name.validateIsNullOrBlank()
 
             limit <= 0 -> RankPlayersRequest::limit.name.validateIncorrect()
 
@@ -49,7 +48,7 @@ fun Route.applicationController(service: TegService) {
         val message: String? = when {
             playerId == null -> playerId.validateAccessToken()
 
-            flagLogActive == null -> it::flagLogActive.name.validateEmpty()
+            flagLogActive == null -> it::flagLogActive.name.validateIsNullOrBlank()
             !flagLogActive.validateFlagLogActive() -> it::flagLogActive.name.validateIncorrect()
 
             else -> {

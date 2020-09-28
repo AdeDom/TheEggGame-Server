@@ -1,4 +1,4 @@
-package com.adedom.teg.service
+package com.adedom.teg.service.teg
 
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.request.account.ChangePasswordRequest
@@ -6,21 +6,14 @@ import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
-import com.adedom.teg.request.auth.SignInRequest
-import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
-import com.adedom.teg.response.*
-import io.ktor.http.content.MultiPartData
+import com.adedom.teg.response.BackpackResponse
+import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.response.RankPlayersResponse
+import io.ktor.http.content.*
 
 class TegServiceImpl(private val repository: TegRepository) : TegService {
-
-    override fun signIn(signInRequest: SignInRequest): SignInResponse {
-        return repository.postSignIn(signInRequest)
-    }
-
-    override fun signUp(signUpRequest: SignUpRequest): SignInResponse {
-        return repository.postSignUp(signUpRequest)
-    }
 
     override suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse {
         return repository.changeImageProfile(playerId, multiPartData)

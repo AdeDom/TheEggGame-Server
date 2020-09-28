@@ -1,21 +1,18 @@
-package com.adedom.teg.service
+package com.adedom.teg.service.teg
 
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
-import com.adedom.teg.request.auth.SignInRequest
-import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
-import com.adedom.teg.response.*
-import io.ktor.http.content.MultiPartData
+import com.adedom.teg.response.BackpackResponse
+import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.response.RankPlayersResponse
+import io.ktor.http.content.*
 
 interface TegService {
-
-    fun signIn(signInRequest: SignInRequest): SignInResponse
-
-    fun signUp(signUpRequest: SignUpRequest): SignInResponse
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse
 

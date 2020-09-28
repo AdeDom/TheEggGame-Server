@@ -1,21 +1,22 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.controller.auth.model.SignUpRequest
+import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
-import com.adedom.teg.request.auth.SignUpRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.*
-import io.ktor.http.content.MultiPartData
+import io.ktor.http.content.*
 
 interface TegRepository {
 
     fun postSignIn(signInRequest: SignInRequest): SignInResponse
 
-    fun postSignUp(signUpRequest: SignUpRequest): SignInResponse
+    fun postSignUp(signUpRequest: SignUpRequest): SignUpResponse
 
     suspend fun changeImageProfile(playerId: Int, multiPartData: MultiPartData): BaseResponse
 

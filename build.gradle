@@ -43,7 +43,7 @@ dependencies {
     implementation 'org.jetbrains.exposed:exposed-jodatime:0.24.1'
 
     // jackson(gson to json)
-    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
 
     // mysql
     implementation "mysql:mysql-connector-java:8.0.19"
