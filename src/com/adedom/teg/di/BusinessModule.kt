@@ -1,5 +1,7 @@
 package com.adedom.teg.di
 
+import com.adedom.teg.service.account.AccountService
+import com.adedom.teg.service.account.AccountServiceImpl
 import com.adedom.teg.service.auth.AuthService
 import com.adedom.teg.service.auth.AuthServiceImpl
 import com.adedom.teg.service.teg.TegService
@@ -9,6 +11,7 @@ import org.koin.dsl.module
 private val businessModule = module {
 
     single<AuthService> { AuthServiceImpl(get()) }
+    single<AccountService> { AccountServiceImpl(get()) }
     single<TegService> { TegServiceImpl(get()) }
 
 }

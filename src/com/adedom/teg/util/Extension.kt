@@ -1,6 +1,5 @@
 package com.adedom.teg.util
 
-import com.adedom.teg.data.BASE_IMAGE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,7 +12,7 @@ import java.util.*
 
 fun DateTime.toDateFormat(): String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(toDate())
 
-fun Int?.validateAccessToken() = "Please check access token again"
+fun String?.validateAccessToken() = "Please check access token = [$this] again"
 
 fun Int?.validateFlagLogActive() = (this == 0 || this == 1)
 
@@ -81,4 +80,4 @@ fun String.toResourcesPathName(): String = "teg-file/$this"
 
 fun Int?.toLevel(): Int = this?.div(1000) ?: 1
 
-fun String?.toImage(): String = "${BASE_IMAGE}/$this"
+fun Long?.toConvertBirthdate(): String = SimpleDateFormat("dd/MM/yyyy", Locale("th", "TH")).format(this)

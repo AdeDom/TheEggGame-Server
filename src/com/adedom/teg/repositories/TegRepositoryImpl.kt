@@ -9,7 +9,7 @@ import com.adedom.teg.db.LogActives
 import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
-import com.adedom.teg.models.Player
+import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.StateRequest
@@ -19,12 +19,13 @@ import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
+import com.adedom.teg.util.toConvertBirthdate
+import com.adedom.teg.util.toLevel
 import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
@@ -150,9 +151,8 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun fetchPlayerInfo(playerId: String): PlayerResponse {
-        val response = PlayerResponse()
-        val playerInfo: Player = transaction {
+    override fun fetchPlayerInfo(playerId: String): PlayerInfo {
+        val resultRow = transaction {
             (Players innerJoin ItemCollections).slice(
                 Players.playerId,
                 Players.username,
@@ -160,17 +160,22 @@ class TegRepositoryImpl : TegRepository {
                 Players.image,
                 ItemCollections.level,
                 Players.state,
-                Players.gender
+                Players.gender,
+                Players.birthdate,
             ).select { Players.playerId eq playerId }
-                .map { MapResponse.toPlayer(it) }
                 .single()
         }
 
-        response.success = true
-        response.message = "Fetch player success"
-        response.playerInfo = playerInfo
-
-        return response
+        return PlayerInfo(
+            playerId = resultRow[Players.playerId],
+            username = resultRow[Players.username],
+            name = resultRow[Players.name],
+            image = resultRow[Players.image],
+            level = resultRow[ItemCollections.level].toLevel(),
+            state = resultRow[Players.state],
+            gender = resultRow[Players.gender],
+            birthdate = resultRow[Players.birthdate].toConvertBirthdate(),
+        )
     }
 
     override fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse {
@@ -234,7 +239,7 @@ class TegRepositoryImpl : TegRepository {
         val (_, search, limit) = rankPlayersRequest
         val response = RankPlayersResponse()
 
-        val rankPlayers: List<Player> = transaction {
+        val rankPlayers: List<PlayerInfo> = transaction {
             addLogger(StdOutSqlLogger)
 
             val query = (Players innerJoin ItemCollections)

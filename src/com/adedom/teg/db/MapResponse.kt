@@ -1,29 +1,18 @@
 package com.adedom.teg.db
 
 import com.adedom.teg.models.LogActive
-import com.adedom.teg.models.Player
+import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.models.RoomInfo
-import com.adedom.teg.util.toImage
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.ResultRow
 
 object MapResponse {
 
-    fun toPlayer(row: ResultRow) = Player(
+    fun toPlayers(row: ResultRow) = PlayerInfo(
         playerId = row[Players.playerId],
         username = row[Players.username],
         name = row[Players.name],
-        image = row[Players.image].toImage(),
-        level = row[ItemCollections.level].toLevel(),
-        state = row[Players.state],
-        gender = row[Players.gender]
-    )
-
-    fun toPlayers(row: ResultRow) = Player(
-        playerId = row[Players.playerId],
-        username = row[Players.username],
-        name = row[Players.name],
-        image = row[Players.image].toImage(),
+        image = row[Players.image],
         level = row[ItemCollections.level].toLevel(),
         state = row[Players.state],
         gender = row[Players.gender]
@@ -37,7 +26,7 @@ object MapResponse {
         status = row[RoomInfos.status],
         playerId = row[Players.playerId],
         name = row[Players.name],
-        image = row[Players.image].toImage(),
+        image = row[Players.image],
         level = row[ItemCollections.level].toLevel(),
         state = row[Players.state],
         gender = row[Players.gender]

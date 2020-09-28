@@ -1,38 +1,22 @@
-package com.adedom.teg.repositories
+package com.adedom.teg.service.account
 
-import com.adedom.teg.controller.auth.model.SignUpRequest
-import com.adedom.teg.controller.auth.model.SignUpResponse
-import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
-import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.response.RankPlayersResponse
 import io.ktor.http.content.*
 
-interface TegRepository {
-
-    // if repeat return ture
-    fun isUsernameRepeat(username: String): Boolean
-
-    // if repeat return ture
-    fun isNameRepeat(name: String): Boolean
-
-    // if correct return true
-    fun isValidateSignIn(signInRequest: SignInRequest): Boolean
-
-    fun signIn(signInRequest: SignInRequest): String
-
-    fun signUp(signUpRequest: SignUpRequest): SignUpResponse
+interface AccountService {
 
     suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse
 
-    fun fetchPlayerInfo(playerId: String): PlayerInfo
+    fun fetchPlayerInfo(playerId: String?): PlayerResponse
 
     fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse
 

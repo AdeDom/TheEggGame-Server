@@ -1,12 +1,9 @@
 package com.adedom.teg.request.account
 
-import io.ktor.locations.Location
+import io.ktor.locations.*
 
 @Location("/api/account/image-profile")
 class ImageProfile
-
-@Location("/api/account/player-info")
-class PlayerInfoRequest
 
 @Location("/api/account/state/{state}")
 data class StateRequest(val state: String? = null)

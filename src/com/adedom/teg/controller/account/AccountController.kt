@@ -1,18 +1,23 @@
-package com.adedom.teg.controller
+package com.adedom.teg.controller.account
 
-import com.adedom.teg.request.account.*
+import com.adedom.teg.controller.account.model.PlayerInfoRequest
+import com.adedom.teg.request.account.ChangePasswordRequest
+import com.adedom.teg.request.account.ChangeProfileRequest
+import com.adedom.teg.request.account.ImageProfile
+import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.PlayerResponse
-import com.adedom.teg.service.teg.TegService
+import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
+import com.adedom.teg.util.jwt.playerId
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
-fun Route.accountController(service: TegService) {
+@KtorExperimentalLocationsAPI
+fun Route.accountController(service: AccountService) {
 
     put<ImageProfile> {
         val playerId = call.player?.playerId
@@ -32,19 +37,7 @@ fun Route.accountController(service: TegService) {
     }
 
     get<PlayerInfoRequest> {
-        val response = PlayerResponse()
-        val playerId = call.player?.playerId
-        val message: String? = when {
-            playerId == null -> playerId.validateAccessToken()
-
-            else -> {
-                val service: PlayerResponse = service.fetchPlayerInfo(playerId)
-                response.success = service.success
-                response.playerInfo = service.playerInfo
-                service.message
-            }
-        }
-        response.message = message
+        val response = service.fetchPlayerInfo(call.playerId)
         call.respond(response)
     }
 

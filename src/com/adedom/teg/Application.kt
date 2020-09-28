@@ -1,12 +1,13 @@
 package com.adedom.teg
 
-import com.adedom.teg.controller.accountController
+import com.adedom.teg.controller.account.accountController
 import com.adedom.teg.controller.applicationController
 import com.adedom.teg.controller.auth.authController
 import com.adedom.teg.controller.headerController
 import com.adedom.teg.controller.singleController
 import com.adedom.teg.di.getBusinessModule
 import com.adedom.teg.di.getDataModule
+import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.service.auth.AuthService
 import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.DatabaseConfig
@@ -81,13 +82,14 @@ fun Application.module() {
     }
     val service: TegService by inject()
     val authService: AuthService by inject()
+    val accountService: AccountService by inject()
 
     // route
     install(Routing) {
         authController(authService)
 
         authenticate {
-            accountController(service)
+            accountController(accountService)
             applicationController(service)
             singleController(service)
         }

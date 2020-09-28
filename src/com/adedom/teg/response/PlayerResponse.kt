@@ -1,10 +1,9 @@
 package com.adedom.teg.response
 
-import com.adedom.teg.data.BASE_RESPONSE_MESSAGE
-import com.adedom.teg.models.Player
+import com.adedom.teg.models.PlayerInfo
 
 data class PlayerResponse(
     var success: Boolean = false,
-    var message: String? = BASE_RESPONSE_MESSAGE,
-    var playerInfo: Player? = null
+    var message: String? = null,
+    var playerInfo: PlayerInfo? = null
 )
