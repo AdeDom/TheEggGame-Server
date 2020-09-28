@@ -25,6 +25,18 @@ fun String?.validateNotFound() = "$this not found"
 
 fun String?.validateGender() = (this == "M" || this == "F")
 
+// if parse success return false
+fun String?.isValidateDateTime(): Boolean {
+    return try {
+        SimpleDateFormat("dd/MM/yyyy").parse(this)
+        false
+    } catch (e: Throwable) {
+        true
+    }
+}
+
+fun String?.toMessageIncorrect() = "$this Incorrect"
+
 fun String?.validateTeam() = (this == "A" || this == "B")
 
 fun String?.validateState() = (this == "online" || this == "offline")

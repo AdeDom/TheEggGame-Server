@@ -29,7 +29,7 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
             username.length < TegConstant.MIN_USERNAME -> signUpRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
             password.length < TegConstant.MIN_PASSWORD -> signUpRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
             !gender.validateGender() -> signUpRequest::gender.name.toMessageGender()
-            // TODO: 28/09/2563 validate birthdate
+            birthdate.isValidateDateTime() -> signUpRequest::birthdate.name.toMessageIncorrect()
 
             // validate database
             repository.isUsernameRepeat(username) -> signUpRequest::username.name.toMessageRepeat(username)

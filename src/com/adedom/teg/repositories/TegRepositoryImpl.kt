@@ -37,6 +37,7 @@ import java.io.UnsupportedEncodingException
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TegRepositoryImpl : TegRepository {
@@ -357,10 +358,7 @@ class TegRepositoryImpl : TegRepository {
 
     private fun randomUUID() = UUID.randomUUID().toString().replace("-", "")
 
-    private fun String?.convertBirthdateStringToLong(): Long {
-        // TODO: 28/09/2563  convertBirthdateStringToLong
-        return System.currentTimeMillis()
-    }
+    private fun String?.convertBirthdateStringToLong(): Long = SimpleDateFormat("dd/MM/yyyy").parse(this).time
 
     private fun String?.encryptSHA(): String {
         var sha = ""
