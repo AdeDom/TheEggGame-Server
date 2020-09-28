@@ -20,11 +20,8 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.*
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.TegConstant
-import com.adedom.teg.util.encryptSHA
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
-import com.adedom.teg.util.validateRepeatName
-import com.adedom.teg.util.validateRepeatUsername
 import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
@@ -36,12 +33,26 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import java.io.File
+import java.io.UnsupportedEncodingException
+import java.math.BigInteger
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.*
 
 class TegRepositoryImpl : TegRepository {
 
-    override fun isUsernameRepeat(): Boolean {
-        return false
+    override fun isUsernameRepeat(username: String): Boolean {
+        return transaction {
+            Players.select { Players.username eq username }
+                .count().toInt() > 0
+        }
+    }
+
+    override fun isNameRepeat(name: String): Boolean {
+        return transaction {
+            Players.select { Players.name eq name }
+                .count().toInt() > 0
+        }
     }
 
     override fun postSignIn(signInRequest: SignInRequest): SignInResponse {
@@ -75,40 +86,26 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun postSignUp(signUpRequest: SignUpRequest): SignUpResponse {
-        val response = SignUpResponse()
-        val (username, password, name, gender) = signUpRequest
+    override fun signUp(signUpRequest: SignUpRequest): SignUpResponse {
+        val (username, password, name, gender, birthdate) = signUpRequest
 
-        val isValidateUsername: Boolean = transaction {
-            Players.select { Players.username eq username!! }
-                .count().toInt() == 0
-        }
-
-        val isValidateName: Boolean = transaction {
-            Players.select { Players.name eq name!! }
-                .count().toInt() == 0
-        }
-
-        when {
-            !isValidateUsername -> response.message = username.validateRepeatUsername()
-            !isValidateName -> response.message = name.validateRepeatName()
-            else -> {
-                transaction {
-                    Players.insert {
-                        it[Players.username] = username!!
-                        it[Players.password] = password.encryptSHA()
-                        it[Players.name] = name!!.capitalize()
-                        it[Players.gender] = gender!!
-                        it[dateTimeCreated] = System.currentTimeMillis()
-                    }
-                }
-                response.success = true
-                response.message = "Post sign up success"
-                response.accessToken = JwtConfig.makeToken(signIn(SignInRequest(username, password)))
+        val statement = transaction {
+            Players.insert {
+                it[Players.playerId] = randomUUID()
+                it[Players.username] = username!!
+                it[Players.password] = password.encryptSHA()
+                it[Players.name] = name!!.capitalize()
+                it[Players.gender] = gender!!
+                it[Players.birthdate] = birthdate.convertBirthdateStringToLong()
+                it[Players.dateTimeCreated] = System.currentTimeMillis()
             }
         }
 
-        return response
+        val resulted = statement.resultedValues?.size ?: 0 > 0
+        val playerId = statement.resultedValues?.get(0)?.get(Players.playerId)
+        val accessToken = JwtConfig.makeToken(PlayerPrincipal(playerId))
+
+        return SignUpResponse(success = resulted, accessToken = accessToken)
     }
 
     //    todo resize image
@@ -356,6 +353,28 @@ class TegRepositoryImpl : TegRepository {
         response.message = "Post item collection success"
 
         return response
+    }
+
+    private fun randomUUID() = UUID.randomUUID().toString().replace("-", "")
+
+    private fun String?.convertBirthdateStringToLong(): Long {
+        // TODO: 28/09/2563  convertBirthdateStringToLong
+        return System.currentTimeMillis()
+    }
+
+    private fun String?.encryptSHA(): String {
+        var sha = ""
+        try {
+            val messageDigest = MessageDigest.getInstance("SHA-256")
+            val byteArray = messageDigest.digest(this?.toByteArray())
+            val bigInteger = BigInteger(1, byteArray)
+            sha = bigInteger.toString(16).padStart(64, '0')
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+        return sha
     }
 
 }

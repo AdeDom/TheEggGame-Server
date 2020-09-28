@@ -26,13 +26,21 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
             birthdate.isNullOrBlank() -> signUpRequest::birthdate.name.validateIsNullOrBlank()
 
             // validate values of variable
+            username.length < TegConstant.MIN_USERNAME -> signUpRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
+            password.length < TegConstant.MIN_PASSWORD -> signUpRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
+            !gender.validateGender() -> signUpRequest::gender.name.toMessageGender()
+            // TODO: 28/09/2563 validate birthdate
 
             // validate database
+            repository.isUsernameRepeat(username) -> signUpRequest::username.name.toMessageRepeat(username)
+            repository.isNameRepeat(name) -> signUpRequest::name.name.toMessageRepeat(name)
 
             // execute
             else -> {
-                response.success = true
-                "Service success $signUpRequest"
+                val signUp = repository.signUp(signUpRequest)
+                response.success = signUp.success
+                response.accessToken = signUp.accessToken
+                "Service success"
             }
         }
 

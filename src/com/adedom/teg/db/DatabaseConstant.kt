@@ -1,6 +1,5 @@
 package com.adedom.teg.db
 
-//todo re-check date time to Long timestamp
 object DatabaseConstant {
 
     //table

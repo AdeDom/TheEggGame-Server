@@ -15,11 +15,14 @@ import io.ktor.http.content.*
 interface TegRepository {
 
     // if repeat return ture
-    fun isUsernameRepeat(): Boolean
+    fun isUsernameRepeat(username: String): Boolean
+
+    // if repeat return ture
+    fun isNameRepeat(name: String): Boolean
 
     fun postSignIn(signInRequest: SignInRequest): SignInResponse
 
-    fun postSignUp(signUpRequest: SignUpRequest): SignUpResponse
+    fun signUp(signUpRequest: SignUpRequest): SignUpResponse
 
     suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse
 
