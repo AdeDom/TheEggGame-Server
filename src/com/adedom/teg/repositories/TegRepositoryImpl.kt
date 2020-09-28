@@ -17,7 +17,10 @@ import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
-import com.adedom.teg.response.*
+import com.adedom.teg.response.BackpackResponse
+import com.adedom.teg.response.BaseResponse
+import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
@@ -56,35 +59,24 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun postSignIn(signInRequest: SignInRequest): SignInResponse {
-        val response = SignInResponse()
+    override fun isValidateSignIn(signInRequest: SignInRequest): Boolean {
         val (username, password) = signInRequest
-
-        val isValidateSignIn: Boolean = transaction {
+        return transaction {
             Players.select {
                 Players.username eq username!! and (Players.password eq password.encryptSHA())
             }.count().toInt() == 0
         }
-
-        if (isValidateSignIn) {
-            response.message = "Username and password incorrect"
-        } else {
-            response.success = true
-            response.message = "Post sign in success"
-            response.accessToken = JwtConfig.makeToken(signIn(signInRequest))
-        }
-
-        return response
     }
 
-    private fun signIn(signInRequest: SignInRequest): PlayerPrincipal {
+    override fun signIn(signInRequest: SignInRequest): String {
         val (username, password) = signInRequest
-        return transaction {
+        val resultRow = transaction {
             Players.slice(Players.playerId)
                 .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
-                .map { MapResponse.toPlayerPrincipal(it) }
                 .single()
         }
+        val playerId = resultRow[Players.playerId]
+        return JwtConfig.makeToken(PlayerPrincipal(playerId))
     }
 
     override fun signUp(signUpRequest: SignUpRequest): SignUpResponse {

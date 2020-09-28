@@ -10,7 +10,31 @@ import com.adedom.teg.util.*
 class AuthServiceImpl(private val repository: TegRepository) : AuthService {
 
     override fun signIn(signInRequest: SignInRequest): SignInResponse {
-        return SignInResponse()
+        val response = SignInResponse()
+
+        val (username, password) = signInRequest
+        val message: String = when {
+            // validate Null Or Blank
+            username.isNullOrBlank() -> signInRequest::username.name.validateIsNullOrBlank()
+            password.isNullOrBlank() -> signInRequest::password.name.validateIsNullOrBlank()
+
+            // validate values of variable
+            username.length < TegConstant.MIN_USERNAME -> signInRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
+            password.length < TegConstant.MIN_PASSWORD -> signInRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
+
+            // validate database
+            repository.isValidateSignIn(signInRequest) -> "Username and password incorrect"
+
+            // execute
+            else -> {
+                response.success = true
+                response.accessToken = repository.signIn(signInRequest)
+                "Sign in success"
+            }
+        }
+
+        response.message = message
+        return response
     }
 
     override fun signUp(signUpRequest: SignUpRequest): SignUpResponse {
@@ -40,7 +64,7 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
                 val signUp = repository.signUp(signUpRequest)
                 response.success = signUp.success
                 response.accessToken = signUp.accessToken
-                "Service success"
+                "Sign up success"
             }
         }
 

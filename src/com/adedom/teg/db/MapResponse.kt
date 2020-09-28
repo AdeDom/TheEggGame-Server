@@ -3,16 +3,11 @@ package com.adedom.teg.db
 import com.adedom.teg.models.LogActive
 import com.adedom.teg.models.Player
 import com.adedom.teg.models.RoomInfo
-import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.toImage
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.ResultRow
 
 object MapResponse {
-
-    fun toPlayerPrincipal(row: ResultRow) = PlayerPrincipal(
-        playerId = row[Players.playerId]
-    )
 
     fun toPlayer(row: ResultRow) = Player(
         playerId = row[Players.playerId],
