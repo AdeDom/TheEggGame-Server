@@ -18,6 +18,8 @@ fun Int?.validateFlagLogActive() = (this == 0 || this == 1)
 
 fun String?.validateIsNullOrBlank() = "Please enter $this"
 
+fun String?.toMessageIsNullOrBlank() = "Please enter $this"
+
 fun String?.validateLessEqZero() = "Please check the $this again"
 
 fun String?.validateNotFound() = "$this not found"
@@ -36,13 +38,14 @@ fun String?.isValidateDateTime(): Boolean {
 
 fun String?.toMessageIncorrect() = "$this Incorrect"
 
-fun String?.validateTeam() = (this == "A" || this == "B")
+fun String?.validateTeam() = (this == TegConstant.TEAM_A || this == TegConstant.TEAM_B)
 
-fun String?.validateState() = (this == "online" || this == "offline")
+fun String?.validateState() = (this == TegConstant.STATE_ONLINE || this == TegConstant.STATE_OFFLINE)
 
 fun String?.validateIncorrect() = "$this Incorrect"
 
-fun String?.toMessageGender() = "$this incorrect. Please enter M or F"
+fun String?.toMessageGender() =
+    "$this incorrect. Please enter ${TegConstant.GENDER_MALE} or ${TegConstant.GENDER_FEMALE}"
 
 fun String?.toMessageRepeat(other: String) = "$this repeat. Please enter other $other"
 

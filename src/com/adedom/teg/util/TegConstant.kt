@@ -11,5 +11,11 @@ object TegConstant {
     const val MIN_PASSWORD = 4
     const val MAX_PEOPLE = 6
     const val MAX_ITEM = 4
+    const val TEAM_A = "A"
+    const val TEAM_B = "B"
+    const val STATE_ONLINE = "online"
+    const val STATE_OFFLINE = "offline"
+    const val GENDER_MALE = "M"
+    const val GENDER_FEMALE = "F"
 
 }

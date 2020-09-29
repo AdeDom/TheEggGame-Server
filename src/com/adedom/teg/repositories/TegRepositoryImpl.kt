@@ -1,5 +1,6 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.data.ApiConstant
@@ -12,7 +13,6 @@ import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
-import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -178,19 +178,14 @@ class TegRepositoryImpl : TegRepository {
         )
     }
 
-    override fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse {
-        val response = BaseResponse()
+    override fun playerState(playerId: String, stateRequest: StateRequest): Boolean {
         val (state) = stateRequest
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.state] = state
             }
         }
-        if (transaction == 1) {
-            response.success = true
-            response.message = "Patch state success"
-        }
-        return response
+        return transaction == 1
     }
 
     override fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse {

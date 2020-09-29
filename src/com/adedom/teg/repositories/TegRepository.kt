@@ -1,11 +1,11 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
-import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -34,7 +34,7 @@ interface TegRepository {
 
     fun fetchPlayerInfo(playerId: String): PlayerInfo
 
-    fun playerState(playerId: String, stateRequest: StateRequest): BaseResponse
+    fun playerState(playerId: String, stateRequest: StateRequest): Boolean
 
     fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse
 

@@ -1,10 +1,10 @@
 package com.adedom.teg.controller.account
 
 import com.adedom.teg.controller.account.model.PlayerInfoRequest
+import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
-import com.adedom.teg.request.account.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.util.*
@@ -41,25 +41,8 @@ fun Route.accountController(service: AccountService) {
         call.respond(response)
     }
 
-    patch<StateRequest> { request ->
-        val response = BaseResponse()
-        val playerId = call.player?.playerId
-        val message = when {
-            playerId == null -> playerId.validateAccessToken()
-
-            request.state.isNullOrBlank() -> StateRequest::state.name.validateIsNullOrBlank()
-            !request.state.validateState() -> StateRequest::state.name.validateIncorrect()
-
-            else -> {
-                val service: BaseResponse = service.playerState(
-                    playerId,
-                    StateRequest(request.state)
-                )
-                response.success = service.success
-                service.message
-            }
-        }
-        response.message = message
+    patch<StateRequest> {
+        val response = service.playerState(call.playerId, it)
         call.respond(response)
     }
 
