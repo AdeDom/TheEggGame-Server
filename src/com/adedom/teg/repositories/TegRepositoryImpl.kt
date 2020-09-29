@@ -355,7 +355,18 @@ class TegRepositoryImpl : TegRepository {
 
     private fun randomUUID() = UUID.randomUUID().toString().replace("-", "")
 
-    private fun String?.convertBirthdateStringToLong(): Long = SimpleDateFormat("dd/MM/yyyy").parse(this).time
+    private fun String?.convertBirthdateStringToLong(): Long {
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        val date = sdf.parse(this)
+        return if (date.time < 0L) {
+            date.time
+        } else {
+            val dd = SimpleDateFormat("dd").format(date)
+            val MM = SimpleDateFormat("MM").format(date)
+            val yyyy = SimpleDateFormat("yyyy").format(date).toInt() - 543
+            sdf.parse("$dd/$MM/$yyyy").time
+        }
+    }
 
     private fun String?.encryptSHA(): String {
         var sha = ""
