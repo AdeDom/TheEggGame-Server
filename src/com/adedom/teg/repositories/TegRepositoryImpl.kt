@@ -1,5 +1,6 @@
 package com.adedom.teg.repositories
 
+import com.adedom.teg.controller.account.model.ChangePasswordRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
@@ -11,7 +12,6 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
@@ -65,6 +65,15 @@ class TegRepositoryImpl : TegRepository {
         return transaction {
             Players.select {
                 Players.username eq username!! and (Players.password eq password.encryptSHA())
+            }.count().toInt() == 0
+        }
+    }
+
+    override fun isValidateChangePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean {
+        val (oldPassword) = changePasswordRequest
+        return transaction {
+            Players.select {
+                Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
             }.count().toInt() == 0
         }
     }
@@ -188,30 +197,14 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): BaseResponse {
-        val (oldPassword, newPassword) = changePasswordRequest
-        val response = BaseResponse()
-
-        val isValidatePassword: Boolean = transaction {
-            Players.select {
-                Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
-            }.count().toInt() == 0
-        }
-
-        if (isValidatePassword) {
-            response.message = "Password incorrect"
-        } else {
-            val transaction: Int = transaction {
-                Players.update({ Players.playerId eq playerId }) {
-                    it[password] = newPassword.encryptSHA()
-                }
-            }
-            if (transaction == 1) {
-                response.success = true
-                response.message = "Change password success"
+    override fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean {
+        val (_, newPassword) = changePasswordRequest
+        val transaction: Int = transaction {
+            Players.update({ Players.playerId eq playerId }) {
+                it[password] = newPassword.encryptSHA()
             }
         }
-        return response
+        return transaction == 1
     }
 
     override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse {

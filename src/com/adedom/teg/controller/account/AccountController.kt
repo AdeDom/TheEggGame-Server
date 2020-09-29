@@ -1,8 +1,8 @@
 package com.adedom.teg.controller.account
 
+import com.adedom.teg.controller.account.model.ChangePasswordRequest
 import com.adedom.teg.controller.account.model.PlayerInfoRequest
 import com.adedom.teg.controller.account.model.StateRequest
-import com.adedom.teg.request.account.ChangePasswordRequest
 import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.response.BaseResponse
@@ -47,27 +47,8 @@ fun Route.accountController(service: AccountService) {
     }
 
     put<ChangePasswordRequest> {
-        val response = BaseResponse()
-        val (oldPassword, newPassword) = call.receive<ChangePasswordRequest>()
-        val playerId = call.player?.playerId
-        val message: String? = when {
-            playerId == null -> playerId.validateAccessToken()
-
-            oldPassword.isNullOrBlank() -> ChangePasswordRequest::oldPassword.name.validateIsNullOrBlank()
-
-            newPassword.isNullOrBlank() -> ChangePasswordRequest::newPassword.name.validateIsNullOrBlank()
-            newPassword.length < TegConstant.MIN_PASSWORD -> ChangePasswordRequest::newPassword.name validateGrateEq TegConstant.MIN_PASSWORD
-
-            else -> {
-                val service: BaseResponse = service.changePassword(
-                    playerId,
-                    ChangePasswordRequest(oldPassword, newPassword)
-                )
-                response.success = service.success
-                service.message
-            }
-        }
-        response.message = message
+        val request = call.receive<ChangePasswordRequest>()
+        val response = service.changePassword(call.playerId, request)
         call.respond(response)
     }
 
