@@ -5,7 +5,6 @@ import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
-import com.adedom.teg.data.ApiConstant
 import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.LogActives
@@ -20,23 +19,14 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel
-import com.google.gson.Gson
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
-import io.ktor.http.content.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
-import java.io.File
 import java.io.UnsupportedEncodingException
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -112,52 +102,14 @@ class TegRepositoryImpl : TegRepository {
     }
 
     //    todo resize image
-    override suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse {
-        val response = BaseResponse()
-        multiPartData.forEachPart { part ->
-            response.message = if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
-                val username = transaction {
-                    Players.slice(Players.username)
-                        .select { Players.playerId eq playerId }
-                        .map { it[Players.username] }
-                        .single()
-                }
-                val ext = File(part.originalFileName!!).extension
-                val imageName = "image-$username.$ext"
-
-//                val file = File(imageName.toResourcesPathName())
-//                part.streamProvider().use { input ->
-//                    file.outputStream().buffered().use { output ->
-//                        input.copyToSuspend(output)
-//                    }
-//                }
-
-                val byteArray = part.streamProvider().readBytes()
-                val encodeToString = Base64.getEncoder().encodeToString(byteArray)
-                val httpResponse = HttpClient(Apache).post<HttpResponse> {
-                    url("${BASE_IMAGE}/upload-image.php")
-                    body = MultiPartFormDataContent(formData {
-                        append(ApiConstant.name, imageName)
-                        append(ApiConstant.image, encodeToString)
-                    })
-                }
-
-                val baseResponse: BaseResponse = Gson().fromJson(httpResponse.readText(), BaseResponse::class.java)
-                if (baseResponse.success) {
-                    val transaction: Int = transaction {
-                        Players.update({ Players.playerId eq playerId }) {
-                            it[image] = imageName
-                        }
-                    }
-                    if (transaction == 1) response.success = baseResponse.success
-                }
-                baseResponse.message
-            } else {
-                "Not found image file"
+    override fun changeImageProfile(playerId: String, imageName: String): Boolean {
+        val transaction: Int = transaction {
+            Players.update({ Players.playerId eq playerId }) {
+                it[image] = BASE_IMAGE + imageName
+                it[dateTimeUpdated] = System.currentTimeMillis()
             }
-            part.dispose()
         }
-        return response
+        return transaction == 1
     }
 
     override fun fetchPlayerInfo(playerId: String): PlayerInfo {

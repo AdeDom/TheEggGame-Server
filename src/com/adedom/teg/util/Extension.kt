@@ -1,5 +1,7 @@
 package com.adedom.teg.util
 
+import com.google.gson.Gson
+import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -84,3 +86,5 @@ fun String.toResourcesPathName(): String = "teg-file/$this"
 fun Int?.toLevel(): Int = this?.div(1000) ?: 1
 
 fun Long?.toConvertBirthdate(): String = SimpleDateFormat("dd/MM/yyyy", Locale("th", "TH")).format(this)
+
+suspend inline fun <reified T> HttpResponse.fromJson(): T = Gson().fromJson(this.readText(), T::class.java)

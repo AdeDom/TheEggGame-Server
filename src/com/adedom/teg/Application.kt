@@ -20,6 +20,10 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.features.*
+import io.ktor.client.features.logging.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.locations.*
@@ -99,5 +103,16 @@ fun Application.module() {
                 headerController()
             }
         }
+    }
+}
+
+internal fun getHttpClientOkHttp() = HttpClient(OkHttp) {
+    install(HttpTimeout) {
+        requestTimeoutMillis = 60_000
+    }
+
+    install(Logging) {
+        logger = Logger.DEFAULT
+        level = LogLevel.HEADERS
     }
 }

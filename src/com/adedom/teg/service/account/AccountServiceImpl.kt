@@ -6,13 +6,32 @@ import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
+import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.*
-import io.ktor.http.content.*
 
 class AccountServiceImpl(private val repository: TegRepository) : AccountService {
 
-    override suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse {
-        return BaseResponse()
+    override fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String? = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            imageName.isNullOrBlank() -> "Not found image file [${GetConstant.IMAGE_FILE}]"
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.changeImageProfile(playerId, imageName)
+                "Put change image profile success"
+            }
+        }
+
+        response.message = message
+        return response
     }
 
     override fun fetchPlayerInfo(playerId: String?): PlayerResponse {

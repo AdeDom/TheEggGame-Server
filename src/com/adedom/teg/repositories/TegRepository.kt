@@ -13,7 +13,6 @@ import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
-import io.ktor.http.content.*
 
 interface TegRepository {
 
@@ -33,7 +32,7 @@ interface TegRepository {
 
     fun signUp(signUpRequest: SignUpRequest): SignUpResponse
 
-    suspend fun changeImageProfile(playerId: String, multiPartData: MultiPartData): BaseResponse
+    fun changeImageProfile(playerId: String, imageName: String): Boolean
 
     fun fetchPlayerInfo(playerId: String): PlayerInfo
 
