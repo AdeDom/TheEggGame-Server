@@ -1,6 +1,7 @@
 package com.adedom.teg.repositories
 
 import com.adedom.teg.controller.account.model.ChangePasswordRequest
+import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
@@ -12,7 +13,6 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
@@ -202,25 +202,23 @@ class TegRepositoryImpl : TegRepository {
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[password] = newPassword.encryptSHA()
+                it[dateTimeUpdated] = System.currentTimeMillis()
             }
         }
         return transaction == 1
     }
 
-    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse {
-        val response = BaseResponse()
-        val (name, gender) = changeProfileRequest
+    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): Boolean {
+        val (name, gender, birthdate) = changeProfileRequest
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
+                it[Players.birthdate] = birthdate.convertBirthdateStringToLong()
+                it[Players.dateTimeUpdated] = System.currentTimeMillis()
             }
         }
-        if (transaction == 1) {
-            response.success = true
-            response.message = "Change profile success"
-        }
-        return response
+        return transaction == 1
     }
 
     override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {

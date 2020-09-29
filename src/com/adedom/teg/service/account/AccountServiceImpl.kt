@@ -1,9 +1,9 @@
 package com.adedom.teg.service.account
 
 import com.adedom.teg.controller.account.model.ChangePasswordRequest
+import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.repositories.TegRepository
-import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.util.*
@@ -47,7 +47,7 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
             state.isNullOrBlank() -> stateRequest::state.name.toMessageIsNullOrBlank()
 
             // validate values of variable
-            !state.validateState() -> StateRequest::state.name.validateIncorrect()
+            !state.validateState() -> stateRequest::state.name.validateIncorrect()
 
             // validate database
 
@@ -91,8 +91,32 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
         return response
     }
 
-    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): BaseResponse {
-        return BaseResponse()
+    override fun changeProfile(playerId: String?, changeProfileRequest: ChangeProfileRequest): BaseResponse {
+        val response = BaseResponse()
+        val (name, gender, birthdate) = changeProfileRequest
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            name.isNullOrBlank() -> changeProfileRequest::name.name.toMessageIsNullOrBlank()
+            gender.isNullOrBlank() -> changeProfileRequest::gender.name.toMessageIsNullOrBlank()
+            birthdate.isNullOrBlank() -> changeProfileRequest::birthdate.name.toMessageIsNullOrBlank()
+
+            // validate values of variable
+            !gender.isValidateGender() -> changeProfileRequest::gender.name.validateIncorrect()
+            birthdate.isValidateDateTime() -> changeProfileRequest::birthdate.name.toMessageIncorrect()
+
+            // validate database
+            repository.isNameRepeat(name) -> changeProfileRequest::name.name.toMessageRepeat(name)
+
+            // execute
+            else -> {
+                response.success = repository.changeProfile(playerId, changeProfileRequest)
+                "Put change profile success"
+            }
+        }
+
+        response.message = message
+        return response
     }
 
 }

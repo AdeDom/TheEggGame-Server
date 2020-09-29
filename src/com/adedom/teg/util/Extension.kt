@@ -24,7 +24,7 @@ fun String?.validateLessEqZero() = "Please check the $this again"
 
 fun String?.validateNotFound() = "$this not found"
 
-fun String?.validateGender() = (this == "M" || this == "F")
+fun String?.isValidateGender() = (this == TegConstant.GENDER_MALE || this == TegConstant.GENDER_FEMALE)
 
 // if parse success return false
 fun String?.isValidateDateTime(): Boolean {

@@ -52,7 +52,7 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
             // validate values of variable
             username.length < TegConstant.MIN_USERNAME -> signUpRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
             password.length < TegConstant.MIN_PASSWORD -> signUpRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
-            !gender.validateGender() -> signUpRequest::gender.name.toMessageGender()
+            !gender.isValidateGender() -> signUpRequest::gender.name.toMessageGender()
             birthdate.isValidateDateTime() -> signUpRequest::birthdate.name.toMessageIncorrect()
 
             // validate database

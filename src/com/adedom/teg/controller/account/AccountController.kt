@@ -1,15 +1,15 @@
 package com.adedom.teg.controller.account
 
 import com.adedom.teg.controller.account.model.ChangePasswordRequest
+import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.PlayerInfoRequest
 import com.adedom.teg.controller.account.model.StateRequest
-import com.adedom.teg.request.account.ChangeProfileRequest
 import com.adedom.teg.request.account.ImageProfile
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.service.account.AccountService
-import com.adedom.teg.util.*
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.jwt.playerId
+import com.adedom.teg.util.validateAccessToken
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.request.*
@@ -53,28 +53,8 @@ fun Route.accountController(service: AccountService) {
     }
 
     put<ChangeProfileRequest> {
-        val response = BaseResponse()
-        val (name, gender) = call.receive<ChangeProfileRequest>()
-        val playerId = call.player?.playerId
-        val message: String? = when {
-            playerId == null -> playerId.validateAccessToken()
-
-            name.isNullOrBlank() -> ChangeProfileRequest::name.name.validateIsNullOrBlank()
-            name.length < TegConstant.MIN_NAME -> ChangeProfileRequest::name.name.validateGrateEq(TegConstant.MIN_NAME)
-
-            gender.isNullOrBlank() -> ChangeProfileRequest::gender.name.validateIsNullOrBlank()
-            !gender.validateGender() -> ChangeProfileRequest::gender.name.validateIncorrect()
-
-            else -> {
-                val service: BaseResponse = service.changeProfile(
-                    playerId,
-                    ChangeProfileRequest(name, gender)
-                )
-                response.success = service.success
-                service.message
-            }
-        }
-        response.message = message
+        val request = call.receive<ChangeProfileRequest>()
+        val response = service.changeProfile(call.playerId, request)
         call.respond(response)
     }
 
