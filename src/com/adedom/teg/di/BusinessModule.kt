@@ -21,7 +21,7 @@ private val businessModule = module {
     single<AuthService> { AuthServiceImpl(get(), get()) }
     single<AccountService> { AccountServiceImpl(get(), get()) }
     single<ApplicationService> { ApplicationServiceImpl(get(), get()) }
-    single<SingleService> { SingleServiceImpl(get()) }
+    single<SingleService> { SingleServiceImpl(get(), get()) }
 
 }
 

@@ -5,8 +5,6 @@ import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.service.business.TegBusiness
-import com.adedom.teg.util.toMessageIncorrect
-import com.adedom.teg.util.toMessageIsNullOrBlank
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -21,13 +19,13 @@ class ApplicationServiceImpl(
 
         val message: String = when {
             // validate Null Or Blank
-            search == null -> rankPlayersRequest::search.name.toMessageIsNullOrBlank()
-            limit.isNullOrBlank() -> rankPlayersRequest::limit.name.toMessageIsNullOrBlank()
-            limit.toIntOrNull() == null -> rankPlayersRequest::limit.name.toMessageIsNullOrBlank()
+            search == null -> business.toMessageIsNullOrBlank(rankPlayersRequest::search)
+            limit.isNullOrBlank() -> business.toMessageIsNullOrBlank(rankPlayersRequest::limit)
+            limit.toIntOrNull() == null -> business.toMessageIsNullOrBlank(rankPlayersRequest::limit)
 
             // validate values of variable
-            limit.toInt() <= 0 -> rankPlayersRequest::limit.name.toMessageIncorrect()
-            !business.isValidateRankPlayer(limit.toInt()) -> rankPlayersRequest::limit.name.toMessageIncorrect()
+            limit.toInt() <= 0 -> business.toMessageIncorrect(rankPlayersRequest::limit)
+            !business.isValidateRankPlayer(limit.toInt()) -> business.toMessageIncorrect(rankPlayersRequest::limit)
 
             // validate database
 
@@ -48,7 +46,7 @@ class ApplicationServiceImpl(
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
 
             // validate values of variable
 
@@ -70,7 +68,7 @@ class ApplicationServiceImpl(
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
 
             // validate values of variable
 

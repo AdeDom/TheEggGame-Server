@@ -8,7 +8,7 @@ import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.service.business.TegBusiness
-import com.adedom.teg.util.*
+import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -22,7 +22,7 @@ class AccountServiceImpl(
 
         val message: String? = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
             imageName.isNullOrBlank() -> "Not found image file [${GetConstant.IMAGE_FILE}]"
 
             // validate values of variable
@@ -45,7 +45,7 @@ class AccountServiceImpl(
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
 
             // validate values of variable
 
@@ -68,11 +68,11 @@ class AccountServiceImpl(
         val (state) = stateRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
-            state.isNullOrBlank() -> stateRequest::state.name.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            state.isNullOrBlank() -> business.toMessageIsNullOrBlank(stateRequest::state)
 
             // validate values of variable
-            !business.isValidateState(state) -> stateRequest::state.name.toMessageIncorrect()
+            !business.isValidateState(state) -> business.toMessageIncorrect(stateRequest::state)
 
             // validate database
 
@@ -92,15 +92,15 @@ class AccountServiceImpl(
         val (oldPassword, newPassword) = changePasswordRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
-            oldPassword.isNullOrBlank() -> changePasswordRequest::oldPassword.name.toMessageIsNullOrBlank()
-            newPassword.isNullOrBlank() -> changePasswordRequest::newPassword.name.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            oldPassword.isNullOrBlank() -> business.toMessageIsNullOrBlank(changePasswordRequest::oldPassword)
+            newPassword.isNullOrBlank() -> business.toMessageIsNullOrBlank(changePasswordRequest::newPassword)
 
             // validate values of variable
             oldPassword.length < TegConstant.MIN_PASSWORD ->
-                changePasswordRequest::oldPassword.name.validateGrateEq(TegConstant.MIN_PASSWORD)
+                business.validateGrateEq(changePasswordRequest::oldPassword, TegConstant.MIN_PASSWORD)
             newPassword.length < TegConstant.MIN_PASSWORD ->
-                changePasswordRequest::newPassword.name.validateGrateEq(TegConstant.MIN_PASSWORD)
+                business.validateGrateEq(changePasswordRequest::newPassword, TegConstant.MIN_PASSWORD)
 
             // validate database
             repository.isValidateChangePassword(playerId, changePasswordRequest) -> "Password incorrect"
@@ -121,17 +121,17 @@ class AccountServiceImpl(
         val (name, gender, birthdate) = changeProfileRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
-            name.isNullOrBlank() -> changeProfileRequest::name.name.toMessageIsNullOrBlank()
-            gender.isNullOrBlank() -> changeProfileRequest::gender.name.toMessageIsNullOrBlank()
-            birthdate.isNullOrBlank() -> changeProfileRequest::birthdate.name.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            name.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::name)
+            gender.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::gender)
+            birthdate.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::birthdate)
 
             // validate values of variable
-            !business.isValidateGender(gender) -> changeProfileRequest::gender.name.toMessageIncorrect()
-            business.isValidateDateTime(birthdate) -> changeProfileRequest::birthdate.name.toMessageIncorrect()
+            !business.isValidateGender(gender) -> business.toMessageIncorrect(changeProfileRequest::gender)
+            business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(changeProfileRequest::birthdate)
 
             // validate database
-            repository.isNameRepeat(name) -> changeProfileRequest::name.name.toMessageRepeat(name)
+            repository.isNameRepeat(name) -> business.toMessageRepeat(changeProfileRequest::name, name)
 
             // execute
             else -> {

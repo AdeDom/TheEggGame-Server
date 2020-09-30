@@ -4,19 +4,21 @@ import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.util.toMessageIncorrect
-import com.adedom.teg.util.toMessageIsNullOrBlank
+import com.adedom.teg.service.business.TegBusiness
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class SingleServiceImpl(private val repository: TegRepository) : SingleService {
+class SingleServiceImpl(
+    private val repository: TegRepository,
+    private val business: TegBusiness,
+) : SingleService {
 
     override fun fetchItemCollection(playerId: String?): BackpackResponse {
         val response = BackpackResponse()
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
 
             // validate values of variable
 
@@ -40,15 +42,15 @@ class SingleServiceImpl(private val repository: TegRepository) : SingleService {
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
-            itemId == null -> itemCollectionRequest::itemId.name.toMessageIsNullOrBlank()
-            qty == null -> itemCollectionRequest::qty.name.toMessageIsNullOrBlank()
-            latitude == null -> itemCollectionRequest::latitude.name.toMessageIsNullOrBlank()
-            longitude == null -> itemCollectionRequest::longitude.name.toMessageIsNullOrBlank()
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            itemId == null -> business.toMessageIsNullOrBlank1(itemCollectionRequest::itemId)
+            qty == null -> business.toMessageIsNullOrBlank1(itemCollectionRequest::qty)
+            latitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::latitude)
+            longitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::longitude)
 
             // validate values of variable
-            itemId <= 0 -> itemCollectionRequest::itemId.name.toMessageIncorrect()
-            qty <= 0 -> itemCollectionRequest::qty.name.toMessageIncorrect()
+            itemId <= 0 -> business.toMessageIncorrect1(itemCollectionRequest::itemId)
+            qty <= 0 -> business.toMessageIncorrect1(itemCollectionRequest::qty)
 
             // validate database
 

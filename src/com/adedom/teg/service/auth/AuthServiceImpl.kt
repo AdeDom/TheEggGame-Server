@@ -6,7 +6,7 @@ import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.business.TegBusiness
-import com.adedom.teg.util.*
+import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -21,12 +21,14 @@ class AuthServiceImpl(
         val (username, password) = signInRequest
         val message: String = when {
             // validate Null Or Blank
-            username.isNullOrBlank() -> signInRequest::username.name.toMessageIsNullOrBlank()
-            password.isNullOrBlank() -> signInRequest::password.name.toMessageIsNullOrBlank()
+            username.isNullOrBlank() -> business.toMessageIsNullOrBlank(signInRequest::username)
+            password.isNullOrBlank() -> business.toMessageIsNullOrBlank(signInRequest::password)
 
             // validate values of variable
-            username.length < TegConstant.MIN_USERNAME -> signInRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
-            password.length < TegConstant.MIN_PASSWORD -> signInRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
+            username.length < TegConstant.MIN_USERNAME ->
+                business.validateGrateEq(signInRequest::username, TegConstant.MIN_USERNAME)
+            password.length < TegConstant.MIN_PASSWORD ->
+                business.validateGrateEq(signInRequest::password, TegConstant.MIN_PASSWORD)
 
             // validate database
             repository.isValidateSignIn(signInRequest) -> "Username and password incorrect"
@@ -49,21 +51,23 @@ class AuthServiceImpl(
 
         val message: String = when {
             // validate Null Or Blank
-            username.isNullOrBlank() -> signUpRequest::username.name.toMessageIsNullOrBlank()
-            password.isNullOrBlank() -> signUpRequest::password.name.toMessageIsNullOrBlank()
-            name.isNullOrBlank() -> signUpRequest::name.name.toMessageIsNullOrBlank()
-            gender.isNullOrBlank() -> signUpRequest::gender.name.toMessageIsNullOrBlank()
-            birthdate.isNullOrBlank() -> signUpRequest::birthdate.name.toMessageIsNullOrBlank()
+            username.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::username)
+            password.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::password)
+            name.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::name)
+            gender.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::gender)
+            birthdate.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::birthdate)
 
             // validate values of variable
-            username.length < TegConstant.MIN_USERNAME -> signUpRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
-            password.length < TegConstant.MIN_PASSWORD -> signUpRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
-            !business.isValidateGender(gender) -> signUpRequest::gender.name.toMessageGender()
-            business.isValidateDateTime(birthdate) -> signUpRequest::birthdate.name.toMessageIncorrect()
+            username.length < TegConstant.MIN_USERNAME ->
+                business.validateGrateEq(signUpRequest::username, TegConstant.MIN_USERNAME)
+            password.length < TegConstant.MIN_PASSWORD ->
+                business.validateGrateEq(signUpRequest::password, TegConstant.MIN_PASSWORD)
+            !business.isValidateGender(gender) -> business.toMessageGender(signUpRequest::gender)
+            business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(signUpRequest::birthdate)
 
             // validate database
-            repository.isUsernameRepeat(username) -> signUpRequest::username.name.toMessageRepeat(username)
-            repository.isNameRepeat(name) -> signUpRequest::name.name.toMessageRepeat(name)
+            repository.isUsernameRepeat(username) -> business.toMessageRepeat(signUpRequest::username, username)
+            repository.isNameRepeat(name) -> business.toMessageRepeat(signUpRequest::name, name)
 
             // execute
             else -> {
