@@ -41,7 +41,7 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
 
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
 
             // validate values of variable
 

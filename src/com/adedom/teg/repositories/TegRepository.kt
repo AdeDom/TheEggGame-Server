@@ -4,13 +4,12 @@ import com.adedom.teg.controller.account.model.ChangePasswordRequest
 import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.application.model.RankPlayersRequest
+import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
-import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.single.model.ItemCollectionRequest
+import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.response.BackpackResponse
-import com.adedom.teg.response.BaseResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -50,6 +49,6 @@ interface TegRepository {
 
     fun fetchItemCollection(playerId: String): BackpackResponse
 
-    fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse
+    fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
 
 }

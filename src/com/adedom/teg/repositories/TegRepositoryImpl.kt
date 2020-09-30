@@ -4,8 +4,10 @@ import com.adedom.teg.controller.account.model.ChangePasswordRequest
 import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.application.model.RankPlayersRequest
+import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
+import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.ItemCollections
 import com.adedom.teg.db.LogActives
@@ -13,10 +15,7 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.controller.auth.model.SignInRequest
-import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
-import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -260,11 +259,10 @@ class TegRepositoryImpl : TegRepository {
         return response
     }
 
-    override fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
-        val response = BaseResponse()
+    override fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean {
         val (itemId, qty, latitude, longitude) = itemCollectionRequest
 
-        transaction {
+        val statement = transaction {
             ItemCollections.insert {
                 it[ItemCollections.playerId] = playerId
                 it[ItemCollections.itemId] = itemId!!
@@ -275,10 +273,7 @@ class TegRepositoryImpl : TegRepository {
             }
         }
 
-        response.success = true
-        response.message = "Post item collection success"
-
-        return response
+        return statement.resultedValues?.size == 1
     }
 
     private fun randomUUID() = UUID.randomUUID().toString().replace("-", "")

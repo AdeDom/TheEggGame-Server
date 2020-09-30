@@ -10,6 +10,6 @@ interface SingleService {
 
     fun fetchItemCollection(playerId: String): BackpackResponse
 
-    fun postItemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): BaseResponse
+    fun itemCollection(playerId: String?, itemCollectionRequest: ItemCollectionRequest): BaseResponse
 
 }
