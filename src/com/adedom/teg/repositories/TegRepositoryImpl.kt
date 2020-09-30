@@ -15,7 +15,6 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -231,32 +230,27 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun fetchItemCollection(playerId: String): BackpackResponse {
-        val response = BackpackResponse()
+    override fun fetchItemCollection(playerId: String): Backpack {
+        return transaction {
+            addLogger(StdOutSqlLogger)
 
-        val backpack: Backpack = transaction {
-            val eggI = ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 2) }
-                .map { ItemCollections.toItemCollection(it) }
-                .sumBy { it.qty!! }
+            val eggI =
+                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_ONE) }
+                    .map { ItemCollections.toItemCollection(it) }
+                    .sumBy { it.qty!! }
 
             val eggII =
-                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 3) }
+                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_TWO) }
                     .map { ItemCollections.toItemCollection(it) }
                     .sumBy { it.qty!! }
 
             val eggIII =
-                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq 4) }
+                ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_THREE) }
                     .map { ItemCollections.toItemCollection(it) }
                     .sumBy { it.qty!! }
 
             Backpack(eggI, eggII, eggIII)
         }
-
-        response.success = true
-        response.message = "Fetch item collection success"
-        response.backpack = backpack
-
-        return response
     }
 
     override fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean {

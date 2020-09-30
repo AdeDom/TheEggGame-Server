@@ -8,7 +8,7 @@ import io.ktor.locations.*
 @KtorExperimentalLocationsAPI
 interface SingleService {
 
-    fun fetchItemCollection(playerId: String): BackpackResponse
+    fun fetchItemCollection(playerId: String?): BackpackResponse
 
     fun itemCollection(playerId: String?, itemCollectionRequest: ItemCollectionRequest): BaseResponse
 

@@ -8,8 +8,8 @@ import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.controller.single.model.ItemCollectionRequest
+import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.response.BackpackResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -47,7 +47,7 @@ interface TegRepository {
 
     fun logActiveOff(playerId: String): Boolean
 
-    fun fetchItemCollection(playerId: String): BackpackResponse
+    fun fetchItemCollection(playerId: String): Backpack
 
     fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
 
