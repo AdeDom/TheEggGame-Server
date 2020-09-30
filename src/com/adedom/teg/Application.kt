@@ -23,6 +23,7 @@ import io.ktor.auth.jwt.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
+import io.ktor.client.features.json.*
 import io.ktor.client.features.logging.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -106,13 +107,21 @@ fun Application.module() {
     }
 }
 
-internal fun getHttpClientOkHttp() = HttpClient(OkHttp) {
-    install(HttpTimeout) {
-        requestTimeoutMillis = 60_000
-    }
+internal inline fun getHttpClientOkHttp(bloc: HttpClient.() -> Unit) {
+    val client = HttpClient(OkHttp) {
+        install(JsonFeature) {
+            serializer = GsonSerializer()
+        }
 
-    install(Logging) {
-        logger = Logger.DEFAULT
-        level = LogLevel.HEADERS
+        install(HttpTimeout) {
+            requestTimeoutMillis = 60_000
+        }
+
+        install(Logging) {
+            logger = Logger.DEFAULT
+            level = LogLevel.HEADERS
+        }
     }
+    bloc.invoke(client)
+    client.close()
 }

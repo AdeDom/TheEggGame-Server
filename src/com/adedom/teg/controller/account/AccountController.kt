@@ -36,15 +36,17 @@ fun Route.accountController(service: AccountService) {
 
                     val byteArray = part.streamProvider().readBytes()
                     val encodeToString = Base64.getEncoder().encodeToString(byteArray)
-                    val response = getHttpClientOkHttp().post<HttpResponse> {
-                        url(BASE_IMAGE + "upload-image.php")
-                        body = MultiPartFormDataContent(formData {
-                            append(ApiConstant.name, imageName!!)
-                            append(ApiConstant.image, encodeToString)
-                        })
-                    }.fromJson<BaseResponse>()
+                    getHttpClientOkHttp {
+                        val response = post<HttpResponse> {
+                            url(BASE_IMAGE + "upload-image.php")
+                            body = MultiPartFormDataContent(formData {
+                                append(ApiConstant.name, imageName!!)
+                                append(ApiConstant.image, encodeToString)
+                            })
+                        }.fromJson<BaseResponse>()
 
-                    if (!response.success) imageName = null
+                        if (!response.success) imageName = null
+                    }
                 }
                 part.dispose()
             }
