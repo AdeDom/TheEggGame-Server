@@ -1,4 +1,4 @@
-package com.adedom.teg.util.jwt
+package com.adedom.teg.service.jwtconfig
 
 import io.ktor.auth.Principal
 

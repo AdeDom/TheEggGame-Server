@@ -3,7 +3,7 @@ package com.adedom.teg.controller.single
 import com.adedom.teg.controller.single.model.BackpackRequest
 import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.service.single.SingleService
-import com.adedom.teg.util.jwt.playerId
+import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.request.*

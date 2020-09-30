@@ -6,6 +6,7 @@ import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.service.business.TegBusiness
+import com.adedom.teg.service.jwtconfig.JwtConfig
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -13,6 +14,7 @@ import io.ktor.locations.*
 class AuthServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
+    private val jwtConfig: JwtConfig,
 ) : AuthService {
 
     override fun signIn(signInRequest: SignInRequest): SignInResponse {
@@ -36,7 +38,7 @@ class AuthServiceImpl(
             // execute
             else -> {
                 response.success = true
-                response.accessToken = repository.signIn(signInRequest)
+                response.accessToken = jwtConfig.makeToken(repository.signIn(signInRequest))
                 "Sign in success"
             }
         }
@@ -71,9 +73,9 @@ class AuthServiceImpl(
 
             // execute
             else -> {
-                val signUp = repository.signUp(signUpRequest)
-                response.success = signUp.success
-                response.accessToken = signUp.accessToken
+                val pair = repository.signUp(signUpRequest)
+                response.success = pair.first
+                response.accessToken = jwtConfig.makeToken(pair.second)
                 "Sign up success"
             }
         }

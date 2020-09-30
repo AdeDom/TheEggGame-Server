@@ -1,6 +1,9 @@
 package com.adedom.teg.util
 
+import com.adedom.teg.service.jwtconfig.PlayerPrincipal
 import com.google.gson.Gson
+import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.client.statement.*
 import org.joda.time.DateTime
 import java.text.SimpleDateFormat
@@ -23,3 +26,6 @@ fun Int?.toLevel(): Int = this?.div(1000) ?: 1
 fun Long?.toConvertBirthdate(): String = SimpleDateFormat("dd/MM/yyyy", Locale("th", "TH")).format(this)
 
 suspend inline fun <reified T> HttpResponse.fromJson(): T = Gson().fromJson(this.readText(), T::class.java)
+
+val ApplicationCall.playerId
+    get() = authentication.principal<PlayerPrincipal>()?.playerId

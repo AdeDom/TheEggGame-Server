@@ -8,6 +8,8 @@ import com.adedom.teg.service.auth.AuthService
 import com.adedom.teg.service.auth.AuthServiceImpl
 import com.adedom.teg.service.business.TegBusiness
 import com.adedom.teg.service.business.TegBusinessImpl
+import com.adedom.teg.service.jwtconfig.JwtConfig
+import com.adedom.teg.service.jwtconfig.JwtConfigImpl
 import com.adedom.teg.service.single.SingleService
 import com.adedom.teg.service.single.SingleServiceImpl
 import io.ktor.locations.*
@@ -16,9 +18,14 @@ import org.koin.dsl.module
 @KtorExperimentalLocationsAPI
 private val businessModule = module {
 
+    // jwt
+    single<JwtConfig> { JwtConfigImpl() }
+
+    // logic
     single<TegBusiness> { TegBusinessImpl() }
 
-    single<AuthService> { AuthServiceImpl(get(), get()) }
+    // service
+    single<AuthService> { AuthServiceImpl(get(), get(), get()) }
     single<AccountService> { AccountServiceImpl(get(), get()) }
     single<ApplicationService> { ApplicationServiceImpl(get(), get()) }
     single<SingleService> { SingleServiceImpl(get(), get()) }

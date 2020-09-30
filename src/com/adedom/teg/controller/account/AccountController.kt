@@ -8,7 +8,7 @@ import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.util.fromJson
-import com.adedom.teg.util.jwt.playerId
+import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*

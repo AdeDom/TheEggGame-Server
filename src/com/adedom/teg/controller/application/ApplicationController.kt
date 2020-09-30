@@ -3,7 +3,7 @@ package com.adedom.teg.controller.application
 import com.adedom.teg.controller.application.model.LogActiveRequest
 import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.service.application.ApplicationService
-import com.adedom.teg.util.jwt.playerId
+import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*

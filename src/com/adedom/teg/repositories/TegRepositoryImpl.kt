@@ -6,7 +6,6 @@ import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
-import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.data.BASE_IMAGE
 import com.adedom.teg.db.ItemCollections
@@ -16,8 +15,6 @@ import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.util.TegConstant
-import com.adedom.teg.util.jwt.JwtConfig
-import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel
 import io.ktor.locations.*
@@ -72,11 +69,12 @@ class TegRepositoryImpl : TegRepository {
                 .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
                 .single()
         }
-        val playerId = resultRow[Players.playerId]
-        return JwtConfig.makeToken(PlayerPrincipal(playerId))
+
+        // player id
+        return resultRow[Players.playerId]
     }
 
-    override fun signUp(signUpRequest: SignUpRequest): SignUpResponse {
+    override fun signUp(signUpRequest: SignUpRequest): Pair<Boolean, String> {
         val (username, password, name, gender, birthdate) = signUpRequest
 
         val statement = transaction {
@@ -93,9 +91,8 @@ class TegRepositoryImpl : TegRepository {
 
         val resulted = statement.resultedValues?.size == 1
         val playerId = statement.resultedValues?.get(0)?.get(Players.playerId)
-        val accessToken = JwtConfig.makeToken(PlayerPrincipal(playerId))
 
-        return SignUpResponse(success = resulted, accessToken = accessToken)
+        return if (playerId.isNullOrBlank()) Pair(false, "") else Pair(resulted, playerId)
     }
 
     //    todo resize image

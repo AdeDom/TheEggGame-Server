@@ -10,12 +10,11 @@ import com.adedom.teg.di.getDataModule
 import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.service.application.ApplicationService
 import com.adedom.teg.service.auth.AuthService
+import com.adedom.teg.service.jwtconfig.JwtConfig
 import com.adedom.teg.service.single.SingleService
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
-import com.adedom.teg.util.jwt.CommonJwt
-import com.adedom.teg.util.jwt.JwtConfig
-import com.adedom.teg.util.jwt.PlayerPrincipal
+import com.adedom.teg.service.jwtconfig.PlayerPrincipal
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
@@ -65,22 +64,6 @@ fun Application.module() {
         }
     }
 
-    // jwt
-    install(Authentication) {
-        jwt {
-            verifier(JwtConfig.verifier)
-            realm = CommonJwt.REALM
-            validate {
-                val playerId = it.payload.getClaim(CommonJwt.PLAYER_ID).asString()
-                if (playerId != null) {
-                    PlayerPrincipal(playerId)
-                } else {
-                    null
-                }
-            }
-        }
-    }
-
     // koin dependencies injection
     install(Koin) {
         SLF4JLogger()
@@ -90,6 +73,23 @@ fun Application.module() {
     val accountService: AccountService by inject()
     val applicationService: ApplicationService by inject()
     val singleService: SingleService by inject()
+    val jwtConfig: JwtConfig by inject()
+
+    // jwt
+    install(Authentication) {
+        jwt {
+            verifier(jwtConfig.verifier)
+            realm = jwtConfig.realm
+            validate {
+                val playerId = it.payload.getClaim(jwtConfig.playerId).asString()
+                if (playerId != null) {
+                    PlayerPrincipal(playerId)
+                } else {
+                    null
+                }
+            }
+        }
+    }
 
     // route
     install(Routing) {

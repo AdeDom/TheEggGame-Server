@@ -6,7 +6,6 @@ import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
-import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
@@ -29,7 +28,7 @@ interface TegRepository {
 
     fun signIn(signInRequest: SignInRequest): String
 
-    fun signUp(signUpRequest: SignUpRequest): SignUpResponse
+    fun signUp(signUpRequest: SignUpRequest): Pair<Boolean, String>
 
     fun changeImageProfile(playerId: String, imageName: String): Boolean
 
