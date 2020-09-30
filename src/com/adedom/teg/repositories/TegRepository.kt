@@ -7,7 +7,6 @@ import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
@@ -43,7 +42,9 @@ interface TegRepository {
 
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfo>
 
-    fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse
+    fun logActiveOn(playerId: String): Boolean
+
+    fun logActiveOff(playerId: String): Boolean
 
     fun fetchItemCollection(playerId: String): BackpackResponse
 

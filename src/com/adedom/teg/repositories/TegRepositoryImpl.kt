@@ -13,7 +13,6 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
@@ -25,7 +24,6 @@ import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.joda.time.DateTime
 import java.io.UnsupportedEncodingException
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -203,36 +201,33 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse {
-        val (flagLogActive) = logActiveRequest
-        val response = BaseResponse()
-
-        if (flagLogActive == 1) {
-            transaction {
-                LogActives.insert {
-                    it[LogActives.playerId] = playerId
-                    it[dateTimeIn] = DateTime.now()
-                }
-            }
-        } else if (flagLogActive == 0) {
-            transaction {
-                val logActive = LogActives.slice(LogActives.logId)
-                    .select { LogActives.playerId eq playerId }
-                    .orderBy(LogActives.logId to SortOrder.DESC)
-                    .limit(1)
-                    .map { MapResponse.toLogActiveId(it) }
-                    .single()
-
-                LogActives.update({ LogActives.logId eq logActive.logId!! }) {
-                    it[dateTimeOut] = DateTime.now()
-                }
+    override fun logActiveOn(playerId: String): Boolean {
+        val statement = transaction {
+            LogActives.insert {
+                it[LogActives.playerId] = playerId
+                it[LogActives.dateTimeIn] = System.currentTimeMillis()
             }
         }
 
-        response.success = true
-        response.message = "Log active success"
+        return statement.resultedValues?.size == 1
+    }
 
-        return response
+    override fun logActiveOff(playerId: String): Boolean {
+        val transaction = transaction {
+            val resultRow = LogActives.slice(LogActives.logId)
+                .select { LogActives.playerId eq playerId }
+                .orderBy(LogActives.logId to SortOrder.DESC)
+                .limit(1)
+                .single()
+
+            val logActiveLogId: Int = resultRow[LogActives.logId]
+
+            LogActives.update({ LogActives.logId eq logActiveLogId }) {
+                it[LogActives.dateTimeOut] = System.currentTimeMillis()
+            }
+        }
+
+        return transaction == 1
     }
 
     override fun fetchItemCollection(playerId: String): BackpackResponse {
@@ -274,7 +269,7 @@ class TegRepositoryImpl : TegRepository {
                 it[ItemCollections.qty] = qty!!
                 it[ItemCollections.latitude] = latitude!!
                 it[ItemCollections.longitude] = longitude!!
-                it[dateTime] = DateTime.now()
+                it[ItemCollections.dateTime] = System.currentTimeMillis()
             }
         }
 

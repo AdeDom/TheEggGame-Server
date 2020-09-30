@@ -16,8 +16,6 @@ fun DateTime.toDateFormat(): String = SimpleDateFormat("dd/MM/yyyy", Locale.getD
 
 fun String?.validateAccessToken() = "Please check access token = [$this] again"
 
-fun Int?.validateFlagLogActive() = (this == 0 || this == 1)
-
 fun String?.validateIsNullOrBlank() = "Please enter $this"
 
 fun String?.toMessageIsNullOrBlank() = "Please enter $this"

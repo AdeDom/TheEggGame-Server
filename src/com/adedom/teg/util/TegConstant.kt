@@ -16,5 +16,7 @@ object TegConstant {
     const val RANK_LIMIT_TEN = 10
     const val RANK_LIMIT_FIFTY = 50
     const val RANK_LIMIT_HUNDRED = 100
+    const val FLAG_LOG_ACTIVE_ON = 1
+    const val FLAG_LOG_ACTIVE_OFF = 0
 
 }

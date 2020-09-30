@@ -2,7 +2,6 @@ package com.adedom.teg.service.application
 
 import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.repositories.TegRepository
-import com.adedom.teg.request.application.LogActiveRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.util.isValidateRankPlayer
@@ -39,8 +38,48 @@ class ApplicationServiceImpl(private val repository: TegRepository) : Applicatio
         return response
     }
 
-    override fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse {
-        return BaseResponse()
+    override fun logActiveOn(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.logActiveOn(playerId)
+                "Post log active success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun logActiveOff(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.logActiveOff(playerId)
+                "Patch log active success"
+            }
+        }
+
+        response.message = message
+        return response
     }
 
 }
