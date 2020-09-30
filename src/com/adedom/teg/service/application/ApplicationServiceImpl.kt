@@ -4,13 +4,16 @@ import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.util.isValidateRankPlayer
+import com.adedom.teg.service.business.TegBusiness
 import com.adedom.teg.util.toMessageIncorrect
 import com.adedom.teg.util.toMessageIsNullOrBlank
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class ApplicationServiceImpl(private val repository: TegRepository) : ApplicationService {
+class ApplicationServiceImpl(
+    private val repository: TegRepository,
+    private val business: TegBusiness,
+) : ApplicationService {
 
     override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {
         val response = RankPlayersResponse()
@@ -24,7 +27,7 @@ class ApplicationServiceImpl(private val repository: TegRepository) : Applicatio
 
             // validate values of variable
             limit.toInt() <= 0 -> rankPlayersRequest::limit.name.toMessageIncorrect()
-            !limit.toInt().isValidateRankPlayer() -> rankPlayersRequest::limit.name.toMessageIncorrect()
+            !business.isValidateRankPlayer(limit.toInt()) -> rankPlayersRequest::limit.name.toMessageIncorrect()
 
             // validate database
 

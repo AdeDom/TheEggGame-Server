@@ -1,15 +1,19 @@
 package com.adedom.teg.service.auth
 
+import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.repositories.TegRepository
-import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.response.SignInResponse
+import com.adedom.teg.service.business.TegBusiness
 import com.adedom.teg.util.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class AuthServiceImpl(private val repository: TegRepository) : AuthService {
+class AuthServiceImpl(
+    private val repository: TegRepository,
+    private val business: TegBusiness,
+) : AuthService {
 
     override fun signIn(signInRequest: SignInRequest): SignInResponse {
         val response = SignInResponse()
@@ -17,8 +21,8 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
         val (username, password) = signInRequest
         val message: String = when {
             // validate Null Or Blank
-            username.isNullOrBlank() -> signInRequest::username.name.validateIsNullOrBlank()
-            password.isNullOrBlank() -> signInRequest::password.name.validateIsNullOrBlank()
+            username.isNullOrBlank() -> signInRequest::username.name.toMessageIsNullOrBlank()
+            password.isNullOrBlank() -> signInRequest::password.name.toMessageIsNullOrBlank()
 
             // validate values of variable
             username.length < TegConstant.MIN_USERNAME -> signInRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
@@ -45,17 +49,17 @@ class AuthServiceImpl(private val repository: TegRepository) : AuthService {
 
         val message: String = when {
             // validate Null Or Blank
-            username.isNullOrBlank() -> signUpRequest::username.name.validateIsNullOrBlank()
-            password.isNullOrBlank() -> signUpRequest::password.name.validateIsNullOrBlank()
-            name.isNullOrBlank() -> signUpRequest::name.name.validateIsNullOrBlank()
-            gender.isNullOrBlank() -> signUpRequest::gender.name.validateIsNullOrBlank()
-            birthdate.isNullOrBlank() -> signUpRequest::birthdate.name.validateIsNullOrBlank()
+            username.isNullOrBlank() -> signUpRequest::username.name.toMessageIsNullOrBlank()
+            password.isNullOrBlank() -> signUpRequest::password.name.toMessageIsNullOrBlank()
+            name.isNullOrBlank() -> signUpRequest::name.name.toMessageIsNullOrBlank()
+            gender.isNullOrBlank() -> signUpRequest::gender.name.toMessageIsNullOrBlank()
+            birthdate.isNullOrBlank() -> signUpRequest::birthdate.name.toMessageIsNullOrBlank()
 
             // validate values of variable
             username.length < TegConstant.MIN_USERNAME -> signUpRequest::username.name.validateGrateEq(TegConstant.MIN_USERNAME)
             password.length < TegConstant.MIN_PASSWORD -> signUpRequest::password.name.validateGrateEq(TegConstant.MIN_PASSWORD)
-            !gender.isValidateGender() -> signUpRequest::gender.name.toMessageGender()
-            birthdate.isValidateDateTime() -> signUpRequest::birthdate.name.toMessageIncorrect()
+            !business.isValidateGender(gender) -> signUpRequest::gender.name.toMessageGender()
+            business.isValidateDateTime(birthdate) -> signUpRequest::birthdate.name.toMessageIncorrect()
 
             // validate database
             repository.isUsernameRepeat(username) -> signUpRequest::username.name.toMessageRepeat(username)

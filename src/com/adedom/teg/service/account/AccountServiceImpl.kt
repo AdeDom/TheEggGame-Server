@@ -7,18 +7,22 @@ import com.adedom.teg.repositories.TegRepository
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.route.GetConstant
+import com.adedom.teg.service.business.TegBusiness
 import com.adedom.teg.util.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class AccountServiceImpl(private val repository: TegRepository) : AccountService {
+class AccountServiceImpl(
+    private val repository: TegRepository,
+    private val business: TegBusiness,
+) : AccountService {
 
     override fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse {
         val response = BaseResponse()
 
         val message: String? = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
             imageName.isNullOrBlank() -> "Not found image file [${GetConstant.IMAGE_FILE}]"
 
             // validate values of variable
@@ -64,11 +68,11 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
         val (state) = stateRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
             state.isNullOrBlank() -> stateRequest::state.name.toMessageIsNullOrBlank()
 
             // validate values of variable
-            !state.validateState() -> stateRequest::state.name.validateIncorrect()
+            !business.isValidateState(state) -> stateRequest::state.name.toMessageIncorrect()
 
             // validate database
 
@@ -88,7 +92,7 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
         val (oldPassword, newPassword) = changePasswordRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
             oldPassword.isNullOrBlank() -> changePasswordRequest::oldPassword.name.toMessageIsNullOrBlank()
             newPassword.isNullOrBlank() -> changePasswordRequest::newPassword.name.toMessageIsNullOrBlank()
 
@@ -117,14 +121,14 @@ class AccountServiceImpl(private val repository: TegRepository) : AccountService
         val (name, gender, birthdate) = changeProfileRequest
         val message: String = when {
             // validate Null Or Blank
-            playerId.isNullOrBlank() -> playerId.validateAccessToken()
+            playerId.isNullOrBlank() -> playerId.toMessageIsNullOrBlank()
             name.isNullOrBlank() -> changeProfileRequest::name.name.toMessageIsNullOrBlank()
             gender.isNullOrBlank() -> changeProfileRequest::gender.name.toMessageIsNullOrBlank()
             birthdate.isNullOrBlank() -> changeProfileRequest::birthdate.name.toMessageIsNullOrBlank()
 
             // validate values of variable
-            !gender.isValidateGender() -> changeProfileRequest::gender.name.validateIncorrect()
-            birthdate.isValidateDateTime() -> changeProfileRequest::birthdate.name.toMessageIncorrect()
+            !business.isValidateGender(gender) -> changeProfileRequest::gender.name.toMessageIncorrect()
+            business.isValidateDateTime(birthdate) -> changeProfileRequest::birthdate.name.toMessageIncorrect()
 
             // validate database
             repository.isNameRepeat(name) -> changeProfileRequest::name.name.toMessageRepeat(name)
