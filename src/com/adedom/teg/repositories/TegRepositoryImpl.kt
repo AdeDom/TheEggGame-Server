@@ -91,7 +91,7 @@ class TegRepositoryImpl : TegRepository {
             }
         }
 
-        val resulted = statement.resultedValues?.size ?: 0 > 0
+        val resulted = statement.resultedValues?.size == 1
         val playerId = statement.resultedValues?.get(0)?.get(Players.playerId)
         val accessToken = JwtConfig.makeToken(PlayerPrincipal(playerId))
 
