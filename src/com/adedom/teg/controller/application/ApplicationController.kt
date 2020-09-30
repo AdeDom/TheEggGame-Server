@@ -1,10 +1,9 @@
-package com.adedom.teg.controller
+package com.adedom.teg.controller.application
 
+import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.request.application.LogActiveRequest
-import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.RankPlayersResponse
-import com.adedom.teg.service.teg.TegService
+import com.adedom.teg.service.application.ApplicationService
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
 import com.adedom.teg.util.validateFlagLogActive
@@ -16,28 +15,11 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
-fun Route.applicationController(service: TegService) {
+@KtorExperimentalLocationsAPI
+fun Route.applicationController(service: ApplicationService) {
 
-    get<RankPlayersRequest> { request ->
-        val response = RankPlayersResponse()
-        val playerId = call.player?.playerId
-        val search: String? = request.search
-        val limit: Int = if (request.limit.isNullOrBlank()) 0 else request.limit.toInt()
-        val message = when {
-            playerId == null -> playerId.validateAccessToken()
-
-            search == null -> RankPlayersRequest::search.name.validateIsNullOrBlank()
-
-            limit <= 0 -> RankPlayersRequest::limit.name.validateIncorrect()
-
-            else -> {
-                val service: RankPlayersResponse = service.fetchRankPlayers(request)
-                response.success = service.success
-                response.rankPlayers = service.rankPlayers
-                service.message
-            }
-        }
-        response.message = message
+    get<RankPlayersRequest> {
+        val response = service.fetchRankPlayers(it)
         call.respond(response)
     }
 

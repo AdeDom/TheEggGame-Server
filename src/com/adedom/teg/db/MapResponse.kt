@@ -3,6 +3,7 @@ package com.adedom.teg.db
 import com.adedom.teg.models.LogActive
 import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.models.RoomInfo
+import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -15,7 +16,8 @@ object MapResponse {
         image = row[Players.image],
         level = row[ItemCollections.level].toLevel(),
         state = row[Players.state],
-        gender = row[Players.gender]
+        gender = row[Players.gender],
+        birthdate = row[Players.birthdate].toConvertBirthdate(),
     )
 
     fun toRoomInfo(row: ResultRow) = RoomInfo(

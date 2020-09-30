@@ -28,6 +28,10 @@ fun String?.validateNotFound() = "$this not found"
 
 fun String?.isValidateGender() = (this == TegConstant.GENDER_MALE || this == TegConstant.GENDER_FEMALE)
 
+fun Int?.isValidateRankPlayer(): Boolean = (this == TegConstant.RANK_LIMIT_TEN ||
+        this == TegConstant.RANK_LIMIT_FIFTY ||
+        this == TegConstant.RANK_LIMIT_HUNDRED)
+
 // if parse success return false
 fun String?.isValidateDateTime(): Boolean {
     return try {

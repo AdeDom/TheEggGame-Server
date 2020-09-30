@@ -1,13 +1,14 @@
 package com.adedom.teg
 
 import com.adedom.teg.controller.account.accountController
-import com.adedom.teg.controller.applicationController
+import com.adedom.teg.controller.application.applicationController
 import com.adedom.teg.controller.auth.authController
 import com.adedom.teg.controller.headerController
 import com.adedom.teg.controller.singleController
 import com.adedom.teg.di.getBusinessModule
 import com.adedom.teg.di.getDataModule
 import com.adedom.teg.service.account.AccountService
+import com.adedom.teg.service.application.ApplicationService
 import com.adedom.teg.service.auth.AuthService
 import com.adedom.teg.service.teg.TegService
 import com.adedom.teg.util.DatabaseConfig
@@ -46,7 +47,7 @@ fun Application.module() {
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = databaseConfig.username
         password = databaseConfig.password
-        maximumPoolSize = 10
+        maximumPoolSize = 100
     }
     val dataSource = HikariDataSource(config)
     Database.connect(dataSource)
@@ -88,6 +89,7 @@ fun Application.module() {
     val service: TegService by inject()
     val authService: AuthService by inject()
     val accountService: AccountService by inject()
+    val applicationService: ApplicationService by inject()
 
     // route
     install(Routing) {
@@ -95,7 +97,7 @@ fun Application.module() {
 
         authenticate {
             accountController(accountService)
-            applicationController(service)
+            applicationController(applicationService)
             singleController(service)
         }
 

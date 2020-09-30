@@ -2,10 +2,6 @@ package com.adedom.teg.util
 
 object TegConstant {
 
-    const val LIMIT_TEN = 10
-    const val LIMIT_FIFTY = 50
-    const val LIMIT_ONE_HUNDRED = 100
-    const val MIN_NAME = 4
     const val MIN_PEOPLE = 2
     const val MIN_USERNAME = 4
     const val MIN_PASSWORD = 4
@@ -17,5 +13,8 @@ object TegConstant {
     const val STATE_OFFLINE = "offline"
     const val GENDER_MALE = "M"
     const val GENDER_FEMALE = "F"
+    const val RANK_LIMIT_TEN = 10
+    const val RANK_LIMIT_FIFTY = 50
+    const val RANK_LIMIT_HUNDRED = 100
 
 }

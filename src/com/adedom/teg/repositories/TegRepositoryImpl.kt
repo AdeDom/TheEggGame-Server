@@ -3,6 +3,7 @@ package com.adedom.teg.repositories
 import com.adedom.teg.controller.account.model.ChangePasswordRequest
 import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
+import com.adedom.teg.controller.application.model.RankPlayersRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.data.BASE_IMAGE
@@ -13,12 +14,10 @@ import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
 import com.adedom.teg.request.application.LogActiveRequest
-import com.adedom.teg.request.application.RankPlayersRequest
 import com.adedom.teg.request.auth.SignInRequest
 import com.adedom.teg.request.single.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
@@ -173,11 +172,10 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {
+    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfo> {
         val (_, search, limit) = rankPlayersRequest
-        val response = RankPlayersResponse()
 
-        val rankPlayers: List<PlayerInfo> = transaction {
+        return transaction {
             addLogger(StdOutSqlLogger)
 
             val query = (Players innerJoin ItemCollections)
@@ -188,26 +186,21 @@ class TegRepositoryImpl : TegRepository {
                     Players.image,
                     ItemCollections.level,
                     Players.state,
-                    Players.gender
+                    Players.gender,
+                    Players.birthdate,
                 )
                 .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
                 .groupBy(Players.playerId)
-                .orderBy(ItemCollections.level to SortOrder.DESC, (Players.playerId to SortOrder.ASC))
+                .orderBy(ItemCollections.level to SortOrder.DESC, Players.playerId to SortOrder.ASC)
 
-            when (limit?.toInt()) {
-                TegConstant.LIMIT_TEN -> query.limit(TegConstant.LIMIT_TEN)
-                TegConstant.LIMIT_FIFTY -> query.limit(TegConstant.LIMIT_FIFTY)
-                TegConstant.LIMIT_ONE_HUNDRED -> query.limit(TegConstant.LIMIT_ONE_HUNDRED)
+            when (limit!!.toInt()) {
+                TegConstant.RANK_LIMIT_TEN -> query.limit(TegConstant.RANK_LIMIT_TEN)
+                TegConstant.RANK_LIMIT_FIFTY -> query.limit(TegConstant.RANK_LIMIT_FIFTY)
+                TegConstant.RANK_LIMIT_HUNDRED -> query.limit(TegConstant.RANK_LIMIT_HUNDRED)
             }
 
             query.map { MapResponse.toPlayers(it) }
         }
-
-        response.success = true
-        response.message = "Fetch rank players success"
-        response.rankPlayers = rankPlayers
-
-        return response
     }
 
     override fun postLogActive(playerId: String, logActiveRequest: LogActiveRequest): BaseResponse {
