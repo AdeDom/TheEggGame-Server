@@ -7,7 +7,9 @@ import com.adedom.teg.response.RankPlayersResponse
 import com.adedom.teg.util.isValidateRankPlayer
 import com.adedom.teg.util.toMessageIncorrect
 import com.adedom.teg.util.toMessageIsNullOrBlank
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 class ApplicationServiceImpl(private val repository: TegRepository) : ApplicationService {
 
     override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {

@@ -2,6 +2,7 @@ package com.adedom.teg.controller.auth.model
 
 import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 @Location("/api/auth/sign-up")
 data class SignUpRequest(
     val username: String? = null,

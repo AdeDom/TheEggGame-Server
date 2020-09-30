@@ -8,7 +8,9 @@ import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
 import com.adedom.teg.route.GetConstant
 import com.adedom.teg.util.*
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 class AccountServiceImpl(private val repository: TegRepository) : AccountService {
 
     override fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse {

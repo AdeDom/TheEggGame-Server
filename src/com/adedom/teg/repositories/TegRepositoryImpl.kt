@@ -13,8 +13,8 @@ import com.adedom.teg.db.MapResponse
 import com.adedom.teg.db.Players
 import com.adedom.teg.models.Backpack
 import com.adedom.teg.models.PlayerInfo
-import com.adedom.teg.request.auth.SignInRequest
-import com.adedom.teg.request.single.ItemCollectionRequest
+import com.adedom.teg.controller.auth.model.SignInRequest
+import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.util.TegConstant
@@ -22,6 +22,7 @@ import com.adedom.teg.util.jwt.JwtConfig
 import com.adedom.teg.util.jwt.PlayerPrincipal
 import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel
+import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.UnsupportedEncodingException
@@ -31,6 +32,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@KtorExperimentalLocationsAPI
 class TegRepositoryImpl : TegRepository {
 
     override fun isUsernameRepeat(username: String): Boolean {

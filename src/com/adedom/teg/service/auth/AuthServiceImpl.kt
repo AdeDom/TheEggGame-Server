@@ -3,10 +3,12 @@ package com.adedom.teg.service.auth
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
 import com.adedom.teg.repositories.TegRepository
-import com.adedom.teg.request.auth.SignInRequest
+import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.response.SignInResponse
 import com.adedom.teg.util.*
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 class AuthServiceImpl(private val repository: TegRepository) : AuthService {
 
     override fun signIn(signInRequest: SignInRequest): SignInResponse {

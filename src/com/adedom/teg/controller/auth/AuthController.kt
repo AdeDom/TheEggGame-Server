@@ -1,7 +1,7 @@
 package com.adedom.teg.controller.auth
 
 import com.adedom.teg.controller.auth.model.SignUpRequest
-import com.adedom.teg.request.auth.SignInRequest
+import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.service.auth.AuthService
 import io.ktor.application.*
 import io.ktor.locations.*

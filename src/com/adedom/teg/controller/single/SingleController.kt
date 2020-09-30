@@ -1,9 +1,9 @@
-package com.adedom.teg.controller
+package com.adedom.teg.controller.single
 
-import com.adedom.teg.request.single.ItemCollectionRequest
+import com.adedom.teg.controller.single.model.ItemCollectionRequest
 import com.adedom.teg.response.BackpackResponse
 import com.adedom.teg.response.BaseResponse
-import com.adedom.teg.service.teg.TegService
+import com.adedom.teg.service.single.SingleService
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.jwt.player
 import com.adedom.teg.util.validateAccessToken
@@ -15,7 +15,8 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
-fun Route.singleController(service: TegService) {
+@KtorExperimentalLocationsAPI
+fun Route.singleController(service: SingleService) {
 
     get<ItemCollectionRequest> {
         val response = BackpackResponse()

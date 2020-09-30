@@ -4,13 +4,13 @@ import com.adedom.teg.controller.account.accountController
 import com.adedom.teg.controller.application.applicationController
 import com.adedom.teg.controller.auth.authController
 import com.adedom.teg.controller.headerController
-import com.adedom.teg.controller.singleController
+import com.adedom.teg.controller.single.singleController
 import com.adedom.teg.di.getBusinessModule
 import com.adedom.teg.di.getDataModule
 import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.service.application.ApplicationService
 import com.adedom.teg.service.auth.AuthService
-import com.adedom.teg.service.teg.TegService
+import com.adedom.teg.service.single.SingleService
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.adedom.teg.util.jwt.CommonJwt
@@ -86,10 +86,10 @@ fun Application.module() {
         SLF4JLogger()
         modules(getDataModule, getBusinessModule)
     }
-    val service: TegService by inject()
     val authService: AuthService by inject()
     val accountService: AccountService by inject()
     val applicationService: ApplicationService by inject()
+    val singleService: SingleService by inject()
 
     // route
     install(Routing) {
@@ -98,7 +98,7 @@ fun Application.module() {
         authenticate {
             accountController(accountService)
             applicationController(applicationService)
-            singleController(service)
+            singleController(singleService)
         }
 
         route("api") {

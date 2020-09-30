@@ -5,7 +5,9 @@ import com.adedom.teg.controller.account.model.ChangeProfileRequest
 import com.adedom.teg.controller.account.model.StateRequest
 import com.adedom.teg.response.BaseResponse
 import com.adedom.teg.response.PlayerResponse
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 interface AccountService {
 
     fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse

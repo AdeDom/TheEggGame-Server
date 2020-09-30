@@ -1,7 +1,8 @@
-package com.adedom.teg.request.single
+package com.adedom.teg.controller.single.model
 
-import io.ktor.locations.Location
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 @Location("/api/single/item-collection")
 data class ItemCollectionRequest(
     val itemId: Int? = null,
