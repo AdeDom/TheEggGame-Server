@@ -15,10 +15,6 @@ import com.adedom.teg.util.toLevel
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.io.UnsupportedEncodingException
-import java.math.BigInteger
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.*
 
 @KtorExperimentalLocationsAPI
@@ -42,7 +38,7 @@ class TegRepositoryImpl : TegRepository {
         val (username, password) = signInRequest
         return transaction {
             Players.select {
-                Players.username eq username!! and (Players.password eq password.encryptSHA())
+                Players.username eq username!! and (Players.password eq password!!)
             }.count().toInt() == 0
         }
     }
@@ -51,7 +47,7 @@ class TegRepositoryImpl : TegRepository {
         val (oldPassword) = changePasswordRequest
         return transaction {
             Players.select {
-                Players.playerId eq playerId and (Players.password eq oldPassword.encryptSHA())
+                Players.playerId eq playerId and (Players.password eq oldPassword!!)
             }.count().toInt() == 0
         }
     }
@@ -60,7 +56,7 @@ class TegRepositoryImpl : TegRepository {
         val (username, password) = signInRequest
         val resultRow = transaction {
             Players.slice(Players.playerId)
-                .select { Players.username eq username!! and (Players.password eq password.encryptSHA()) }
+                .select { Players.username eq username!! and (Players.password eq password!!) }
                 .single()
         }
 
@@ -75,7 +71,7 @@ class TegRepositoryImpl : TegRepository {
             Players.insert {
                 it[Players.playerId] = UUID.randomUUID().toString().replace("-", "")
                 it[Players.username] = username!!
-                it[Players.password] = password.encryptSHA()
+                it[Players.password] = password!!
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
                 it[Players.birthdate] = birthdate!!
@@ -141,7 +137,7 @@ class TegRepositoryImpl : TegRepository {
         val (_, newPassword) = changePasswordRequest
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
-                it[password] = newPassword.encryptSHA()
+                it[password] = newPassword!!
                 it[dateTimeUpdated] = System.currentTimeMillis()
             }
         }
@@ -259,22 +255,6 @@ class TegRepositoryImpl : TegRepository {
         }
 
         return statement.resultedValues?.size == 1
-    }
-
-    // TODO: 02/10/2563 move function business encryptSHA
-    private fun String?.encryptSHA(): String {
-        var sha = ""
-        try {
-            val messageDigest = MessageDigest.getInstance("SHA-256")
-            val byteArray = messageDigest.digest(this?.toByteArray())
-            val bigInteger = BigInteger(1, byteArray)
-            sha = bigInteger.toString(16).padStart(64, '0')
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
-        }
-        return sha
     }
 
 }

@@ -35,11 +35,12 @@ class AuthServiceImpl(
                 business.validateGrateEq(signInRequest::password, TegConstant.MIN_PASSWORD)
 
             // validate database
-            repository.isValidateSignIn(signInRequest) -> "Username and password incorrect"
+            repository.isValidateSignIn(signInRequest.copy(password = business.encryptSHA(password))) ->
+                "Username and password incorrect"
 
             // execute
             else -> {
-                val playerId = repository.signIn(signInRequest)
+                val playerId = repository.signIn(signInRequest.copy(password = business.encryptSHA(password)))
                 response.success = true
                 response.accessToken = jwtConfig.makeAccessToken(playerId)
                 response.refreshToken = jwtConfig.makeRefreshToken(playerId)
@@ -79,7 +80,7 @@ class AuthServiceImpl(
             else -> {
                 val signUpItem = SignUpItem(
                     username = username,
-                    password = password,
+                    password = business.encryptSHA(password),
                     name = name,
                     gender = gender,
                     birthdate = business.convertBirthdateStringToLong(birthdate),

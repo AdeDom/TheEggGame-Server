@@ -2,6 +2,10 @@ package com.adedom.teg.business.business
 
 import com.adedom.teg.util.TegConstant
 import com.auth0.jwt.JWT
+import java.io.UnsupportedEncodingException
+import java.math.BigInteger
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import kotlin.reflect.KProperty0
 
@@ -49,6 +53,21 @@ class TegBusinessImpl : TegBusiness {
             val yyyy = SimpleDateFormat("yyyy").format(date).toInt() - 543
             sdf.parse("$dd/$MM/$yyyy").time
         }
+    }
+
+    override fun encryptSHA(password: String): String {
+        var sha = ""
+        try {
+            val messageDigest = MessageDigest.getInstance("SHA-256")
+            val byteArray = messageDigest.digest(password.toByteArray())
+            val bigInteger = BigInteger(1, byteArray)
+            sha = bigInteger.toString(16).padStart(64, '0')
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+        return sha
     }
 
     override fun toMessageIsNullOrBlank(values: String?): String {

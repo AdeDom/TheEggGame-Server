@@ -16,6 +16,8 @@ interface TegBusiness {
 
     fun convertBirthdateStringToLong(birthdate: String): Long
 
+    fun encryptSHA(password: String): String
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String

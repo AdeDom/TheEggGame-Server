@@ -104,11 +104,17 @@ class AccountServiceImpl(
                 business.validateGrateEq(changePasswordRequest::newPassword, TegConstant.MIN_PASSWORD)
 
             // validate database
-            repository.isValidateChangePassword(playerId, changePasswordRequest) -> "Password incorrect"
+            repository.isValidateChangePassword(
+                playerId,
+                changePasswordRequest.copy(oldPassword = business.encryptSHA(oldPassword))
+            ) -> "Password incorrect"
 
             // execute
             else -> {
-                response.success = repository.changePassword(playerId, changePasswordRequest)
+                response.success = repository.changePassword(
+                    playerId,
+                    changePasswordRequest.copy(newPassword = business.encryptSHA(newPassword))
+                )
                 "Put change password success"
             }
         }
