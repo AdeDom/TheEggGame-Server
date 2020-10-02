@@ -26,6 +26,7 @@ fun Route.accountController(service: AccountService) {
 
     put<ImageProfile> {
         var imageName: String? = null
+        var imageImage: String? = null
 
         try {
             val multiPartData = call.receiveMultipart()
@@ -35,22 +36,22 @@ fun Route.accountController(service: AccountService) {
                     imageName = "image-${call.playerId}.$extension"
 
                     val byteArray = part.streamProvider().readBytes()
-                    val encodeToString = Base64.getEncoder().encodeToString(byteArray)
-                    getHttpClientOkHttp {
-                        val response = post<HttpResponse> {
-                            url(BASE_IMAGE + "upload-image.php")
-                            body = MultiPartFormDataContent(formData {
-                                append(ApiConstant.name, imageName!!)
-                                append(ApiConstant.image, encodeToString)
-                            })
-                        }.fromJson<BaseResponse>()
-
-                        if (!response.success) imageName = null
-                    }
+                    imageImage = Base64.getEncoder().encodeToString(byteArray)
                 }
                 part.dispose()
             }
         } catch (e: IllegalStateException) {
+        }
+
+        if (imageName != null && imageImage != null) {
+            val res = getHttpClientOkHttp().post<HttpResponse> {
+                url(BASE_IMAGE + "upload-image.php")
+                body = MultiPartFormDataContent(formData {
+                    append(ApiConstant.name, imageName!!)
+                    append(ApiConstant.image, imageImage!!)
+                })
+            }.fromJson<BaseResponse>()
+            if (!res.success) imageName = null
         }
 
         val response = service.changeImageProfile(call.playerId, imageName)

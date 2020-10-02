@@ -11,10 +11,10 @@ import com.adedom.teg.service.account.AccountService
 import com.adedom.teg.service.application.ApplicationService
 import com.adedom.teg.service.auth.AuthService
 import com.adedom.teg.service.jwtconfig.JwtConfig
+import com.adedom.teg.service.jwtconfig.PlayerPrincipal
 import com.adedom.teg.service.single.SingleService
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
-import com.adedom.teg.service.jwtconfig.PlayerPrincipal
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
@@ -109,21 +109,17 @@ fun Application.module() {
     }
 }
 
-internal inline fun getHttpClientOkHttp(bloc: HttpClient.() -> Unit) {
-    val client = HttpClient(OkHttp) {
-        install(JsonFeature) {
-            serializer = GsonSerializer()
-        }
-
-        install(HttpTimeout) {
-            requestTimeoutMillis = 60_000
-        }
-
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
-        }
+internal fun getHttpClientOkHttp() = HttpClient(OkHttp) {
+    install(JsonFeature) {
+        serializer = GsonSerializer()
     }
-    bloc.invoke(client)
-    client.close()
+
+    install(HttpTimeout) {
+        requestTimeoutMillis = 60_000
+    }
+
+    install(Logging) {
+        logger = Logger.DEFAULT
+        level = LogLevel.HEADERS
+    }
 }
