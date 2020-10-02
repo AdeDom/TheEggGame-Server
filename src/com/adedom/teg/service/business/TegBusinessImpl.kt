@@ -1,6 +1,7 @@
 package com.adedom.teg.service.business
 
 import com.adedom.teg.util.TegConstant
+import com.auth0.jwt.JWT
 import java.text.SimpleDateFormat
 import kotlin.reflect.KProperty0
 
@@ -27,6 +28,14 @@ class TegBusinessImpl : TegBusiness {
 
     override fun isValidateState(state: String): Boolean {
         return state == TegConstant.STATE_ONLINE || state == TegConstant.STATE_OFFLINE
+    }
+
+    override fun isValidateJWT(token: String, name: String): Boolean {
+        return try {
+            JWT().decodeJwt(token).getClaim(name).asString() == null
+        } catch (e: Throwable) {
+            true
+        }
     }
 
     override fun toMessageIsNullOrBlank(values: String?): String {

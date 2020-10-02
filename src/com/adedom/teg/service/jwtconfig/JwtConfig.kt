@@ -10,6 +10,10 @@ interface JwtConfig {
 
     val playerId: String
 
-    fun makeToken(playerId: String): String
+    fun makeAccessToken(playerId: String): String
+
+    fun makeRefreshToken(playerId: String): String
+
+    fun decodeJwtGetPlayerId(refreshToken: String): String
 
 }

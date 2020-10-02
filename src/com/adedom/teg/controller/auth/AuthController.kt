@@ -1,7 +1,8 @@
 package com.adedom.teg.controller.auth
 
-import com.adedom.teg.controller.auth.model.SignUpRequest
+import com.adedom.teg.controller.auth.model.RefreshTokenRequest
 import com.adedom.teg.controller.auth.model.SignInRequest
+import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.service.auth.AuthService
 import io.ktor.application.*
 import io.ktor.locations.*
@@ -21,6 +22,12 @@ fun Route.authController(service: AuthService) {
     post<SignUpRequest> {
         val request = call.receive<SignUpRequest>()
         val response = service.signUp(request)
+        call.respond(response)
+    }
+
+    post<RefreshTokenRequest> {
+        val request = call.receive<RefreshTokenRequest>()
+        val response = service.refreshToken(request)
         call.respond(response)
     }
 

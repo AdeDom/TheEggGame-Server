@@ -12,6 +12,8 @@ interface TegBusiness {
 
     fun isValidateState(state: String): Boolean
 
+    fun isValidateJWT(token: String, name: String): Boolean
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String

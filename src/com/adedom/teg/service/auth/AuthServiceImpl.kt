@@ -1,5 +1,6 @@
 package com.adedom.teg.service.auth
 
+import com.adedom.teg.controller.auth.model.RefreshTokenRequest
 import com.adedom.teg.controller.auth.model.SignInRequest
 import com.adedom.teg.controller.auth.model.SignUpRequest
 import com.adedom.teg.controller.auth.model.SignUpResponse
@@ -37,8 +38,10 @@ class AuthServiceImpl(
 
             // execute
             else -> {
+                val playerId = repository.signIn(signInRequest)
                 response.success = true
-                response.accessToken = jwtConfig.makeToken(repository.signIn(signInRequest))
+                response.accessToken = jwtConfig.makeAccessToken(playerId)
+                response.refreshToken = jwtConfig.makeRefreshToken(playerId)
                 "Sign in success"
             }
         }
@@ -75,8 +78,37 @@ class AuthServiceImpl(
             else -> {
                 val pair = repository.signUp(signUpRequest)
                 response.success = pair.first
-                response.accessToken = jwtConfig.makeToken(pair.second)
+                response.accessToken = jwtConfig.makeAccessToken(pair.second)
+                response.refreshToken = jwtConfig.makeRefreshToken(pair.second)
                 "Sign up success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): SignInResponse {
+        val response = SignInResponse()
+        val (refreshToken) = refreshTokenRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            refreshToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(refreshTokenRequest::refreshToken)
+
+            // validate values of variable
+            business.isValidateJWT(refreshToken, jwtConfig.playerId) ->
+                business.toMessageIncorrect(refreshTokenRequest::refreshToken)
+
+            // validate database
+
+            // execute
+            else -> {
+                val playerId = jwtConfig.decodeJwtGetPlayerId(refreshToken)
+                response.accessToken = jwtConfig.makeAccessToken(playerId)
+                response.refreshToken = jwtConfig.makeRefreshToken(playerId)
+                response.success = true
+                "Refresh token success"
             }
         }
 
