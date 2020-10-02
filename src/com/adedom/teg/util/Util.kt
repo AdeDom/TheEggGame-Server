@@ -1,6 +1,6 @@
 package com.adedom.teg.util
 
-import com.adedom.teg.service.jwtconfig.PlayerPrincipal
+import com.adedom.teg.business.jwtconfig.PlayerPrincipal
 import com.google.gson.Gson
 import io.ktor.application.*
 import io.ktor.auth.*
