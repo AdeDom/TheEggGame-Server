@@ -1,13 +1,14 @@
 package com.adedom.teg.business.service.account
 
+import com.adedom.teg.business.business.TegBusiness
+import com.adedom.teg.business.models.ChangeProfileItem
+import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.models.request.ChangePasswordRequest
 import com.adedom.teg.http.models.request.ChangeProfileRequest
 import com.adedom.teg.http.models.request.StateRequest
-import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.models.response.BaseResponse
 import com.adedom.teg.http.models.response.PlayerResponse
 import com.adedom.teg.refactor.GetConstant
-import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -135,7 +136,12 @@ class AccountServiceImpl(
 
             // execute
             else -> {
-                response.success = repository.changeProfile(playerId, changeProfileRequest)
+                val changeProfileItem = ChangeProfileItem(
+                    name = name,
+                    gender = gender,
+                    birthdate = business.convertBirthdateStringToLong(birthdate),
+                )
+                response.success = repository.changeProfile(playerId, changeProfileItem)
                 "Put change profile success"
             }
         }

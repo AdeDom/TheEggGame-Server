@@ -14,6 +14,8 @@ interface TegBusiness {
 
     fun isValidateJWT(token: String, name: String): Boolean
 
+    fun convertBirthdateStringToLong(birthdate: String): Long
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String

@@ -1,16 +1,12 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.http.models.request.ChangePasswordRequest
-import com.adedom.teg.http.models.request.ChangeProfileRequest
-import com.adedom.teg.http.models.request.StateRequest
-import com.adedom.teg.http.models.request.RankPlayersRequest
-import com.adedom.teg.http.models.request.SignInRequest
-import com.adedom.teg.http.models.request.SignUpRequest
-import com.adedom.teg.http.models.request.ItemCollectionRequest
+import com.adedom.teg.business.models.ChangeProfileItem
+import com.adedom.teg.business.models.SignUpItem
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.MapResponse
 import com.adedom.teg.data.database.Players
+import com.adedom.teg.http.models.request.*
 import com.adedom.teg.refactor.Backpack
 import com.adedom.teg.refactor.PlayerInfo
 import com.adedom.teg.util.TegConstant
@@ -23,7 +19,6 @@ import java.io.UnsupportedEncodingException
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.text.SimpleDateFormat
 import java.util.*
 
 @KtorExperimentalLocationsAPI
@@ -73,17 +68,17 @@ class TegRepositoryImpl : TegRepository {
         return resultRow[Players.playerId]
     }
 
-    override fun signUp(signUpRequest: SignUpRequest): Pair<Boolean, String> {
-        val (username, password, name, gender, birthdate) = signUpRequest
+    override fun signUp(signUpItem: SignUpItem): Pair<Boolean, String> {
+        val (username, password, name, gender, birthdate) = signUpItem
 
         val statement = transaction {
             Players.insert {
-                it[Players.playerId] = randomUUID()
+                it[Players.playerId] = UUID.randomUUID().toString().replace("-", "")
                 it[Players.username] = username!!
                 it[Players.password] = password.encryptSHA()
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
-                it[Players.birthdate] = birthdate.convertBirthdateStringToLong()
+                it[Players.birthdate] = birthdate!!
                 it[Players.dateTimeCreated] = System.currentTimeMillis()
             }
         }
@@ -153,13 +148,13 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): Boolean {
-        val (name, gender, birthdate) = changeProfileRequest
+    override fun changeProfile(playerId: String, changeProfileItem: ChangeProfileItem): Boolean {
+        val (name, gender, birthdate) = changeProfileItem
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
-                it[Players.birthdate] = birthdate.convertBirthdateStringToLong()
+                it[Players.birthdate] = birthdate!!
                 it[Players.dateTimeUpdated] = System.currentTimeMillis()
             }
         }
@@ -266,21 +261,7 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size == 1
     }
 
-    private fun randomUUID() = UUID.randomUUID().toString().replace("-", "")
-
-    private fun String?.convertBirthdateStringToLong(): Long {
-        val sdf = SimpleDateFormat("dd/MM/yyyy")
-        val date = sdf.parse(this)
-        return if (date.time < 0L) {
-            date.time
-        } else {
-            val dd = SimpleDateFormat("dd").format(date)
-            val MM = SimpleDateFormat("MM").format(date)
-            val yyyy = SimpleDateFormat("yyyy").format(date).toInt() - 543
-            sdf.parse("$dd/$MM/$yyyy").time
-        }
-    }
-
+    // TODO: 02/10/2563 move function business encryptSHA
     private fun String?.encryptSHA(): String {
         var sha = ""
         try {

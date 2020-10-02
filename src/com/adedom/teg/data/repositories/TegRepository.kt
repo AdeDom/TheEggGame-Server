@@ -1,12 +1,8 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.http.models.request.ChangePasswordRequest
-import com.adedom.teg.http.models.request.ChangeProfileRequest
-import com.adedom.teg.http.models.request.StateRequest
-import com.adedom.teg.http.models.request.RankPlayersRequest
-import com.adedom.teg.http.models.request.SignInRequest
-import com.adedom.teg.http.models.request.SignUpRequest
-import com.adedom.teg.http.models.request.ItemCollectionRequest
+import com.adedom.teg.business.models.ChangeProfileItem
+import com.adedom.teg.business.models.SignUpItem
+import com.adedom.teg.http.models.request.*
 import com.adedom.teg.refactor.Backpack
 import com.adedom.teg.refactor.PlayerInfo
 import io.ktor.locations.*
@@ -28,7 +24,7 @@ interface TegRepository {
 
     fun signIn(signInRequest: SignInRequest): String
 
-    fun signUp(signUpRequest: SignUpRequest): Pair<Boolean, String>
+    fun signUp(signUpItem: SignUpItem): Pair<Boolean, String>
 
     fun changeImageProfile(playerId: String, imageName: String): Boolean
 
@@ -38,7 +34,7 @@ interface TegRepository {
 
     fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
 
-    fun changeProfile(playerId: String, changeProfileRequest: ChangeProfileRequest): Boolean
+    fun changeProfile(playerId: String, changeProfileItem: ChangeProfileItem): Boolean
 
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfo>
 
