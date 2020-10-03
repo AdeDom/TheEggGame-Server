@@ -4,5 +4,6 @@ object ApiConstant {
 
     const val NAME = "name"
     const val IMAGE = "image"
+    const val IMAGE_FILE = "imageFile"
 
 }

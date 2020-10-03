@@ -1,10 +1,10 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.business.models.ChangeProfileItem
-import com.adedom.teg.business.models.SignUpItem
-import com.adedom.teg.http.models.request.*
-import com.adedom.teg.refactor.Backpack
-import com.adedom.teg.refactor.PlayerInfo
+import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.models.models.SignUpItem
+import com.adedom.teg.models.request.*
+import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.models.models.PlayerInfo
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI

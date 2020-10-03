@@ -1,9 +1,9 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.service.auth.AuthService
-import com.adedom.teg.http.models.request.RefreshTokenRequest
-import com.adedom.teg.http.models.request.SignInRequest
-import com.adedom.teg.http.models.request.SignUpRequest
+import com.adedom.teg.models.request.RefreshTokenRequest
+import com.adedom.teg.models.request.SignInRequest
+import com.adedom.teg.models.request.SignUpRequest
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.request.*

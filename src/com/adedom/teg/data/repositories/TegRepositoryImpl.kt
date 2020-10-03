@@ -1,14 +1,14 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.business.models.ChangeProfileItem
-import com.adedom.teg.business.models.SignUpItem
+import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.MapResponse
 import com.adedom.teg.data.database.Players
-import com.adedom.teg.http.models.request.*
-import com.adedom.teg.refactor.Backpack
-import com.adedom.teg.refactor.PlayerInfo
+import com.adedom.teg.models.request.*
+import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.models.models.PlayerInfo
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel

@@ -1,10 +1,10 @@
 package com.adedom.teg.business.service.single
 
 import com.adedom.teg.business.business.TegBusiness
-import com.adedom.teg.http.models.request.ItemCollectionRequest
+import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.http.models.response.BackpackResponse
-import com.adedom.teg.http.models.response.BaseResponse
+import com.adedom.teg.models.response.BackpackResponse
+import com.adedom.teg.models.response.BaseResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI

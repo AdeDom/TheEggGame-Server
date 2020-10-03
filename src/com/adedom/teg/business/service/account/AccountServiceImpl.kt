@@ -1,14 +1,14 @@
 package com.adedom.teg.business.service.account
 
 import com.adedom.teg.business.business.TegBusiness
-import com.adedom.teg.business.models.ChangeProfileItem
+import com.adedom.teg.models.models.ChangeProfileItem
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.http.models.request.ChangePasswordRequest
-import com.adedom.teg.http.models.request.ChangeProfileRequest
-import com.adedom.teg.http.models.request.StateRequest
-import com.adedom.teg.http.models.response.BaseResponse
-import com.adedom.teg.http.models.response.PlayerResponse
-import com.adedom.teg.refactor.GetConstant
+import com.adedom.teg.http.constant.ApiConstant
+import com.adedom.teg.models.request.ChangePasswordRequest
+import com.adedom.teg.models.request.ChangeProfileRequest
+import com.adedom.teg.models.request.StateRequest
+import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.PlayerInfoResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -24,7 +24,7 @@ class AccountServiceImpl(
         val message: String? = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
-            imageName.isNullOrBlank() -> "Not found image file [${GetConstant.IMAGE_FILE}]"
+            imageName.isNullOrBlank() -> "Not found image file [${ApiConstant.IMAGE_FILE}]"
 
             // validate values of variable
 
@@ -41,8 +41,8 @@ class AccountServiceImpl(
         return response
     }
 
-    override fun fetchPlayerInfo(playerId: String?): PlayerResponse {
-        val response = PlayerResponse()
+    override fun fetchPlayerInfo(playerId: String?): PlayerInfoResponse {
+        val response = PlayerInfoResponse()
 
         val message: String = when {
             // validate Null Or Blank

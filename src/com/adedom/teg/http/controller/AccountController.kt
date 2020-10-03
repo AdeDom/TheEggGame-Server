@@ -2,9 +2,8 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.http.constant.ApiConstant
 import com.adedom.teg.getHttpClientOkHttp
-import com.adedom.teg.http.models.request.*
-import com.adedom.teg.http.models.response.BaseResponse
-import com.adedom.teg.refactor.GetConstant
+import com.adedom.teg.models.request.*
+import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.business.service.account.AccountService
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.fromJson
@@ -31,7 +30,7 @@ fun Route.accountController(service: AccountService) {
         try {
             val multiPartData = call.receiveMultipart()
             multiPartData.forEachPart { part ->
-                if (part.name == GetConstant.IMAGE_FILE && part is PartData.FileItem) {
+                if (part.name == ApiConstant.IMAGE_FILE && part is PartData.FileItem) {
                     val extension = File(part.originalFileName!!).extension
                     imageName = "image-${call.playerId}.$extension"
 

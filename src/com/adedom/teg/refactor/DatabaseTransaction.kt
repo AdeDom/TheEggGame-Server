@@ -1,7 +1,7 @@
 package com.adedom.teg.refactor
 
 import com.adedom.teg.data.database.*
-import com.adedom.teg.http.models.request.*
+import com.adedom.teg.models.request.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime

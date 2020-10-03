@@ -2,13 +2,13 @@ package com.adedom.teg.business.service.auth
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
-import com.adedom.teg.business.models.SignUpItem
+import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.http.models.request.RefreshTokenRequest
-import com.adedom.teg.http.models.request.SignInRequest
-import com.adedom.teg.http.models.request.SignUpRequest
-import com.adedom.teg.http.models.response.SignInResponse
-import com.adedom.teg.http.models.response.SignUpResponse
+import com.adedom.teg.models.request.RefreshTokenRequest
+import com.adedom.teg.models.request.SignInRequest
+import com.adedom.teg.models.request.SignUpRequest
+import com.adedom.teg.models.response.SignInResponse
+import com.adedom.teg.models.response.SignUpResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.http.*
 import io.ktor.locations.*

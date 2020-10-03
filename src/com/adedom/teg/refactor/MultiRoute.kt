@@ -1,7 +1,7 @@
 package com.adedom.teg.refactor
 
-import com.adedom.teg.http.models.request.*
-import com.adedom.teg.http.models.response.*
+import com.adedom.teg.models.request.*
+import com.adedom.teg.models.response.*
 import com.adedom.teg.util.*
 import io.ktor.application.call
 import io.ktor.request.receive

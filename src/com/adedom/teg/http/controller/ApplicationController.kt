@@ -1,7 +1,7 @@
 package com.adedom.teg.http.controller
 
-import com.adedom.teg.http.models.request.LogActiveRequest
-import com.adedom.teg.http.models.request.RankPlayersRequest
+import com.adedom.teg.models.request.LogActiveRequest
+import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.business.service.application.ApplicationService
 import com.adedom.teg.util.playerId
 import io.ktor.application.*

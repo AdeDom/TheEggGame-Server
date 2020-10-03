@@ -1,6 +1,6 @@
 package com.adedom.teg.data.database
 
-import com.adedom.teg.refactor.PlayerInfo
+import com.adedom.teg.models.models.PlayerInfo
 import com.adedom.teg.refactor.RoomInfo
 import com.adedom.teg.util.toConvertBirthdate
 import com.adedom.teg.util.toLevel

@@ -1,8 +1,8 @@
 package com.adedom.teg.business.service.application
 
-import com.adedom.teg.http.models.request.RankPlayersRequest
-import com.adedom.teg.http.models.response.BaseResponse
-import com.adedom.teg.http.models.response.RankPlayersResponse
+import com.adedom.teg.models.request.RankPlayersRequest
+import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.RankPlayersResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
