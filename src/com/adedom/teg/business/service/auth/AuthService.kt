@@ -5,6 +5,7 @@ import com.adedom.teg.http.models.request.SignInRequest
 import com.adedom.teg.http.models.request.SignUpRequest
 import com.adedom.teg.http.models.response.SignUpResponse
 import com.adedom.teg.http.models.response.SignInResponse
+import io.ktor.http.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -14,6 +15,6 @@ interface AuthService {
 
     fun signUp(signUpRequest: SignUpRequest): SignUpResponse
 
-    fun refreshToken(refreshTokenRequest: RefreshTokenRequest): SignInResponse
+    fun refreshToken(refreshTokenRequest: RefreshTokenRequest): Pair<HttpStatusCode, SignInResponse>
 
 }

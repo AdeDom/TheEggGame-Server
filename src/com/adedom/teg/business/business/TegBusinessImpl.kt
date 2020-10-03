@@ -7,6 +7,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.reflect.KProperty0
 
 class TegBusinessImpl : TegBusiness {
@@ -34,12 +35,16 @@ class TegBusinessImpl : TegBusiness {
         return state == TegConstant.STATE_ONLINE || state == TegConstant.STATE_OFFLINE
     }
 
-    override fun isValidateJWT(token: String, name: String): Boolean {
-        return try {
-            JWT().decodeJwt(token).getClaim(name).asString() == null
-        } catch (e: Throwable) {
-            true
-        }
+    override fun isValidateJwtIncorrect(token: String, name: String): Boolean = try {
+        JWT().decodeJwt(token).getClaim(name).asString() == null
+    } catch (e: Throwable) {
+        true
+    }
+
+    override fun isValidateJwtExpires(token: String): Boolean = try {
+        JWT().decodeJwt(token).getClaim("exp").asDate() < Date()
+    } catch (e: Throwable) {
+        true
     }
 
     override fun convertBirthdateStringToLong(birthdate: String): Long {

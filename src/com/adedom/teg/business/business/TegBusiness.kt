@@ -12,7 +12,9 @@ interface TegBusiness {
 
     fun isValidateState(state: String): Boolean
 
-    fun isValidateJWT(token: String, name: String): Boolean
+    fun isValidateJwtIncorrect(token: String, name: String): Boolean
+
+    fun isValidateJwtExpires(token: String): Boolean
 
     fun convertBirthdateStringToLong(birthdate: String): Long
 

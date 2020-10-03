@@ -10,6 +10,7 @@ import com.adedom.teg.http.models.request.SignUpRequest
 import com.adedom.teg.http.models.response.SignInResponse
 import com.adedom.teg.http.models.response.SignUpResponse
 import com.adedom.teg.util.TegConstant
+import io.ktor.http.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -97,7 +98,8 @@ class AuthServiceImpl(
         return response
     }
 
-    override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): SignInResponse {
+    override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): Pair<HttpStatusCode, SignInResponse> {
+        var httpStatusCode = HttpStatusCode.OK
         val response = SignInResponse()
         val (refreshToken) = refreshTokenRequest
 
@@ -106,8 +108,12 @@ class AuthServiceImpl(
             refreshToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(refreshTokenRequest::refreshToken)
 
             // validate values of variable
-            business.isValidateJWT(refreshToken, jwtConfig.playerId) ->
+            business.isValidateJwtIncorrect(refreshToken, jwtConfig.playerId) ->
                 business.toMessageIncorrect(refreshTokenRequest::refreshToken)
+            business.isValidateJwtExpires(refreshToken) -> {
+                httpStatusCode = HttpStatusCode.Unauthorized
+                "Refresh token expires"
+            }
 
             // validate database
 
@@ -122,7 +128,7 @@ class AuthServiceImpl(
         }
 
         response.message = message
-        return response
+        return Pair(httpStatusCode, response)
     }
 
 }
