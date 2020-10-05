@@ -67,5 +67,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
     testImplementation "io.mockk:mockk:1.10.0"
+    testImplementation "org.koin:koin-test:2.1.6"
 
 }
