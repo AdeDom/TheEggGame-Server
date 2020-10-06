@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class TegBusinessImplTest {
 
@@ -100,7 +101,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateDateTime_dateThai_returnFalse() {
+    fun isValidateDateTime_dateThai_returnTrue() {
         // given
         val date = "30/10/2537"
 
@@ -108,7 +109,7 @@ class TegBusinessImplTest {
         val result = business.isValidateDateTime(date)
 
         // then
-        assertFalse(result)
+        assertTrue(result)
     }
 
     @Test
@@ -237,6 +238,78 @@ class TegBusinessImplTest {
 
         // then
         assertFalse(result)
+    }
+
+    @Test
+    fun convertBirthdateStringToLong_convertEng() {
+        // given
+        val birthdateEng = "30/10/1994"
+
+        // when
+        val resultEng = business.convertBirthdateStringToLong(birthdateEng)
+
+        // then
+        assertEquals(783450000000, resultEng)
+    }
+
+    @Test
+    fun toConvertBirthdate_convertBirthDate_returnNull() {
+        // given
+        val birthdate: Long? = null
+
+        // when
+        val result = business.toConvertBirthdate(birthdate)
+
+        // then
+        assertEquals("Error", result)
+    }
+
+    @Test
+    fun toConvertBirthdate_convertBirthDate() {
+        // given
+        val birthdate: Long = 783450000000
+
+        // when
+        val result = business.toConvertBirthdate(birthdate)
+
+        // then
+        assertEquals("30/10/1994", result)
+    }
+
+    @Test
+    fun toConvertLevel_level_returnNull() {
+        // given
+        val level: Int? = null
+
+        // when
+        val result = business.toConvertLevel(level)
+
+        // then
+        assertEquals(1, result)
+    }
+
+    @Test
+    fun toConvertLevel_nonLevel_returnLevel() {
+        // given
+        val level: Int? = 999
+
+        // when
+        val result = business.toConvertLevel(level)
+
+        // then
+        assertEquals(1, result)
+    }
+
+    @Test
+    fun toConvertLevel_level_returnLevel() {
+        // given
+        val level: Int? = 5999
+
+        // when
+        val result = business.toConvertLevel(level)
+
+        // then
+        assertEquals(5, result)
     }
 
 }

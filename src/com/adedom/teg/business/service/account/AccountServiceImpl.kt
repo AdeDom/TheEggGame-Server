@@ -1,9 +1,10 @@
 package com.adedom.teg.business.service.account
 
 import com.adedom.teg.business.business.TegBusiness
-import com.adedom.teg.models.models.ChangeProfileItem
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.constant.ApiConstant
+import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.models.models.PlayerInfo
 import com.adedom.teg.models.request.ChangePasswordRequest
 import com.adedom.teg.models.request.ChangeProfileRequest
 import com.adedom.teg.models.request.StateRequest
@@ -54,8 +55,19 @@ class AccountServiceImpl(
 
             // execute
             else -> {
+                val db = repository.fetchPlayerInfo(playerId)
+                val playerInfo = PlayerInfo(
+                    playerId = db.playerId,
+                    username = db.username,
+                    name = db.name,
+                    image = db.image,
+                    level = business.toConvertLevel(db.level),
+                    state = db.state,
+                    gender = db.gender,
+                    birthdate = business.toConvertBirthdate(db.birthdate),
+                )
                 response.success = true
-                response.playerInfo = repository.fetchPlayerInfo(playerId)
+                response.playerInfo = playerInfo
                 "Fetch player info success"
             }
         }
@@ -99,9 +111,9 @@ class AccountServiceImpl(
 
             // validate values of variable
             oldPassword.length < TegConstant.MIN_PASSWORD ->
-                business.validateGrateEq(changePasswordRequest::oldPassword, TegConstant.MIN_PASSWORD)
+                business.toMessageGrateEq(changePasswordRequest::oldPassword, TegConstant.MIN_PASSWORD)
             newPassword.length < TegConstant.MIN_PASSWORD ->
-                business.validateGrateEq(changePasswordRequest::newPassword, TegConstant.MIN_PASSWORD)
+                business.toMessageGrateEq(changePasswordRequest::newPassword, TegConstant.MIN_PASSWORD)
 
             // validate database
             repository.isValidateChangePassword(

@@ -18,6 +18,10 @@ interface TegBusiness {
 
     fun convertBirthdateStringToLong(birthdate: String): Long
 
+    fun toConvertBirthdate(date: Long?): String
+
+    fun toConvertLevel(point: Int?): Int
+
     fun encryptSHA(password: String): String
 
     fun toMessageIsNullOrBlank(values: String?): String
@@ -36,6 +40,6 @@ interface TegBusiness {
 
     fun toMessageRepeat(kProperty0: KProperty0<String?>, other: String): String
 
-    fun validateGrateEq(kProperty0: KProperty0<String?>, length: Int): String
+    fun toMessageGrateEq(kProperty0: KProperty0<String?>, length: Int): String
 
 }

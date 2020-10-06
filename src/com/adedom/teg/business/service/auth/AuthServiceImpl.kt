@@ -31,9 +31,9 @@ class AuthServiceImpl(
 
             // validate values of variable
             username.length < TegConstant.MIN_USERNAME ->
-                business.validateGrateEq(signInRequest::username, TegConstant.MIN_USERNAME)
+                business.toMessageGrateEq(signInRequest::username, TegConstant.MIN_USERNAME)
             password.length < TegConstant.MIN_PASSWORD ->
-                business.validateGrateEq(signInRequest::password, TegConstant.MIN_PASSWORD)
+                business.toMessageGrateEq(signInRequest::password, TegConstant.MIN_PASSWORD)
 
             // validate database
             repository.isValidateSignIn(signInRequest.copy(password = business.encryptSHA(password))) ->
@@ -67,9 +67,9 @@ class AuthServiceImpl(
 
             // validate values of variable
             username.length < TegConstant.MIN_USERNAME ->
-                business.validateGrateEq(signUpRequest::username, TegConstant.MIN_USERNAME)
+                business.toMessageGrateEq(signUpRequest::username, TegConstant.MIN_USERNAME)
             password.length < TegConstant.MIN_PASSWORD ->
-                business.validateGrateEq(signUpRequest::password, TegConstant.MIN_PASSWORD)
+                business.toMessageGrateEq(signUpRequest::password, TegConstant.MIN_PASSWORD)
             !business.isValidateGender(gender) -> business.toMessageGender(signUpRequest::gender)
             business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(signUpRequest::birthdate)
 

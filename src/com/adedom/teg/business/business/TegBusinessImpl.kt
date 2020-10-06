@@ -24,8 +24,9 @@ class TegBusinessImpl : TegBusiness {
 
     override fun isValidateDateTime(dateTime: String): Boolean {
         return try {
-            SimpleDateFormat("dd/MM/yyyy").parse(dateTime)
-            false
+            val date = SimpleDateFormat("dd/MM/yyyy").parse(dateTime)
+            val year = SimpleDateFormat("yyyy").format(date).toInt()
+            year !in 1900..2100
         } catch (e: Throwable) {
             true
         }
@@ -48,16 +49,20 @@ class TegBusinessImpl : TegBusiness {
     }
 
     override fun convertBirthdateStringToLong(birthdate: String): Long {
-        val sdf = SimpleDateFormat("dd/MM/yyyy")
-        val date = sdf.parse(birthdate)
-        return if (date.time < 0L) {
-            date.time
-        } else {
-            val dd = SimpleDateFormat("dd").format(date)
-            val MM = SimpleDateFormat("MM").format(date)
-            val yyyy = SimpleDateFormat("yyyy").format(date).toInt() - 543
-            sdf.parse("$dd/$MM/$yyyy").time
-        }
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
+        return sdf.parse(birthdate).time
+    }
+
+    override fun toConvertBirthdate(date: Long?): String {
+        return if (date == null)
+            "Error"
+        else
+            SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN")).format(date)
+    }
+
+    override fun toConvertLevel(point: Int?): Int {
+        val level = point?.div(1000) ?: 1
+        return if (level == 0) 1 else level
     }
 
     override fun encryptSHA(password: String): String {
@@ -107,7 +112,7 @@ class TegBusinessImpl : TegBusiness {
         return "${kProperty0.name} repeat. Please enter other $other"
     }
 
-    override fun validateGrateEq(kProperty0: KProperty0<String?>, length: Int): String {
+    override fun toMessageGrateEq(kProperty0: KProperty0<String?>, length: Int): String {
         return "Please enter ${kProperty0.name} a number greater than or equal to $length"
     }
 

@@ -1,10 +1,7 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.SignUpItem
+import com.adedom.teg.models.models.*
 import com.adedom.teg.models.request.*
-import com.adedom.teg.models.models.Backpack
-import com.adedom.teg.models.models.PlayerInfo
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -28,7 +25,7 @@ interface TegRepository {
 
     fun changeImageProfile(playerId: String, imageName: String): Boolean
 
-    fun fetchPlayerInfo(playerId: String): PlayerInfo
+    fun fetchPlayerInfo(playerId: String): PlayerInfoDb
 
     fun playerState(playerId: String, stateRequest: StateRequest): Boolean
 

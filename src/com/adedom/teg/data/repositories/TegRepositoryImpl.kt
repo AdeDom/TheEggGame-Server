@@ -1,17 +1,13 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.MapResponse
 import com.adedom.teg.data.database.Players
+import com.adedom.teg.data.map.MapObject
+import com.adedom.teg.models.models.*
 import com.adedom.teg.models.request.*
-import com.adedom.teg.models.models.Backpack
-import com.adedom.teg.models.models.PlayerInfo
 import com.adedom.teg.util.TegConstant
-import com.adedom.teg.util.toConvertBirthdate
-import com.adedom.teg.util.toLevel
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -96,8 +92,8 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun fetchPlayerInfo(playerId: String): PlayerInfo {
-        val resultRow = transaction {
+    override fun fetchPlayerInfo(playerId: String): PlayerInfoDb {
+        return transaction {
             (Players innerJoin ItemCollections).slice(
                 Players.playerId,
                 Players.username,
@@ -108,19 +104,9 @@ class TegRepositoryImpl : TegRepository {
                 Players.gender,
                 Players.birthdate,
             ).select { Players.playerId eq playerId }
+                .map { MapObject.toPlayerInfoDb(it) }
                 .single()
         }
-
-        return PlayerInfo(
-            playerId = resultRow[Players.playerId],
-            username = resultRow[Players.username],
-            name = resultRow[Players.name],
-            image = resultRow[Players.image],
-            level = resultRow[ItemCollections.level].toLevel(),
-            state = resultRow[Players.state],
-            gender = resultRow[Players.gender],
-            birthdate = resultRow[Players.birthdate].toConvertBirthdate(),
-        )
     }
 
     override fun playerState(playerId: String, stateRequest: StateRequest): Boolean {
