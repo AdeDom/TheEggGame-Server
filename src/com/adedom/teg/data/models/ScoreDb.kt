@@ -1,6 +1,6 @@
-package com.adedom.teg.refactor
+package com.adedom.teg.data.models
 
-data class Score(
+data class ScoreDb(
     val teamA: Int? = null,
     val teamB: Int? = null
 )

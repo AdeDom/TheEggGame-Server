@@ -1,7 +1,5 @@
 package com.adedom.teg.data.database
 
-import com.adedom.teg.refactor.Multi
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 object Multis : Table(name = DatabaseConstant.multiTable) {
@@ -14,13 +12,5 @@ object Multis : Table(name = DatabaseConstant.multiTable) {
 
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(multiId, name = DatabaseConstant.multiPk)
-
-    fun toMulti(row: ResultRow) = Multi(
-        multiId = row[multiId],
-        roomNo = row[roomNo],
-        latitude = row[latitude],
-        longitude = row[longitude],
-        status = row[status]
-    )
 
 }

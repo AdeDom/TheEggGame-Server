@@ -4,11 +4,7 @@ import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.Players
 import com.adedom.teg.data.map.MapObject
-import com.adedom.teg.data.models.PlayerIdDb
-import com.adedom.teg.data.models.PlayerInfoDb
-import com.adedom.teg.data.models.BackpackDb
-import com.adedom.teg.data.models.ChangeProfileDb
-import com.adedom.teg.data.models.SignUpDb
+import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
@@ -100,7 +96,7 @@ class TegRepositoryImpl : TegRepository {
                 Players.username,
                 Players.name,
                 Players.image,
-                ItemCollections.level,
+                ItemCollections.qty.sum(),
                 Players.state,
                 Players.gender,
                 Players.birthdate,
@@ -156,14 +152,14 @@ class TegRepositoryImpl : TegRepository {
                     Players.username,
                     Players.name,
                     Players.image,
-                    ItemCollections.level,
+                    ItemCollections.qty.sum(),
                     Players.state,
                     Players.gender,
                     Players.birthdate,
                 )
                 .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
                 .groupBy(Players.playerId)
-                .orderBy(ItemCollections.level to SortOrder.DESC, Players.playerId to SortOrder.ASC)
+                .orderBy(ItemCollections.qty.sum() to SortOrder.DESC, Players.playerId to SortOrder.ASC)
 
             when (limit!!.toInt()) {
                 TegConstant.RANK_LIMIT_TEN -> query.limit(TegConstant.RANK_LIMIT_TEN)
@@ -192,7 +188,7 @@ class TegRepositoryImpl : TegRepository {
                 .select { LogActives.playerId eq playerId }
                 .orderBy(LogActives.logId to SortOrder.DESC)
                 .limit(1)
-                .map { MapObject.toLogActiveLogId(it) }
+                .map { MapObject.toLogActiveLogIdDb(it) }
                 .single()
 
             LogActives.update({ LogActives.logId eq logActive.logId }) {
@@ -209,17 +205,17 @@ class TegRepositoryImpl : TegRepository {
 
             val eggI =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_ONE) }
-                    .map { ItemCollections.toItemCollection(it) }
+                    .map { MapObject.toItemCollectionDb(it) }
                     .sumBy { it.qty!! }
 
             val eggII =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_TWO) }
-                    .map { ItemCollections.toItemCollection(it) }
+                    .map { MapObject.toItemCollectionDb(it) }
                     .sumBy { it.qty!! }
 
             val eggIII =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_THREE) }
-                    .map { ItemCollections.toItemCollection(it) }
+                    .map { MapObject.toItemCollectionDb(it) }
                     .sumBy { it.qty!! }
 
             BackpackDb(eggI, eggII, eggIII)

@@ -1,6 +1,6 @@
-package com.adedom.teg.refactor
+package com.adedom.teg.data.models
 
-data class RoomInfo(
+data class RoomInfoDb(
     val roomNo: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,

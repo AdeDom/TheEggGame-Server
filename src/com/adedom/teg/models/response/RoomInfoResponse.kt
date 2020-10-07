@@ -1,9 +1,9 @@
 package com.adedom.teg.models.response
 
-import com.adedom.teg.refactor.RoomInfo
+import com.adedom.teg.data.models.RoomInfoDb
 
 data class RoomInfoResponse(
     var success: Boolean = false,
     var message: String? = null,
-    var roomInfo: List<RoomInfo>? = null,
+    var roomInfo: List<RoomInfoDb>? = null,
 )

@@ -1,6 +1,6 @@
-package com.adedom.teg.refactor
+package com.adedom.teg.data.models
 
-data class Multi(
+data class MultiDb(
     val multiId: Int? = null,
     val roomNo: String? = null,
     val latitude: Double? = null,

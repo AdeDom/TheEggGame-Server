@@ -1,6 +1,6 @@
-package com.adedom.teg.refactor
+package com.adedom.teg.data.models
 
-data class ItemCollection(
+data class ItemCollectionDb(
     val collectionId: Int? = null,
     val playerId: String? = null,
     val itemId: Int? = null,

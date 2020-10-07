@@ -1,10 +1,14 @@
 package com.adedom.teg.refactor
 
 import com.adedom.teg.data.database.*
+import com.adedom.teg.data.map.MapObject
+import com.adedom.teg.data.models.MultiDb
+import com.adedom.teg.data.models.RoomDb
+import com.adedom.teg.data.models.RoomInfoDb
+import com.adedom.teg.data.models.ScoreDb
 import com.adedom.teg.models.request.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.joda.time.DateTime
 
 object DatabaseTransaction {
 
@@ -45,7 +49,7 @@ object DatabaseTransaction {
 
         val peopleRoom: Int = Rooms.slice(Rooms.people)
             .select { Rooms.roomNo eq roomNo }
-            .map { Rooms.toPeopleRoom(it) }
+            .map { MapObject.toPeopleRoomDb(it) }
             .single()
             .people
             ?.toInt() ?: 0
@@ -65,12 +69,12 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun getMultis(roomNo: String): List<Multi> = transaction {
+    fun getMultis(roomNo: String): List<MultiDb> = transaction {
         Multis.select { Multis.roomNo eq roomNo }
-            .map { Multis.toMulti(it) }
+            .map { MapObject.toMultiDb(it) }
     }
 
-    fun getMultiScore(roomNo: String): Score = transaction {
+    fun getMultiScore(roomNo: String): ScoreDb = transaction {
         val teamA = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "A") }
             .count()
             .toInt()
@@ -79,16 +83,16 @@ object DatabaseTransaction {
             .count()
             .toInt()
 
-        Score(teamA, teamB)
+        ScoreDb(teamA, teamB)
     }
 
-    fun getRooms(): List<Room> = transaction {
+    fun getRooms(): List<RoomDb> = transaction {
         Rooms.select { Rooms.status eq "on" }
             .orderBy(Rooms.roomId to SortOrder.ASC)
-            .map { Rooms.toRoom(it) }
+            .map { MapObject.toRoomDb(it) }
     }
 
-    fun getRoomInfos(roomNo: String): List<RoomInfo> = transaction {
+    fun getRoomInfos(roomNo: String): List<RoomInfoDb> = transaction {
         (Players innerJoin ItemCollections innerJoin RoomInfos)
             .slice(
                 RoomInfos.roomNo,
@@ -99,13 +103,13 @@ object DatabaseTransaction {
                 Players.playerId,
                 Players.name,
                 Players.image,
-                ItemCollections.level,
+                ItemCollections.qty.sum(),
                 Players.state,
                 Players.gender
             ).select { RoomInfos.roomNo eq roomNo }
             .groupBy(Players.playerId)
             .orderBy(RoomInfos.infoId to SortOrder.ASC)
-            .map { MapResponse.toRoomInfo(it) }
+            .map { MapResponse.toRoomInfoDb(it) }
     }
 
     fun postMulti(multiRequest: MultiRequest) {
@@ -133,7 +137,7 @@ object DatabaseTransaction {
                 it[MultiCollections.team] = team!!
                 it[MultiCollections.latitude] = latitude!!
                 it[MultiCollections.longitude] = longitude!!
-                it[dateTime] = DateTime.now()
+                it[dateTime] = System.currentTimeMillis()
             }
         }
     }
@@ -147,7 +151,7 @@ object DatabaseTransaction {
                 .selectAll()
                 .orderBy(Rooms.roomId to SortOrder.DESC)
                 .limit(1)
-                .map { Rooms.toRoomNo(it) }
+                .map { MapObject.toRoomNoDb(it) }
                 .single()
                 .roomNo
                 ?.toInt()
@@ -159,7 +163,7 @@ object DatabaseTransaction {
                 it[Rooms.name] = name!!
                 it[Rooms.people] = people!!
                 it[status] = "on"
-                it[dateTime] = DateTime.now()
+                it[dateTime] = System.currentTimeMillis()
             }
 
             RoomInfos.insert {
@@ -169,7 +173,7 @@ object DatabaseTransaction {
                 it[longitude] = 0.0
                 it[team] = "A"
                 it[status] = "unready"
-                it[dateTime] = DateTime.now()
+                it[dateTime] = System.currentTimeMillis()
             }
 
             roomNo
@@ -186,7 +190,7 @@ object DatabaseTransaction {
                 it[longitude] = 0.0
                 it[team] = "B"
                 it[status] = "unready"
-                it[dateTime] = DateTime.now()
+                it[dateTime] = System.currentTimeMillis()
             }
         }
     }

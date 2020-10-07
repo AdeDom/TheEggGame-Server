@@ -1,10 +1,10 @@
-package com.adedom.teg.refactor
+package com.adedom.teg.data.models
 
-data class Room(
+data class RoomDb(
     val roomId: Int? = null,
     val roomNo: String? = null,
     val name: String? = null,
     val people: String? = null,
     val status: String? = null,
-    val dateTime: String? = null
+    val dateTime: Long? = null,
 )
