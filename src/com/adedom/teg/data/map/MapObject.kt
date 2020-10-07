@@ -1,8 +1,11 @@
 package com.adedom.teg.data.map
 
 import com.adedom.teg.data.database.ItemCollections
+import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.Players
-import com.adedom.teg.models.models.PlayerInfoDb
+import com.adedom.teg.data.models.LogActiveLogId
+import com.adedom.teg.data.models.PlayerIdDb
+import com.adedom.teg.data.models.PlayerInfoDb
 import org.jetbrains.exposed.sql.ResultRow
 
 object MapObject {
@@ -16,6 +19,14 @@ object MapObject {
         state = row[Players.state],
         gender = row[Players.gender],
         birthdate = row[Players.birthdate],
+    )
+
+    fun toPlayerIdDb(row: ResultRow) = PlayerIdDb(
+        playerId = row[Players.playerId],
+    )
+
+    fun toLogActiveLogId(row: ResultRow) = LogActiveLogId(
+        logId = row[LogActives.logId],
     )
 
 }

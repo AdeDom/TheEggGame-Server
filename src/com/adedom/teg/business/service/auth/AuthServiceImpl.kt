@@ -41,10 +41,10 @@ class AuthServiceImpl(
 
             // execute
             else -> {
-                val playerId = repository.signIn(signInRequest.copy(password = business.encryptSHA(password)))
+                val db = repository.signIn(signInRequest.copy(password = business.encryptSHA(password)))
                 response.success = true
-                response.accessToken = jwtConfig.makeAccessToken(playerId)
-                response.refreshToken = jwtConfig.makeRefreshToken(playerId)
+                response.accessToken = jwtConfig.makeAccessToken(db.playerId)
+                response.refreshToken = jwtConfig.makeRefreshToken(db.playerId)
                 "Sign in success"
             }
         }

@@ -1,4 +1,4 @@
-package com.adedom.teg.models.models
+package com.adedom.teg.data.models
 
 data class PlayerInfoDb(
     val playerId: String? = null,

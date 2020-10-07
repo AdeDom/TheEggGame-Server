@@ -1,8 +1,9 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.data.models.PlayerIdDb
+import com.adedom.teg.data.models.BackpackDb
 import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.PlayerInfoDb
+import com.adedom.teg.data.models.PlayerInfoDb
 import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.models.request.*
 import io.ktor.locations.*
@@ -22,7 +23,7 @@ interface TegRepository {
     // if incorrect return true
     fun isValidateChangePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
 
-    fun signIn(signInRequest: SignInRequest): String
+    fun signIn(signInRequest: SignInRequest): PlayerIdDb
 
     fun signUp(signUpItem: SignUpItem): Pair<Boolean, String>
 
@@ -42,7 +43,7 @@ interface TegRepository {
 
     fun logActiveOff(playerId: String): Boolean
 
-    fun fetchItemCollection(playerId: String): Backpack
+    fun fetchItemCollection(playerId: String): BackpackDb
 
     fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
 

@@ -1,6 +1,6 @@
-package com.adedom.teg.models.models
+package com.adedom.teg.data.models
 
-data class Backpack(
+data class BackpackDb(
     val eggI: Int? = null,
     val eggII: Int? = null,
     val eggIII: Int? = null

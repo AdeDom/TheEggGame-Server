@@ -4,9 +4,10 @@ import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.Players
 import com.adedom.teg.data.map.MapObject
-import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.data.models.PlayerIdDb
+import com.adedom.teg.data.models.PlayerInfoDb
+import com.adedom.teg.data.models.BackpackDb
 import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.PlayerInfoDb
 import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.models.request.*
 import com.adedom.teg.util.TegConstant
@@ -50,16 +51,14 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun signIn(signInRequest: SignInRequest): String {
+    override fun signIn(signInRequest: SignInRequest): PlayerIdDb {
         val (username, password) = signInRequest
-        val resultRow = transaction {
+        return transaction {
             Players.slice(Players.playerId)
                 .select { Players.username eq username!! and (Players.password eq password!!) }
+                .map { MapObject.toPlayerIdDb(it) }
                 .single()
         }
-
-        // player id
-        return resultRow[Players.playerId]
     }
 
     override fun signUp(signUpItem: SignUpItem): Pair<Boolean, String> {
@@ -189,15 +188,14 @@ class TegRepositoryImpl : TegRepository {
 
     override fun logActiveOff(playerId: String): Boolean {
         val transaction = transaction {
-            val resultRow = LogActives.slice(LogActives.logId)
+            val logActive = LogActives.slice(LogActives.logId)
                 .select { LogActives.playerId eq playerId }
                 .orderBy(LogActives.logId to SortOrder.DESC)
                 .limit(1)
+                .map { MapObject.toLogActiveLogId(it) }
                 .single()
 
-            val logActiveLogId: Int = resultRow[LogActives.logId]
-
-            LogActives.update({ LogActives.logId eq logActiveLogId }) {
+            LogActives.update({ LogActives.logId eq logActive.logId }) {
                 it[LogActives.dateTimeOut] = System.currentTimeMillis()
             }
         }
@@ -205,7 +203,7 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun fetchItemCollection(playerId: String): Backpack {
+    override fun fetchItemCollection(playerId: String): BackpackDb {
         return transaction {
             addLogger(StdOutSqlLogger)
 
@@ -224,7 +222,7 @@ class TegRepositoryImpl : TegRepository {
                     .map { ItemCollections.toItemCollection(it) }
                     .sumBy { it.qty!! }
 
-            Backpack(eggI, eggII, eggIII)
+            BackpackDb(eggI, eggII, eggIII)
         }
     }
 
