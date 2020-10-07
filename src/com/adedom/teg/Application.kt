@@ -1,18 +1,18 @@
 package com.adedom.teg
 
+import com.adedom.teg.business.account.AccountService
+import com.adedom.teg.business.application.ApplicationService
+import com.adedom.teg.business.auth.AuthService
+import com.adedom.teg.business.di.getBusinessModule
+import com.adedom.teg.business.jwtconfig.JwtConfig
+import com.adedom.teg.business.jwtconfig.PlayerPrincipal
+import com.adedom.teg.business.single.SingleService
+import com.adedom.teg.data.di.getDataModule
 import com.adedom.teg.http.controller.accountController
 import com.adedom.teg.http.controller.applicationController
 import com.adedom.teg.http.controller.authController
-import com.adedom.teg.refactor.headerController
 import com.adedom.teg.http.controller.singleController
-import com.adedom.teg.business.di.getBusinessModule
-import com.adedom.teg.business.jwtconfig.JwtConfig
-import com.adedom.teg.data.di.getDataModule
-import com.adedom.teg.business.service.account.AccountService
-import com.adedom.teg.business.service.application.ApplicationService
-import com.adedom.teg.business.service.auth.AuthService
-import com.adedom.teg.business.service.single.SingleService
-import com.adedom.teg.business.jwtconfig.PlayerPrincipal
+import com.adedom.teg.refactor.headerController
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.zaxxer.hikari.HikariConfig

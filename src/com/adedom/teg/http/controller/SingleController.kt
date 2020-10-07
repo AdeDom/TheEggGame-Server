@@ -2,7 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.models.request.BackpackRequest
 import com.adedom.teg.models.request.ItemCollectionRequest
-import com.adedom.teg.business.service.single.SingleService
+import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.locations.*

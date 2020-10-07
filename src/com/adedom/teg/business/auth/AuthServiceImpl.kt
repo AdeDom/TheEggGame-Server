@@ -1,4 +1,4 @@
-package com.adedom.teg.business.service.auth
+package com.adedom.teg.business.auth
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
@@ -8,7 +8,6 @@ import com.adedom.teg.models.request.RefreshTokenRequest
 import com.adedom.teg.models.request.SignInRequest
 import com.adedom.teg.models.request.SignUpRequest
 import com.adedom.teg.models.response.SignInResponse
-import com.adedom.teg.models.response.SignUpResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -37,7 +36,7 @@ class AuthServiceImpl(
 
             // validate database
             repository.isValidateSignIn(signInRequest.copy(password = business.encryptSHA(password))) ->
-                "Username and password incorrect"
+                business.toMessageIncorrect(signInRequest::password)
 
             // execute
             else -> {
@@ -53,8 +52,8 @@ class AuthServiceImpl(
         return response
     }
 
-    override fun signUp(signUpRequest: SignUpRequest): SignUpResponse {
-        val response = SignUpResponse()
+    override fun signUp(signUpRequest: SignUpRequest): SignInResponse {
+        val response = SignInResponse()
         val (username, password, name, gender, birthdate) = signUpRequest
 
         val message: String = when {
@@ -112,7 +111,7 @@ class AuthServiceImpl(
                 business.toMessageIncorrect(refreshTokenRequest::refreshToken)
             business.isValidateJwtExpires(refreshToken) -> {
                 httpStatusCode = HttpStatusCode.Unauthorized
-                "Refresh token expires"
+                business.toMessageIncorrect(refreshTokenRequest::refreshToken)
             }
 
             // validate database

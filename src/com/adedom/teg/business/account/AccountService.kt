@@ -1,4 +1,4 @@
-package com.adedom.teg.business.service.account
+package com.adedom.teg.business.account
 
 import com.adedom.teg.models.request.ChangePasswordRequest
 import com.adedom.teg.models.request.ChangeProfileRequest

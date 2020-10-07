@@ -1,4 +1,4 @@
-package com.adedom.teg.business.service.single
+package com.adedom.teg.business.single
 
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.response.BackpackResponse

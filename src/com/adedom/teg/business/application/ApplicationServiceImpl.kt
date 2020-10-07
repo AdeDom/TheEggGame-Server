@@ -1,4 +1,4 @@
-package com.adedom.teg.business.service.application
+package com.adedom.teg.business.application
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.models.request.RankPlayersRequest

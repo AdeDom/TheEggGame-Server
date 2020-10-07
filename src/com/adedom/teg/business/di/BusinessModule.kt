@@ -1,14 +1,14 @@
 package com.adedom.teg.business.di
 
-import com.adedom.teg.business.service.account.AccountService
-import com.adedom.teg.business.service.account.AccountServiceImpl
-import com.adedom.teg.business.service.application.ApplicationService
-import com.adedom.teg.business.service.application.ApplicationServiceImpl
-import com.adedom.teg.business.service.auth.AuthService
-import com.adedom.teg.business.service.auth.AuthServiceImpl
+import com.adedom.teg.business.account.AccountService
+import com.adedom.teg.business.account.AccountServiceImpl
+import com.adedom.teg.business.application.ApplicationService
+import com.adedom.teg.business.application.ApplicationServiceImpl
+import com.adedom.teg.business.auth.AuthService
+import com.adedom.teg.business.auth.AuthServiceImpl
 import com.adedom.teg.business.jwtconfig.JwtConfigImpl
-import com.adedom.teg.business.service.single.SingleService
-import com.adedom.teg.business.service.single.SingleServiceImpl
+import com.adedom.teg.business.single.SingleService
+import com.adedom.teg.business.single.SingleServiceImpl
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.business.TegBusinessImpl
 import com.adedom.teg.business.jwtconfig.JwtConfig

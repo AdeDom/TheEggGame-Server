@@ -4,7 +4,7 @@ import com.adedom.teg.http.constant.ApiConstant
 import com.adedom.teg.getHttpClientOkHttp
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.business.service.account.AccountService
+import com.adedom.teg.business.account.AccountService
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.fromJson
 import com.adedom.teg.util.playerId

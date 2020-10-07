@@ -1,6 +1,6 @@
 package com.adedom.teg.http.controller
 
-import com.adedom.teg.business.service.auth.AuthService
+import com.adedom.teg.business.auth.AuthService
 import com.adedom.teg.models.request.RefreshTokenRequest
 import com.adedom.teg.models.request.SignInRequest
 import com.adedom.teg.models.request.SignUpRequest

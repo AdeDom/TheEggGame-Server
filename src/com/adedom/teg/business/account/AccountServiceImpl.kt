@@ -1,14 +1,14 @@
-package com.adedom.teg.business.service.account
+package com.adedom.teg.business.account
 
 import com.adedom.teg.business.business.TegBusiness
+import com.adedom.teg.data.models.ChangeProfileDb
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.constant.ApiConstant
-import com.adedom.teg.data.models.ChangeProfileDb
-import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.request.ChangePasswordRequest
 import com.adedom.teg.models.request.ChangeProfileRequest
 import com.adedom.teg.models.request.StateRequest
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.response.PlayerInfoResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
@@ -25,7 +25,7 @@ class AccountServiceImpl(
         val message: String? = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
-            imageName.isNullOrBlank() -> "Not found image file [${ApiConstant.IMAGE_FILE}]"
+            imageName.isNullOrBlank() -> business.toMessageIsNullOrBlank(ApiConstant.IMAGE_FILE)
 
             // validate values of variable
 
@@ -119,7 +119,7 @@ class AccountServiceImpl(
             repository.isValidateChangePassword(
                 playerId,
                 changePasswordRequest.copy(oldPassword = business.encryptSHA(oldPassword))
-            ) -> "Password incorrect"
+            ) -> business.toMessageIncorrect(changePasswordRequest::oldPassword)
 
             // execute
             else -> {
