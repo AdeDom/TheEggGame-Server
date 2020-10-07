@@ -7,8 +7,8 @@ import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.PlayerIdDb
 import com.adedom.teg.data.models.PlayerInfoDb
 import com.adedom.teg.data.models.BackpackDb
-import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.SignUpItem
+import com.adedom.teg.data.models.ChangeProfileDb
+import com.adedom.teg.data.models.SignUpDb
 import com.adedom.teg.models.request.*
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
@@ -61,8 +61,8 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun signUp(signUpItem: SignUpItem): Pair<Boolean, String> {
-        val (username, password, name, gender, birthdate) = signUpItem
+    override fun signUp(signUp: SignUpDb): Pair<Boolean, String> {
+        val (username, password, name, gender, birthdate) = signUp
 
         val statement = transaction {
             Players.insert {
@@ -131,8 +131,8 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun changeProfile(playerId: String, changeProfileItem: ChangeProfileItem): Boolean {
-        val (name, gender, birthdate) = changeProfileItem
+    override fun changeProfile(playerId: String, changeProfile: ChangeProfileDb): Boolean {
+        val (name, gender, birthdate) = changeProfile
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.name] = name!!.capitalize()

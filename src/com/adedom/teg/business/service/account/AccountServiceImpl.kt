@@ -3,8 +3,8 @@ package com.adedom.teg.business.service.account
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.constant.ApiConstant
-import com.adedom.teg.models.models.ChangeProfileItem
-import com.adedom.teg.models.models.PlayerInfo
+import com.adedom.teg.data.models.ChangeProfileDb
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.request.ChangePasswordRequest
 import com.adedom.teg.models.request.ChangeProfileRequest
 import com.adedom.teg.models.request.StateRequest
@@ -154,12 +154,12 @@ class AccountServiceImpl(
 
             // execute
             else -> {
-                val changeProfileItem = ChangeProfileItem(
+                val changeProfile = ChangeProfileDb(
                     name = name,
                     gender = gender,
                     birthdate = business.convertBirthdateStringToLong(birthdate),
                 )
-                response.success = repository.changeProfile(playerId, changeProfileItem)
+                response.success = repository.changeProfile(playerId, changeProfile)
                 "Put change profile success"
             }
         }

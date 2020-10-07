@@ -1,6 +1,6 @@
-package com.adedom.teg.models.models
+package com.adedom.teg.data.models
 
-data class SignUpItem(
+data class SignUpDb(
     val username: String? = null,
     val password: String? = null,
     val name: String? = null,

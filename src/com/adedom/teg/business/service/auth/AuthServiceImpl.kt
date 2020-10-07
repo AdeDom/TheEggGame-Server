@@ -2,7 +2,7 @@ package com.adedom.teg.business.service.auth
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
-import com.adedom.teg.models.models.SignUpItem
+import com.adedom.teg.data.models.SignUpDb
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.RefreshTokenRequest
 import com.adedom.teg.models.request.SignInRequest
@@ -79,14 +79,14 @@ class AuthServiceImpl(
 
             // execute
             else -> {
-                val signUpItem = SignUpItem(
+                val signUp = SignUpDb(
                     username = username,
                     password = business.encryptSHA(password),
                     name = name,
                     gender = gender,
                     birthdate = business.convertBirthdateStringToLong(birthdate),
                 )
-                val pair = repository.signUp(signUpItem)
+                val pair = repository.signUp(signUp)
                 response.success = pair.first
                 response.accessToken = jwtConfig.makeAccessToken(pair.second)
                 response.refreshToken = jwtConfig.makeRefreshToken(pair.second)

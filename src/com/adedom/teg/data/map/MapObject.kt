@@ -3,7 +3,7 @@ package com.adedom.teg.data.map
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.Players
-import com.adedom.teg.data.models.LogActiveLogId
+import com.adedom.teg.data.models.LogActiveLogIdDb
 import com.adedom.teg.data.models.PlayerIdDb
 import com.adedom.teg.data.models.PlayerInfoDb
 import org.jetbrains.exposed.sql.ResultRow
@@ -25,7 +25,7 @@ object MapObject {
         playerId = row[Players.playerId],
     )
 
-    fun toLogActiveLogId(row: ResultRow) = LogActiveLogId(
+    fun toLogActiveLogId(row: ResultRow) = LogActiveLogIdDb(
         logId = row[LogActives.logId],
     )
 

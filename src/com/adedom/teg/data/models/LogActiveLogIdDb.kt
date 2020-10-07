@@ -1,5 +1,5 @@
 package com.adedom.teg.data.models
 
-data class LogActiveLogId(
+data class LogActiveLogIdDb(
     val logId: Int,
 )

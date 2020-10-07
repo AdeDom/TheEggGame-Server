@@ -1,4 +1,4 @@
-package com.adedom.teg.models.models
+package com.adedom.teg.models.response
 
 data class PlayerInfo(
     val playerId: String? = null,

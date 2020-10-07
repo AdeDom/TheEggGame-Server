@@ -2,9 +2,9 @@ package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.models.PlayerIdDb
 import com.adedom.teg.data.models.BackpackDb
-import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.data.models.ChangeProfileDb
 import com.adedom.teg.data.models.PlayerInfoDb
-import com.adedom.teg.models.models.SignUpItem
+import com.adedom.teg.data.models.SignUpDb
 import com.adedom.teg.models.request.*
 import io.ktor.locations.*
 
@@ -25,7 +25,7 @@ interface TegRepository {
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb
 
-    fun signUp(signUpItem: SignUpItem): Pair<Boolean, String>
+    fun signUp(signUp: SignUpDb): Pair<Boolean, String>
 
     fun changeImageProfile(playerId: String, imageName: String): Boolean
 
@@ -35,7 +35,7 @@ interface TegRepository {
 
     fun changePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
 
-    fun changeProfile(playerId: String, changeProfileItem: ChangeProfileItem): Boolean
+    fun changeProfile(playerId: String, changeProfile: ChangeProfileDb): Boolean
 
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb>
 
