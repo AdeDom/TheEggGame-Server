@@ -109,7 +109,7 @@ object DatabaseTransaction {
             ).select { RoomInfos.roomNo eq roomNo }
             .groupBy(Players.playerId)
             .orderBy(RoomInfos.infoId to SortOrder.ASC)
-            .map { MapResponse.toRoomInfoDb(it) }
+            .map { MapObject.toRoomInfoDb(it) }
     }
 
     fun postMulti(multiRequest: MultiRequest) {

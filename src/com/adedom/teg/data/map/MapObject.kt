@@ -1,12 +1,7 @@
 package com.adedom.teg.data.map
 
 import com.adedom.teg.data.database.*
-import com.adedom.teg.data.models.LogActiveLogIdDb
-import com.adedom.teg.data.models.PlayerIdDb
-import com.adedom.teg.data.models.PlayerInfoDb
-import com.adedom.teg.data.models.ItemCollectionDb
-import com.adedom.teg.data.models.MultiDb
-import com.adedom.teg.data.models.RoomDb
+import com.adedom.teg.data.models.*
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.sum
 
@@ -38,7 +33,7 @@ object MapObject {
         qty = row[ItemCollections.qty],
         latitude = row[ItemCollections.latitude],
         longitude = row[ItemCollections.longitude],
-        dateTime = row[ItemCollections.dateTime]
+        dateTime = row[ItemCollections.dateTime],
     )
 
     fun toMultiDb(row: ResultRow) = MultiDb(
@@ -46,7 +41,7 @@ object MapObject {
         roomNo = row[Multis.roomNo],
         latitude = row[Multis.latitude],
         longitude = row[Multis.longitude],
-        status = row[Multis.status]
+        status = row[Multis.status],
     )
 
     fun toRoomDb(row: ResultRow) = RoomDb(
@@ -55,15 +50,30 @@ object MapObject {
         name = row[Rooms.name],
         people = row[Rooms.people],
         status = row[Rooms.status],
-        dateTime = row[Rooms.dateTime]
+        dateTime = row[Rooms.dateTime],
     )
 
     fun toPeopleRoomDb(row: ResultRow) = RoomDb(
-        people = row[Rooms.people]
+        people = row[Rooms.people],
     )
 
     fun toRoomNoDb(row: ResultRow) = RoomDb(
-        roomNo = row[Rooms.roomNo]
+        roomNo = row[Rooms.roomNo],
+    )
+
+    // TODO: 07/10/2563 concern convert level
+    fun toRoomInfoDb(row: ResultRow) = RoomInfoDb(
+        roomNo = row[RoomInfos.roomNo],
+        latitude = row[RoomInfos.latitude],
+        longitude = row[RoomInfos.longitude],
+        team = row[RoomInfos.team],
+        status = row[RoomInfos.status],
+        playerId = row[Players.playerId],
+        name = row[Players.name],
+        image = row[Players.image],
+        level = row[ItemCollections.qty.sum()],
+        state = row[Players.state],
+        gender = row[Players.gender],
     )
 
 }
