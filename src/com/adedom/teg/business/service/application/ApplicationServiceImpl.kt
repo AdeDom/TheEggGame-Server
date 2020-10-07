@@ -3,6 +3,7 @@ package com.adedom.teg.business.service.application
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.models.PlayerInfo
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.RankPlayersResponse
 import io.ktor.locations.*
@@ -31,8 +32,20 @@ class ApplicationServiceImpl(
 
             // execute
             else -> {
+                val rankPlayer = repository.fetchRankPlayers(rankPlayersRequest).map {
+                    PlayerInfo(
+                        playerId = it.playerId,
+                        username = it.username,
+                        name = it.name,
+                        image = it.image,
+                        level = business.toConvertLevel(it.level),
+                        state = it.state,
+                        gender = it.gender,
+                        birthdate = business.toConvertBirthdate(it.birthdate),
+                    )
+                }
                 response.success = true
-                response.rankPlayers = repository.fetchRankPlayers(rankPlayersRequest)
+                response.rankPlayers = rankPlayer
                 "Fetch rank players success Hey"
             }
         }

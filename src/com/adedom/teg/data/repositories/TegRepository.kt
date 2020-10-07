@@ -1,6 +1,9 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.models.models.*
+import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.models.models.PlayerInfoDb
+import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.models.request.*
 import io.ktor.locations.*
 
@@ -33,7 +36,7 @@ interface TegRepository {
 
     fun changeProfile(playerId: String, changeProfileItem: ChangeProfileItem): Boolean
 
-    fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfo>
+    fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb>
 
     fun logActiveOn(playerId: String): Boolean
 

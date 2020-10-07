@@ -2,10 +2,12 @@ package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
-import com.adedom.teg.data.database.MapResponse
 import com.adedom.teg.data.database.Players
 import com.adedom.teg.data.map.MapObject
-import com.adedom.teg.models.models.*
+import com.adedom.teg.models.models.Backpack
+import com.adedom.teg.models.models.ChangeProfileItem
+import com.adedom.teg.models.models.PlayerInfoDb
+import com.adedom.teg.models.models.SignUpItem
 import com.adedom.teg.models.request.*
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
@@ -143,7 +145,7 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
-    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfo> {
+    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb> {
         val (_, search, limit) = rankPlayersRequest
 
         return transaction {
@@ -170,7 +172,7 @@ class TegRepositoryImpl : TegRepository {
                 TegConstant.RANK_LIMIT_HUNDRED -> query.limit(TegConstant.RANK_LIMIT_HUNDRED)
             }
 
-            query.map { MapResponse.toPlayers(it) }
+            query.map { MapObject.toPlayerInfoDb(it) }
         }
     }
 
