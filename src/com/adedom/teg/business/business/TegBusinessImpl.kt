@@ -48,6 +48,14 @@ class TegBusinessImpl : TegBusiness {
         true
     }
 
+    override fun isValidateMinUsername(str: String): Boolean {
+        return str.length < TegConstant.MIN_USERNAME
+    }
+
+    override fun isValidateMinPassword(str: String): Boolean {
+        return str.length < TegConstant.MIN_PASSWORD
+    }
+
     override fun convertBirthdateStringToLong(birthdate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
         return sdf.parse(birthdate).time

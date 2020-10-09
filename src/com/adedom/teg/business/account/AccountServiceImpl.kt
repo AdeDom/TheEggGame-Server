@@ -110,9 +110,9 @@ class AccountServiceImpl(
             newPassword.isNullOrBlank() -> business.toMessageIsNullOrBlank(changePasswordRequest::newPassword)
 
             // validate values of variable
-            oldPassword.length < TegConstant.MIN_PASSWORD ->
+            business.isValidateMinUsername(oldPassword) ->
                 business.toMessageGrateEq(changePasswordRequest::oldPassword, TegConstant.MIN_PASSWORD)
-            newPassword.length < TegConstant.MIN_PASSWORD ->
+            business.isValidateMinPassword(newPassword) ->
                 business.toMessageGrateEq(changePasswordRequest::newPassword, TegConstant.MIN_PASSWORD)
 
             // validate database

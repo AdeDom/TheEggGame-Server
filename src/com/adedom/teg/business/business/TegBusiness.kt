@@ -16,6 +16,10 @@ interface TegBusiness {
 
     fun isValidateJwtExpires(token: String): Boolean
 
+    fun isValidateMinUsername(str: String): Boolean
+
+    fun isValidateMinPassword(str: String): Boolean
+
     fun convertBirthdateStringToLong(birthdate: String): Long
 
     fun toConvertBirthdate(date: Long?): String

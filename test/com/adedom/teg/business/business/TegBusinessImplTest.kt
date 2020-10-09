@@ -241,6 +241,54 @@ class TegBusinessImplTest {
     }
 
     @Test
+    fun isValidateMinUsername_incorrect_returnTrue(){
+        // given
+        val username = "123"
+
+        // when
+        val result = business.isValidateMinUsername(username)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateMinUsername_correct_returnFalse(){
+        // given
+        val username = "1234"
+
+        // when
+        val result = business.isValidateMinUsername(username)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidateMinPassword_incorrect_returnTrue(){
+        // given
+        val password = "123"
+
+        // when
+        val result = business.isValidateMinPassword(password)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateMinPassword_correct_returnFalse(){
+        // given
+        val password = "1234"
+
+        // when
+        val result = business.isValidateMinPassword(password)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
     fun convertBirthdateStringToLong_convertEng() {
         // given
         val birthdateEng = "30/10/1994"
@@ -310,6 +358,18 @@ class TegBusinessImplTest {
 
         // then
         assertEquals(5, result)
+    }
+
+    @Test
+    fun encryptSHA_encryptPassword() {
+        // given
+        val password = "1234"
+
+        // when
+        val result = business.encryptSHA(password)
+
+        // then
+        assertEquals("03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", result)
     }
 
 }

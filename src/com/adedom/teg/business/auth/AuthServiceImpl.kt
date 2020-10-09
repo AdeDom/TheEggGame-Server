@@ -29,9 +29,9 @@ class AuthServiceImpl(
             password.isNullOrBlank() -> business.toMessageIsNullOrBlank(signInRequest::password)
 
             // validate values of variable
-            username.length < TegConstant.MIN_USERNAME ->
+            business.isValidateMinUsername(username) ->
                 business.toMessageGrateEq(signInRequest::username, TegConstant.MIN_USERNAME)
-            password.length < TegConstant.MIN_PASSWORD ->
+            business.isValidateMinPassword(password) ->
                 business.toMessageGrateEq(signInRequest::password, TegConstant.MIN_PASSWORD)
 
             // validate database
@@ -65,9 +65,9 @@ class AuthServiceImpl(
             birthdate.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::birthdate)
 
             // validate values of variable
-            username.length < TegConstant.MIN_USERNAME ->
+            business.isValidateMinUsername(username) ->
                 business.toMessageGrateEq(signUpRequest::username, TegConstant.MIN_USERNAME)
-            password.length < TegConstant.MIN_PASSWORD ->
+            business.isValidateMinPassword(password) ->
                 business.toMessageGrateEq(signUpRequest::password, TegConstant.MIN_PASSWORD)
             !business.isValidateGender(gender) -> business.toMessageGender(signUpRequest::gender)
             business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(signUpRequest::birthdate)
