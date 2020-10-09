@@ -1,10 +1,10 @@
 package com.adedom.teg.business.application
 
 import com.adedom.teg.business.business.TegBusiness
-import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.models.response.PlayerInfo
+import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.response.RankPlayersResponse
 import io.ktor.locations.*
 
@@ -25,7 +25,7 @@ class ApplicationServiceImpl(
             limit.toIntOrNull() == null -> business.toMessageIsNullOrBlank(rankPlayersRequest::limit)
 
             // validate values of variable
-            limit.toInt() <= 0 -> business.toMessageIncorrect(rankPlayersRequest::limit)
+            business.isValidateLessThanOrEqualToZero(limit.toInt()) -> business.toMessageIncorrect(rankPlayersRequest::limit)
             !business.isValidateRankPlayer(limit.toInt()) -> business.toMessageIncorrect(rankPlayersRequest::limit)
 
             // validate database

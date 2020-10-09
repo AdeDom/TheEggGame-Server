@@ -241,7 +241,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMinUsername_incorrect_returnTrue(){
+    fun isValidateMinUsername_incorrect_returnTrue() {
         // given
         val username = "123"
 
@@ -253,7 +253,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMinUsername_correct_returnFalse(){
+    fun isValidateMinUsername_correct_returnFalse() {
         // given
         val username = "1234"
 
@@ -265,7 +265,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMinPassword_incorrect_returnTrue(){
+    fun isValidateMinPassword_incorrect_returnTrue() {
         // given
         val password = "123"
 
@@ -277,12 +277,36 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMinPassword_correct_returnFalse(){
+    fun isValidateMinPassword_correct_returnFalse() {
         // given
         val password = "1234"
 
         // when
         val result = business.isValidateMinPassword(password)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidateLessThanOrEqualToZero_incorrect_returnTrue() {
+        // given
+        val num = 0
+
+        // when
+        val result = business.isValidateLessThanOrEqualToZero(num)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateLessThanOrEqualToZero_correct_returnFalse() {
+        // given
+        val num = 1
+
+        // when
+        val result = business.isValidateLessThanOrEqualToZero(num)
 
         // then
         assertFalse(result)

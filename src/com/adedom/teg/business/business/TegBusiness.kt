@@ -20,6 +20,8 @@ interface TegBusiness {
 
     fun isValidateMinPassword(str: String): Boolean
 
+    fun isValidateLessThanOrEqualToZero(num: Int): Boolean
+
     fun convertBirthdateStringToLong(birthdate: String): Long
 
     fun toConvertBirthdate(date: Long?): String

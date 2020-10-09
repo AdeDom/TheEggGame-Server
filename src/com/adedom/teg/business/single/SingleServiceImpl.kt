@@ -1,8 +1,8 @@
 package com.adedom.teg.business.single
 
 import com.adedom.teg.business.business.TegBusiness
-import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import io.ktor.locations.*
@@ -49,8 +49,8 @@ class SingleServiceImpl(
             longitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::longitude)
 
             // validate values of variable
-            itemId <= 0 -> business.toMessageIncorrect1(itemCollectionRequest::itemId)
-            qty <= 0 -> business.toMessageIncorrect1(itemCollectionRequest::qty)
+            business.isValidateLessThanOrEqualToZero(itemId) -> business.toMessageIncorrect1(itemCollectionRequest::itemId)
+            business.isValidateLessThanOrEqualToZero(qty) -> business.toMessageIncorrect1(itemCollectionRequest::qty)
 
             // validate database
 
