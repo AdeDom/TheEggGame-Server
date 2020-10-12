@@ -8,6 +8,7 @@ import com.adedom.teg.models.request.RefreshTokenRequest
 import com.adedom.teg.models.request.SignInRequest
 import com.adedom.teg.models.request.SignUpRequest
 import com.adedom.teg.models.response.SignInResponse
+import com.adedom.teg.models.response.Token
 import com.adedom.teg.util.TegConstant
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -41,9 +42,12 @@ class AuthServiceImpl(
             // execute
             else -> {
                 val db = repository.signIn(signInRequest.copy(password = business.encryptSHA(password)))
+                val token = Token(
+                    accessToken = jwtConfig.makeAccessToken(db.playerId),
+                    refreshToken = jwtConfig.makeRefreshToken(db.playerId),
+                )
+                response.token = token
                 response.success = true
-                response.accessToken = jwtConfig.makeAccessToken(db.playerId)
-                response.refreshToken = jwtConfig.makeRefreshToken(db.playerId)
                 "Sign in success"
             }
         }
@@ -87,8 +91,11 @@ class AuthServiceImpl(
                 )
                 val pair = repository.signUp(signUp)
                 response.success = pair.first
-                response.accessToken = jwtConfig.makeAccessToken(pair.second)
-                response.refreshToken = jwtConfig.makeRefreshToken(pair.second)
+                val token = Token(
+                    accessToken = jwtConfig.makeAccessToken(pair.second),
+                    refreshToken = jwtConfig.makeRefreshToken(pair.second),
+                )
+                response.token = token
                 "Sign up success"
             }
         }
@@ -119,8 +126,11 @@ class AuthServiceImpl(
             // execute
             else -> {
                 val playerId = jwtConfig.decodeJwtGetPlayerId(refreshToken)
-                response.accessToken = jwtConfig.makeAccessToken(playerId)
-                response.refreshToken = jwtConfig.makeRefreshToken(playerId)
+                val token = Token(
+                    accessToken = jwtConfig.makeAccessToken(playerId),
+                    refreshToken = jwtConfig.makeRefreshToken(playerId),
+                )
+                response.token = token
                 response.success = true
                 "Refresh token success"
             }
