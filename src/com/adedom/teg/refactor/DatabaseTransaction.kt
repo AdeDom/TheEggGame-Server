@@ -92,6 +92,7 @@ object DatabaseTransaction {
             .map { MapObject.toRoomDb(it) }
     }
 
+    // TODO: 12/10/2563 concern show name to capitalize
     fun getRoomInfos(roomNo: String): List<RoomInfoDb> = transaction {
         (Players innerJoin ItemCollections innerJoin RoomInfos)
             .slice(

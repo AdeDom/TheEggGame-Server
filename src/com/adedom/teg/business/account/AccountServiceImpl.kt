@@ -59,7 +59,7 @@ class AccountServiceImpl(
                 val playerInfo = PlayerInfo(
                     playerId = db.playerId,
                     username = db.username,
-                    name = db.name,
+                    name = db.name?.capitalize(),
                     image = db.image,
                     level = business.toConvertLevel(db.level),
                     state = db.state,

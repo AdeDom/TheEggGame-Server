@@ -65,7 +65,7 @@ class TegRepositoryImpl : TegRepository {
                 it[Players.playerId] = UUID.randomUUID().toString().replace("-", "")
                 it[Players.username] = username!!
                 it[Players.password] = password!!
-                it[Players.name] = name!!.capitalize()
+                it[Players.name] = name!!
                 it[Players.gender] = gender!!
                 it[Players.birthDate] = birthDate!!
                 it[Players.dateTimeCreated] = System.currentTimeMillis()
@@ -131,7 +131,7 @@ class TegRepositoryImpl : TegRepository {
         val (name, gender, birthDate) = changeProfile
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
-                it[Players.name] = name!!.capitalize()
+                it[Players.name] = name!!
                 it[Players.gender] = gender!!
                 it[Players.birthDate] = birthDate!!
                 it[Players.dateTimeUpdated] = System.currentTimeMillis()
