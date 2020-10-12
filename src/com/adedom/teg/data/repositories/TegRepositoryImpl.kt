@@ -58,7 +58,7 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun signUp(signUp: SignUpDb): Pair<Boolean, String> {
-        val (username, password, name, gender, birthdate) = signUp
+        val (username, password, name, gender, birthDate) = signUp
 
         val statement = transaction {
             Players.insert {
@@ -67,7 +67,7 @@ class TegRepositoryImpl : TegRepository {
                 it[Players.password] = password!!
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
-                it[Players.birthdate] = birthdate!!
+                it[Players.birthDate] = birthDate!!
                 it[Players.dateTimeCreated] = System.currentTimeMillis()
             }
         }
@@ -99,7 +99,7 @@ class TegRepositoryImpl : TegRepository {
                 ItemCollections.qty.sum(),
                 Players.state,
                 Players.gender,
-                Players.birthdate,
+                Players.birthDate,
             ).select { Players.playerId eq playerId }
                 .map { MapObject.toPlayerInfoDb(it) }
                 .single()
@@ -128,12 +128,12 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun changeProfile(playerId: String, changeProfile: ChangeProfileDb): Boolean {
-        val (name, gender, birthdate) = changeProfile
+        val (name, gender, birthDate) = changeProfile
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
                 it[Players.name] = name!!.capitalize()
                 it[Players.gender] = gender!!
-                it[Players.birthdate] = birthdate!!
+                it[Players.birthDate] = birthDate!!
                 it[Players.dateTimeUpdated] = System.currentTimeMillis()
             }
         }
@@ -155,7 +155,7 @@ class TegRepositoryImpl : TegRepository {
                     ItemCollections.qty.sum(),
                     Players.state,
                     Players.gender,
-                    Players.birthdate,
+                    Players.birthDate,
                 )
                 .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
                 .groupBy(Players.playerId)

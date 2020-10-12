@@ -15,7 +15,7 @@ object MapObject {
         level = row[ItemCollections.qty.sum()],
         state = row[Players.state],
         gender = row[Players.gender],
-        birthdate = row[Players.birthdate],
+        birthDate = row[Players.birthDate],
     )
 
     fun toPlayerIdDb(row: ResultRow) = PlayerIdDb(

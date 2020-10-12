@@ -7,5 +7,5 @@ import io.ktor.locations.*
 data class ChangeProfileRequest(
     val name: String? = null,
     val gender: String? = null,
-    val birthdate: String? = null,
+    val birthDate: String? = null,
 )

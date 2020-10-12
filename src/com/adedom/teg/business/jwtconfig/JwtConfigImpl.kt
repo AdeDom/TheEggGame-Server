@@ -41,13 +41,12 @@ class JwtConfigImpl : JwtConfig {
         return JWT().decodeJwt(refreshToken).getClaim(PLAYER_ID).asString()
     }
 
-    // TODO: 02/10/2563 access token 60 second
     companion object {
         const val SUBJECT = "Authentication"
         const val SECRET = "bc162b7210edb9dae67b90"
         const val ISSUER = "ktor.io"
         const val AUDIENCE = "the-egg-game"
-        const val ACCESS_TOKEN = 60_000
+        const val ACCESS_TOKEN = 36_000_00 * 24 * 3
         const val REFRESH_TOKEN = 36_000_00 * 24 * 7
         const val PLAYER_ID = "player_id"
         const val REALM = "ktor.io"

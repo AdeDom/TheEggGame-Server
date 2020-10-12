@@ -5,5 +5,5 @@ data class SignUpDb(
     val password: String? = null,
     val name: String? = null,
     val gender: String? = null,
-    val birthdate: Long? = null,
+    val birthDate: Long? = null,
 )

@@ -313,36 +313,36 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun convertBirthdateStringToLong_convertEng() {
+    fun convertBirthDateStringToLong_convertEng() {
         // given
-        val birthdateEng = "30/10/1994"
+        val birthDateEng = "30/10/1994"
 
         // when
-        val resultEng = business.convertBirthdateStringToLong(birthdateEng)
+        val resultEng = business.convertBirthDateStringToLong(birthDateEng)
 
         // then
         assertEquals(783450000000, resultEng)
     }
 
     @Test
-    fun toConvertBirthdate_convertBirthDate_returnNull() {
+    fun toConvertBirthDate_convertBirthDate_returnNull() {
         // given
-        val birthdate: Long? = null
+        val birthDate: Long? = null
 
         // when
-        val result = business.toConvertBirthdate(birthdate)
+        val result = business.toConvertBirthDate(birthDate)
 
         // then
         assertEquals("Error", result)
     }
 
     @Test
-    fun toConvertBirthdate_convertBirthDate() {
+    fun toConvertBirthDate_convertBirthDate() {
         // given
-        val birthdate: Long = 783450000000
+        val birthDate: Long = 783450000000
 
         // when
-        val result = business.toConvertBirthdate(birthdate)
+        val result = business.toConvertBirthDate(birthDate)
 
         // then
         assertEquals("30/10/1994", result)

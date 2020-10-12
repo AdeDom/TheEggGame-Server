@@ -9,7 +9,7 @@ object Players : Table(name = DatabaseConstant.playerTable) {
     val name = varchar(name = DatabaseConstant.name, length = 50)
     val image = varchar(name = DatabaseConstant.image, length = 300).nullable()
     val gender = varchar(name = DatabaseConstant.gender, length = 5)
-    val birthdate = long(name = DatabaseConstant.birthdate)
+    val birthDate = long(name = DatabaseConstant.birthDate)
     val state = varchar(name = DatabaseConstant.state, length = 10).nullable()
     val latitude = double(name = DatabaseConstant.latitude).nullable()
     val longitude = double(name = DatabaseConstant.longitude).nullable()

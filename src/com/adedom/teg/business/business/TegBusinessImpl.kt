@@ -60,12 +60,12 @@ class TegBusinessImpl : TegBusiness {
         return num <= 0
     }
 
-    override fun convertBirthdateStringToLong(birthdate: String): Long {
+    override fun convertBirthDateStringToLong(birthDate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
-        return sdf.parse(birthdate).time
+        return sdf.parse(birthDate).time
     }
 
-    override fun toConvertBirthdate(date: Long?): String {
+    override fun toConvertBirthDate(date: Long?): String {
         return if (date == null)
             "Error"
         else

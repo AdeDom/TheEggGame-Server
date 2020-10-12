@@ -22,9 +22,9 @@ interface TegBusiness {
 
     fun isValidateLessThanOrEqualToZero(num: Int): Boolean
 
-    fun convertBirthdateStringToLong(birthdate: String): Long
+    fun convertBirthDateStringToLong(birthDate: String): Long
 
-    fun toConvertBirthdate(date: Long?): String
+    fun toConvertBirthDate(date: Long?): String
 
     fun toConvertLevel(point: Int?): Int
 

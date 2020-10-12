@@ -54,7 +54,7 @@ class AuthServiceImpl(
 
     override fun signUp(signUpRequest: SignUpRequest): SignInResponse {
         val response = SignInResponse()
-        val (username, password, name, gender, birthdate) = signUpRequest
+        val (username, password, name, gender, birthDate) = signUpRequest
 
         val message: String = when {
             // validate Null Or Blank
@@ -62,7 +62,7 @@ class AuthServiceImpl(
             password.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::password)
             name.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::name)
             gender.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::gender)
-            birthdate.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::birthdate)
+            birthDate.isNullOrBlank() -> business.toMessageIsNullOrBlank(signUpRequest::birthDate)
 
             // validate values of variable
             business.isValidateMinUsername(username) ->
@@ -70,7 +70,7 @@ class AuthServiceImpl(
             business.isValidateMinPassword(password) ->
                 business.toMessageGrateEq(signUpRequest::password, TegConstant.MIN_PASSWORD)
             !business.isValidateGender(gender) -> business.toMessageGender(signUpRequest::gender)
-            business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(signUpRequest::birthdate)
+            business.isValidateDateTime(birthDate) -> business.toMessageIncorrect(signUpRequest::birthDate)
 
             // validate database
             repository.isUsernameRepeat(username) -> business.toMessageRepeat(signUpRequest::username, username)
@@ -83,7 +83,7 @@ class AuthServiceImpl(
                     password = business.encryptSHA(password),
                     name = name,
                     gender = gender,
-                    birthdate = business.convertBirthdateStringToLong(birthdate),
+                    birthDate = business.convertBirthDateStringToLong(birthDate),
                 )
                 val pair = repository.signUp(signUp)
                 response.success = pair.first

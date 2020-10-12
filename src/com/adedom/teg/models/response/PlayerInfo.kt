@@ -8,5 +8,5 @@ data class PlayerInfo(
     val level: Int? = null,
     val state: String? = null,
     val gender: String? = null,
-    val birthdate: String? = null,
+    val birthDate: String? = null,
 )

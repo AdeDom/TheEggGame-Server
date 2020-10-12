@@ -64,7 +64,7 @@ class AccountServiceImpl(
                     level = business.toConvertLevel(db.level),
                     state = db.state,
                     gender = db.gender,
-                    birthdate = business.toConvertBirthdate(db.birthdate),
+                    birthDate = business.toConvertBirthDate(db.birthDate),
                 )
                 response.success = true
                 response.playerInfo = playerInfo
@@ -137,17 +137,17 @@ class AccountServiceImpl(
 
     override fun changeProfile(playerId: String?, changeProfileRequest: ChangeProfileRequest): BaseResponse {
         val response = BaseResponse()
-        val (name, gender, birthdate) = changeProfileRequest
+        val (name, gender, birthDate) = changeProfileRequest
         val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
             name.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::name)
             gender.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::gender)
-            birthdate.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::birthdate)
+            birthDate.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeProfileRequest::birthDate)
 
             // validate values of variable
             !business.isValidateGender(gender) -> business.toMessageIncorrect(changeProfileRequest::gender)
-            business.isValidateDateTime(birthdate) -> business.toMessageIncorrect(changeProfileRequest::birthdate)
+            business.isValidateDateTime(birthDate) -> business.toMessageIncorrect(changeProfileRequest::birthDate)
 
             // validate database
             repository.isNameRepeat(name) -> business.toMessageRepeat(changeProfileRequest::name, name)
@@ -157,7 +157,7 @@ class AccountServiceImpl(
                 val changeProfile = ChangeProfileDb(
                     name = name,
                     gender = gender,
-                    birthdate = business.convertBirthdateStringToLong(birthdate),
+                    birthDate = business.convertBirthDateStringToLong(birthDate),
                 )
                 response.success = repository.changeProfile(playerId, changeProfile)
                 "Put change profile success"

@@ -41,7 +41,7 @@ class ApplicationServiceImpl(
                         level = business.toConvertLevel(it.level),
                         state = it.state,
                         gender = it.gender,
-                        birthdate = business.toConvertBirthdate(it.birthdate),
+                        birthDate = business.toConvertBirthDate(it.birthDate),
                     )
                 }
                 response.success = true

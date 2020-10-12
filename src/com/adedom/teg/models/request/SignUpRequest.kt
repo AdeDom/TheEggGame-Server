@@ -9,5 +9,5 @@ data class SignUpRequest(
     val password: String? = null,
     val name: String? = null,
     val gender: String? = null,
-    val birthdate: String? = null,
+    val birthDate: String? = null,
 )
