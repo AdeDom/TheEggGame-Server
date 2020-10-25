@@ -385,6 +385,42 @@ class TegBusinessImplTest {
     }
 
     @Test
+    fun isValidateMissionSingle_incorrectSizeLessThree_returnFalse() {
+        // given
+        val dateTimeList = listOf(1601466777109, 1601466777109)
+
+        // when
+        val result = business.isValidateMissionSingle(dateTimeList)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidateMissionSingle_incorrectDateOld_returnFalse() {
+        // given
+        val dateTimeList = listOf(1601466777109, 1601466777109, 1601466777109)
+
+        // when
+        val result = business.isValidateMissionSingle(dateTimeList)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidateMissionSingle_correct_returnTrue() {
+        // given
+        val dateTimeList = listOf(1603613803273, 1603613803273, 1603613803273)
+
+        // when
+        val result = business.isValidateMissionSingle(dateTimeList)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
     fun convertBirthDateStringToLong_convertEng() {
         // given
         val birthDateEng = "30/10/1994"

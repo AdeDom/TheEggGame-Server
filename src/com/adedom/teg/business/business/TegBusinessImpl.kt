@@ -71,6 +71,20 @@ class TegBusinessImpl : TegBusiness {
         return sdf.format(dateTimeLast) == sdf.format(dateTimeNow)
     }
 
+    override fun isValidateMissionSingle(dateTimeList: List<Long>): Boolean {
+        if (dateTimeList.size < TegConstant.MISSION_SINGLE_QTY) {
+            return false
+        } else {
+            dateTimeList.forEach {
+                if (!isValidateDateTimeCurrent(it)) {
+                    return false
+                }
+            }
+
+            return true
+        }
+    }
+
     override fun convertBirthDateStringToLong(birthDate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
         return sdf.parse(birthDate).time

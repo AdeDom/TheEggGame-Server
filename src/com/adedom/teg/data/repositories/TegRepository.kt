@@ -45,6 +45,8 @@ interface TegRepository {
 
     fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
 
+    fun fetchMissionSingle(playerId: String): List<Long>
+
     fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean
 
 }

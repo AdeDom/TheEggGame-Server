@@ -257,6 +257,20 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size == 1
     }
 
+    override fun fetchMissionSingle(playerId: String): List<Long> {
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            ItemCollections
+                .slice(ItemCollections.dateTime)
+                .select {
+                    ItemCollections.playerId eq playerId and (ItemCollections.mode eq TegConstant.MISSION_SINGLE)
+                }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
+                .limit(TegConstant.MISSION_SINGLE_QTY)
+                .map { it[ItemCollections.dateTime] }
+        }
+    }
+
     override fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean {
         val (mode) = missionRequest
 
