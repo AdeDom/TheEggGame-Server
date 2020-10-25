@@ -27,5 +27,6 @@ object TegConstant {
     const val MISSION_MULTI = "mission_multi"
     const val MISSION_QTY = 300
     const val MISSION_SINGLE_QTY = 3
+    const val ITEM_COLLECTION_SINGLE = "single"
 
 }

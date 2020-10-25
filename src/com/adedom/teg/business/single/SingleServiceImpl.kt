@@ -5,6 +5,7 @@ import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -56,7 +57,11 @@ class SingleServiceImpl(
 
             // execute
             else -> {
-                response.success = repository.itemCollection(playerId, itemCollectionRequest)
+                response.success = repository.itemCollection(
+                    playerId,
+                    TegConstant.ITEM_COLLECTION_SINGLE,
+                    itemCollectionRequest
+                )
                 "Post item collection success"
             }
         }

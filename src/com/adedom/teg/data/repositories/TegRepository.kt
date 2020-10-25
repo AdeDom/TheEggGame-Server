@@ -43,7 +43,7 @@ interface TegRepository {
 
     fun fetchItemCollection(playerId: String): BackpackDb
 
-    fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
+    fun itemCollection(playerId: String, modeMission: String, itemCollectionRequest: ItemCollectionRequest): Boolean
 
     fun fetchMissionSingle(playerId: String): List<Long>
 
