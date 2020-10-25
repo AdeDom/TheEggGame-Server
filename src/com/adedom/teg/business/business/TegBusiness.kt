@@ -24,6 +24,7 @@ interface TegBusiness {
 
     fun isMissionMode(mode: String): Boolean
 
+    // old == false, new == true
     fun isValidateDateTimeCurrent(dateTime: Long): Boolean
 
     fun isValidateMissionSingle(dateTimeList: List<Long>): Boolean

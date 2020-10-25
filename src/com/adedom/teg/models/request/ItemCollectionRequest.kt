@@ -9,5 +9,4 @@ data class ItemCollectionRequest(
     val qty: Int? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val mode: String? = null,
 )

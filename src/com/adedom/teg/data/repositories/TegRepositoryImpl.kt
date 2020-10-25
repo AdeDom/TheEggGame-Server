@@ -240,7 +240,7 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean {
-        val (itemId, qty, latitude, longitude, mode) = itemCollectionRequest
+        val (itemId, qty, latitude, longitude) = itemCollectionRequest
 
         val statement = transaction {
             ItemCollections.insert {
@@ -250,7 +250,6 @@ class TegRepositoryImpl : TegRepository {
                 it[ItemCollections.latitude] = latitude!!
                 it[ItemCollections.longitude] = longitude!!
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
-                it[ItemCollections.mode] = mode!!
             }
         }
 
@@ -264,7 +263,7 @@ class TegRepositoryImpl : TegRepository {
             ItemCollections
                 .slice(ItemCollections.dateTime)
                 .select {
-                    ItemCollections.playerId eq playerId and (ItemCollections.mode eq TegConstant.MISSION_SINGLE)
+                    ItemCollections.playerId eq playerId
                 }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
                 .limit(TegConstant.MISSION_SINGLE_QTY)
                 .map { it[ItemCollections.dateTime] }

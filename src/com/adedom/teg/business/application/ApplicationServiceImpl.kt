@@ -111,12 +111,20 @@ class ApplicationServiceImpl(
 
             // execute
             else -> {
+                // delivery
                 val dateTimeDelivery = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_DELIVERY)
-                val dateTimeSingle = repository.fetchMissionSingle(playerId)
+
+                // single
+                val dateTimeSingle = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_SINGLE)
+                val isEggII: Boolean = if (!business.isValidateDateTimeCurrent(dateTimeSingle)) {
+                    business.isValidateMissionSingle(repository.fetchMissionSingle(playerId))
+                } else {
+                    false
+                }
 
                 response.missionInfo = MissionInfo(
                     isEggI = !business.isValidateDateTimeCurrent(dateTimeDelivery),
-                    isEggII = business.isValidateMissionSingle(dateTimeSingle),
+                    isEggII = isEggII,
                 )
                 response.success = true
                 "Fetch mission info success"
