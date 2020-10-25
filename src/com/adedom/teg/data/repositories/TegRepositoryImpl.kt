@@ -268,10 +268,29 @@ class TegRepositoryImpl : TegRepository {
             ItemCollections
                 .slice(ItemCollections.dateTime)
                 .select {
-                    ItemCollections.playerId eq playerId
+                    ItemCollections.playerId eq playerId and (ItemCollections.mode eq TegConstant.ITEM_COLLECTION_SINGLE)
                 }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
                 .limit(TegConstant.MISSION_SINGLE_QTY)
                 .map { it[ItemCollections.dateTime] }
+        }
+    }
+
+    override fun fetchMissionMulti(playerId: String): Long {
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            try {
+                ItemCollections
+                    .slice(ItemCollections.dateTime)
+                    .select {
+                        ItemCollections.playerId eq playerId and (ItemCollections.mode eq TegConstant.ITEM_COLLECTION_MULTI)
+                    }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
+                    .limit(1)
+                    .map { it[ItemCollections.dateTime] }
+                    .single()
+            } catch (e: NoSuchElementException) {
+                0L
+            }
         }
     }
 

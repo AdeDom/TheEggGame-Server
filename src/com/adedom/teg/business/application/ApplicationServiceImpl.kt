@@ -113,18 +113,28 @@ class ApplicationServiceImpl(
             else -> {
                 // delivery
                 val dateTimeDelivery = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_DELIVERY)
+                val isDelivery = !business.isValidateDateTimeCurrent(dateTimeDelivery)
 
                 // single
                 val dateTimeSingle = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_SINGLE)
-                val isEggII: Boolean = if (!business.isValidateDateTimeCurrent(dateTimeSingle)) {
+                val isSingle: Boolean = if (!business.isValidateDateTimeCurrent(dateTimeSingle)) {
                     business.isValidateMissionSingle(repository.fetchMissionSingle(playerId))
                 } else {
                     false
                 }
 
+                // multi
+                val dateTimeMulti = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_MULTI)
+                val isMulti: Boolean = if (!business.isValidateDateTimeCurrent(dateTimeMulti)) {
+                    business.isValidateDateTimeCurrent(repository.fetchMissionMulti(playerId))
+                } else {
+                    false
+                }
+
                 response.missionInfo = MissionInfo(
-                    isEggI = !business.isValidateDateTimeCurrent(dateTimeDelivery),
-                    isEggII = isEggII,
+                    isDelivery = isDelivery,
+                    isSingle = isSingle,
+                    isMulti = isMulti,
                 )
                 response.success = true
                 "Fetch mission info success"
