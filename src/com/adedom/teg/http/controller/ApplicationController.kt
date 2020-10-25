@@ -2,6 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.application.ApplicationService
 import com.adedom.teg.models.request.LogActiveRequest
+import com.adedom.teg.models.request.MissionInfoRequest
 import com.adedom.teg.models.request.MissionRequest
 import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.util.playerId
@@ -28,6 +29,11 @@ fun Route.applicationController(service: ApplicationService) {
     // off == 0
     patch<LogActiveRequest> {
         val response = service.logActiveOff(call.playerId)
+        call.respond(response)
+    }
+
+    get<MissionInfoRequest> {
+        val response = service.fetchMissionMain(call.playerId)
         call.respond(response)
     }
 

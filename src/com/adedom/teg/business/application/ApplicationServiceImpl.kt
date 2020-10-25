@@ -4,9 +4,8 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.MissionRequest
 import com.adedom.teg.models.request.RankPlayersRequest
-import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.models.response.PlayerInfo
-import com.adedom.teg.models.response.RankPlayersResponse
+import com.adedom.teg.models.response.*
+import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -99,6 +98,33 @@ class ApplicationServiceImpl(
         return response
     }
 
+    override fun fetchMissionMain(playerId: String?): MissionResponse {
+        val response = MissionResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                val dateTimeDelivery = repository.getMissionDateTimeLast(playerId, TegConstant.MISSION_DELIVERY)
+
+                response.missionInfo = MissionInfo(
+                    isEggI = !business.isValidateDateTimeCurrent(dateTimeDelivery),
+                )
+                response.success = true
+                "Fetch mission info success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
     override fun missionMain(playerId: String?, missionRequest: MissionRequest): BaseResponse {
         val response = BaseResponse()
         val (mode) = missionRequest
@@ -112,7 +138,7 @@ class ApplicationServiceImpl(
             !business.isMissionMode(mode) -> business.toMessageIncorrect(missionRequest::mode)
 
             // validate database
-            business.isValidateDateTimeCurrent(repository.getMissionDateTimeLast(playerId, missionRequest)) ->
+            business.isValidateDateTimeCurrent(repository.getMissionDateTimeLast(playerId, mode)) ->
                 business.toMessageRepeat(missionRequest::mode, mode)
 
             // execute

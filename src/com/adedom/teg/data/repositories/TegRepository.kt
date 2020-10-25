@@ -19,7 +19,7 @@ interface TegRepository {
     // if incorrect return true
     fun isValidateChangePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
 
-    fun getMissionDateTimeLast(playerId: String, missionRequest: MissionRequest): Long
+    fun getMissionDateTimeLast(playerId: String, modeMission: String): Long
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb
 

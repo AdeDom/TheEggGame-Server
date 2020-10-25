@@ -47,17 +47,13 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun getMissionDateTimeLast(playerId: String, missionRequest: MissionRequest): Long {
-        val (mode) = missionRequest
-
+    override fun getMissionDateTimeLast(playerId: String, modeMission: String): Long {
         return transaction {
-            addLogger(StdOutSqlLogger)
-
             try {
                 ItemCollections
                     .slice(ItemCollections.dateTime)
                     .select {
-                        ItemCollections.playerId eq playerId and (ItemCollections.mode eq mode!!)
+                        ItemCollections.playerId eq playerId and (ItemCollections.mode eq modeMission)
                     }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
                     .limit(1)
                     .single()
