@@ -6,12 +6,10 @@ import com.adedom.teg.business.auth.AuthService
 import com.adedom.teg.business.di.getBusinessModule
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.business.jwtconfig.PlayerPrincipal
+import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.data.di.getDataModule
-import com.adedom.teg.http.controller.accountController
-import com.adedom.teg.http.controller.applicationController
-import com.adedom.teg.http.controller.authController
-import com.adedom.teg.http.controller.singleController
+import com.adedom.teg.http.controller.*
 import com.adedom.teg.refactor.headerController
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
@@ -73,6 +71,7 @@ fun Application.module() {
     val accountService: AccountService by inject()
     val applicationService: ApplicationService by inject()
     val singleService: SingleService by inject()
+    val multiService: MultiService by inject()
     val jwtConfig: JwtConfig by inject()
 
     // jwt
@@ -99,6 +98,7 @@ fun Application.module() {
             accountController(accountService)
             applicationController(applicationService)
             singleController(singleService)
+            multiController(multiService)
         }
 
         route("api") {
