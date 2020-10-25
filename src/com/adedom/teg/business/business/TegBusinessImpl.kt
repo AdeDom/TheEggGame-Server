@@ -60,6 +60,17 @@ class TegBusinessImpl : TegBusiness {
         return num <= 0
     }
 
+    override fun isMissionMode(mode: String): Boolean {
+        return mode == TegConstant.MISSION_DELIVERY || mode == TegConstant.MISSION_SINGLE || mode == TegConstant.MISSION_MULTI
+    }
+
+    override fun isValidateDateTimeCurrent(dateTime: Long): Boolean {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+        val dateTimeLast = Date(dateTime)
+        val dateTimeNow = Date(System.currentTimeMillis())
+        return sdf.format(dateTimeLast) == sdf.format(dateTimeNow)
+    }
+
     override fun convertBirthDateStringToLong(birthDate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
         return sdf.parse(birthDate).time

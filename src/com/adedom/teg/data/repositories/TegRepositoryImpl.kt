@@ -47,6 +47,27 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun getMissionDateTimeLast(playerId: String, missionRequest: MissionRequest): Long {
+        val (mode) = missionRequest
+
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            try {
+                ItemCollections
+                    .slice(ItemCollections.dateTime)
+                    .select {
+                        ItemCollections.playerId eq playerId and (ItemCollections.mode eq mode!!)
+                    }.orderBy(ItemCollections.dateTime, SortOrder.DESC)
+                    .limit(1)
+                    .single()
+                    .get(ItemCollections.dateTime)
+            } catch (e: NoSuchElementException) {
+                0L
+            }
+        }
+    }
+
     override fun signIn(signInRequest: SignInRequest): PlayerIdDb {
         val (username, password) = signInRequest
         return transaction {
@@ -233,6 +254,24 @@ class TegRepositoryImpl : TegRepository {
                 it[ItemCollections.latitude] = latitude!!
                 it[ItemCollections.longitude] = longitude!!
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
+            }
+        }
+
+        return statement.resultedValues?.size == 1
+    }
+
+    override fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean {
+        val (mode) = missionRequest
+
+        val statement = transaction {
+            ItemCollections.insert {
+                it[ItemCollections.playerId] = playerId
+                it[ItemCollections.itemId] = TegConstant.ITEM_LEVEL
+                it[ItemCollections.qty] = TegConstant.MISSION_QTY
+                it[ItemCollections.latitude] = 0.0
+                it[ItemCollections.longitude] = 0.0
+                it[ItemCollections.dateTime] = System.currentTimeMillis()
+                it[ItemCollections.mode] = mode!!
             }
         }
 

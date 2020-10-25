@@ -22,6 +22,10 @@ interface TegBusiness {
 
     fun isValidateLessThanOrEqualToZero(num: Int): Boolean
 
+    fun isMissionMode(mode: String): Boolean
+
+    fun isValidateDateTimeCurrent(dateTime: Long): Boolean
+
     fun convertBirthDateStringToLong(birthDate: String): Long
 
     fun toConvertBirthDate(date: Long?): String

@@ -21,6 +21,10 @@ object TegConstant {
     const val SINGLE_ITEM_ONE = 1
     const val SINGLE_ITEM_TWO = 2
     const val SINGLE_ITEM_THREE = 3
-    const val SINGLE_ITEM_LEVEL = 999
+    const val ITEM_LEVEL = 999
+    const val MISSION_DELIVERY = "mission_delivery"
+    const val MISSION_SINGLE = "mission_single"
+    const val MISSION_MULTI = "mission_multi"
+    const val MISSION_QTY = 300
 
 }

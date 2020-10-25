@@ -313,6 +313,78 @@ class TegBusinessImplTest {
     }
 
     @Test
+    fun isMissionMode_incorrect_returnFalse() {
+        // given
+        val mode = "mission_mode"
+
+        // when
+        val result = business.isMissionMode(mode)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isMissionMode_correctMissionDelivery_returnTrue() {
+        // given
+        val mode = TegConstant.MISSION_DELIVERY
+
+        // when
+        val result = business.isMissionMode(mode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isMissionMode_correctMissionSingle_returnTrue() {
+        // given
+        val mode = TegConstant.MISSION_SINGLE
+
+        // when
+        val result = business.isMissionMode(mode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isMissionMode_correctMissionMulti_returnTrue() {
+        // given
+        val mode = TegConstant.MISSION_MULTI
+
+        // when
+        val result = business.isMissionMode(mode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateDateTimeCurrent_incorrect_returnTrue() {
+        // given
+        val dateTimeLast = 1603609762783
+
+        // when
+        val result = business.isValidateDateTimeCurrent(dateTimeLast)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateDateTimeCurrent_correct_returnFalse() {
+        // given
+        val dateTimeLast = 1601466777109
+
+        // when
+        val result = business.isValidateDateTimeCurrent(dateTimeLast)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
     fun convertBirthDateStringToLong_convertEng() {
         // given
         val birthDateEng = "30/10/1994"

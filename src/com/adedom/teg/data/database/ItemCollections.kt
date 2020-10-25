@@ -11,6 +11,7 @@ object ItemCollections : Table(name = DatabaseConstant.itemCollectionTable) {
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)
     val dateTime = long(name = DatabaseConstant.dateTime)
+    val mode = varchar(name = DatabaseConstant.mode, length = 20)
 
     override val primaryKey: PrimaryKey?
         get() = PrimaryKey(collectionId, name = DatabaseConstant.itemCollectionPk)

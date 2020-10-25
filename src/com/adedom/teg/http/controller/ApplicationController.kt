@@ -1,11 +1,13 @@
 package com.adedom.teg.http.controller
 
-import com.adedom.teg.models.request.LogActiveRequest
-import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.business.application.ApplicationService
+import com.adedom.teg.models.request.LogActiveRequest
+import com.adedom.teg.models.request.MissionRequest
+import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -26,6 +28,12 @@ fun Route.applicationController(service: ApplicationService) {
     // off == 0
     patch<LogActiveRequest> {
         val response = service.logActiveOff(call.playerId)
+        call.respond(response)
+    }
+
+    post<MissionRequest> {
+        val request = call.receive<MissionRequest>()
+        val response = service.missionMain(call.playerId, request)
         call.respond(response)
     }
 

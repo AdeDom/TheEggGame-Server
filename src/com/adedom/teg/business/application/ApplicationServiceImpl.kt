@@ -2,6 +2,7 @@ package com.adedom.teg.business.application
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.request.MissionRequest
 import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.PlayerInfo
@@ -91,6 +92,33 @@ class ApplicationServiceImpl(
             else -> {
                 response.success = repository.logActiveOff(playerId)
                 "Patch log active success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun missionMain(playerId: String?, missionRequest: MissionRequest): BaseResponse {
+        val response = BaseResponse()
+        val (mode) = missionRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            mode.isNullOrBlank() -> business.toMessageIsNullOrBlank(missionRequest::mode)
+
+            // validate values of variable
+            !business.isMissionMode(mode) -> business.toMessageIncorrect(missionRequest::mode)
+
+            // validate database
+            business.isValidateDateTimeCurrent(repository.getMissionDateTimeLast(playerId, missionRequest)) ->
+                business.toMessageRepeat(missionRequest::mode, mode)
+
+            // execute
+            else -> {
+                response.success = repository.missionMain(playerId, missionRequest)
+                "Post mission success"
             }
         }
 

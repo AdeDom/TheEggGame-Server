@@ -1,10 +1,6 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.data.models.PlayerIdDb
-import com.adedom.teg.data.models.BackpackDb
-import com.adedom.teg.data.models.ChangeProfileDb
-import com.adedom.teg.data.models.PlayerInfoDb
-import com.adedom.teg.data.models.SignUpDb
+import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
 import io.ktor.locations.*
 
@@ -22,6 +18,8 @@ interface TegRepository {
 
     // if incorrect return true
     fun isValidateChangePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
+
+    fun getMissionDateTimeLast(playerId: String, missionRequest: MissionRequest): Long
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb
 
@@ -46,5 +44,7 @@ interface TegRepository {
     fun fetchItemCollection(playerId: String): BackpackDb
 
     fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean
+
+    fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean
 
 }

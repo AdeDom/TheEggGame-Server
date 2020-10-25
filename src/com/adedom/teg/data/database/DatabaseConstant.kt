@@ -49,5 +49,6 @@ object DatabaseConstant {
     const val birthDate = "birth_date"
     const val dateTimeCreated = "date_time_created"
     const val dateTimeUpdated = "date_time_updated"
+    const val mode = "mode"
 
 }
