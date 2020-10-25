@@ -244,7 +244,7 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun itemCollection(playerId: String, itemCollectionRequest: ItemCollectionRequest): Boolean {
-        val (itemId, qty, latitude, longitude) = itemCollectionRequest
+        val (itemId, qty, latitude, longitude, mode) = itemCollectionRequest
 
         val statement = transaction {
             ItemCollections.insert {
@@ -254,6 +254,7 @@ class TegRepositoryImpl : TegRepository {
                 it[ItemCollections.latitude] = latitude!!
                 it[ItemCollections.longitude] = longitude!!
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
+                it[ItemCollections.mode] = mode!!
             }
         }
 

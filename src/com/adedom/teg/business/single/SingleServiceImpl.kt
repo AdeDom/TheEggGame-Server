@@ -38,7 +38,7 @@ class SingleServiceImpl(
 
     override fun itemCollection(playerId: String?, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
         val response = BaseResponse()
-        val (itemId, qty, latitude, longitude) = itemCollectionRequest
+        val (itemId, qty, latitude, longitude, mode) = itemCollectionRequest
 
         val message: String = when {
             // validate Null Or Blank
@@ -47,10 +47,12 @@ class SingleServiceImpl(
             qty == null -> business.toMessageIsNullOrBlank1(itemCollectionRequest::qty)
             latitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::latitude)
             longitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::longitude)
+            mode.isNullOrBlank() -> business.toMessageIsNullOrBlank(itemCollectionRequest::mode)
 
             // validate values of variable
             business.isValidateLessThanOrEqualToZero(itemId) -> business.toMessageIncorrect1(itemCollectionRequest::itemId)
             business.isValidateLessThanOrEqualToZero(qty) -> business.toMessageIncorrect1(itemCollectionRequest::qty)
+            !business.isMissionMode(mode) -> business.toMessageIncorrect(itemCollectionRequest::mode)
 
             // validate database
 
