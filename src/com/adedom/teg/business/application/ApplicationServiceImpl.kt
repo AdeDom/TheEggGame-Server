@@ -133,8 +133,11 @@ class ApplicationServiceImpl(
 
                 response.missionInfo = MissionInfo(
                     isDelivery = isDelivery,
+                    isDeliveryCompleted = business.isValidateDateTimeCurrent(dateTimeDelivery),
                     isSingle = isSingle,
+                    isSingleCompleted = business.isValidateDateTimeCurrent(dateTimeSingle),
                     isMulti = isMulti,
+                    isMultiCompleted = business.isValidateDateTimeCurrent(dateTimeMulti),
                 )
                 response.success = true
                 "Fetch mission info success"

@@ -44,7 +44,7 @@ fun Application.module() {
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = databaseConfig.username
         password = databaseConfig.password
-        maximumPoolSize = 100
+        maximumPoolSize = 10
     }
     val dataSource = HikariDataSource(config)
     Database.connect(dataSource)
