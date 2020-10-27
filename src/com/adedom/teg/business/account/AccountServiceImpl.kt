@@ -4,6 +4,7 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.models.ChangeProfileDb
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.http.constant.ApiConstant
+import com.adedom.teg.models.request.ChangeLatLngRequest
 import com.adedom.teg.models.request.ChangePasswordRequest
 import com.adedom.teg.models.request.ChangeProfileRequest
 import com.adedom.teg.models.request.StateRequest
@@ -161,6 +162,31 @@ class AccountServiceImpl(
                 )
                 response.success = repository.changeProfile(playerId, changeProfile)
                 "Put change profile success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun changeLatLng(playerId: String?, changeLatLngRequest: ChangeLatLngRequest): BaseResponse {
+        val response = BaseResponse()
+        val (latitude, longitude) = changeLatLngRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            latitude == null -> business.toMessageIsNullOrBlank2(changeLatLngRequest::latitude)
+            longitude == null -> business.toMessageIsNullOrBlank2(changeLatLngRequest::longitude)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.changeLatLng(playerId, changeLatLngRequest)
+                "Put change lat lng success"
             }
         }
 

@@ -1,10 +1,10 @@
 package com.adedom.teg.http.controller
 
-import com.adedom.teg.http.constant.ApiConstant
+import com.adedom.teg.business.account.AccountService
 import com.adedom.teg.getHttpClientOkHttp
+import com.adedom.teg.http.constant.ApiConstant
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.business.account.AccountService
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.fromJson
 import com.adedom.teg.util.playerId
@@ -76,6 +76,12 @@ fun Route.accountController(service: AccountService) {
     put<ChangeProfileRequest> {
         val request = call.receive<ChangeProfileRequest>()
         val response = service.changeProfile(call.playerId, request)
+        call.respond(response)
+    }
+
+    put<ChangeLatLngRequest> {
+        val request = call.receive<ChangeLatLngRequest>()
+        val response = service.changeLatLng(call.playerId, request)
         call.respond(response)
     }
 

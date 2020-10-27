@@ -35,6 +35,8 @@ interface TegRepository {
 
     fun changeProfile(playerId: String, changeProfile: ChangeProfileDb): Boolean
 
+    fun changeLatLng(playerId: String, changeLatLngRequest: ChangeLatLngRequest): Boolean
+
     fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb>
 
     fun logActiveOn(playerId: String): Boolean

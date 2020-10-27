@@ -157,6 +157,21 @@ class TegRepositoryImpl : TegRepository {
         return transaction == 1
     }
 
+    override fun changeLatLng(playerId: String, changeLatLngRequest: ChangeLatLngRequest): Boolean {
+        val (latitude, longitude) = changeLatLngRequest
+
+        val result = transaction {
+            Players.update({
+                Players.playerId eq playerId
+            }) {
+                it[Players.latitude] = latitude
+                it[Players.longitude] = longitude
+            }
+        }
+
+        return result == 1
+    }
+
     override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb> {
         val (_, search, limit) = rankPlayersRequest
 
