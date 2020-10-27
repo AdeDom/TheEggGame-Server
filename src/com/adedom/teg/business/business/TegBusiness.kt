@@ -31,7 +31,7 @@ interface TegBusiness {
 
     fun convertBirthDateStringToLong(birthDate: String): Long
 
-    fun toConvertBirthDate(date: Long?): String
+    fun toConvertDateTimeLongToString(date: Long?): String
 
     fun toConvertLevel(point: Int?): Int
 

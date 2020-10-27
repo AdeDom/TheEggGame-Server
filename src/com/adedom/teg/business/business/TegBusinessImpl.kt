@@ -90,7 +90,7 @@ class TegBusinessImpl : TegBusiness {
         return sdf.parse(birthDate).time
     }
 
-    override fun toConvertBirthDate(date: Long?): String {
+    override fun toConvertDateTimeLongToString(date: Long?): String {
         return if (date == null)
             "Error"
         else

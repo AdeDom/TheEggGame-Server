@@ -3,6 +3,7 @@ package com.adedom.teg.data.repositories
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.Players
+import com.adedom.teg.data.database.Rooms
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
@@ -325,6 +326,14 @@ class TegRepositoryImpl : TegRepository {
         }
 
         return statement.resultedValues?.size == 1
+    }
+
+    override fun fetchRooms(): List<RoomDb> {
+        return transaction {
+            Rooms.select {
+                Rooms.status eq TegConstant.ROOM_STATUS_ON
+            }.map { MapObject.toRoomDb(it) }
+        }
     }
 
 }

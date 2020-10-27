@@ -5,6 +5,8 @@ import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.FetchRoomResponse
+import com.adedom.teg.models.response.RoomsResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -50,6 +52,38 @@ class MultiServiceImpl(
                     )
                 )
                 "Post multi item collection success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun fetchRooms(): RoomsResponse {
+        val response = RoomsResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                val rooms = repository.fetchRooms().map {
+                    FetchRoomResponse(
+                        roomId = it.roomId,
+                        roomNo = it.roomNo,
+                        name = it.name,
+                        people = it.people?.toInt(),
+                        status = it.status,
+                        dateTime = business.toConvertDateTimeLongToString(it.dateTime),
+                    )
+                }
+                response.rooms = rooms
+                response.success = true
+                "Fetch rooms success"
             }
         }
 

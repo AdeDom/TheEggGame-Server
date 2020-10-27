@@ -41,7 +41,7 @@ class ApplicationServiceImpl(
                         level = business.toConvertLevel(it.level),
                         state = it.state,
                         gender = it.gender,
-                        birthDate = business.toConvertBirthDate(it.birthDate),
+                        birthDate = business.toConvertDateTimeLongToString(it.birthDate),
                     )
                 }
                 response.success = true

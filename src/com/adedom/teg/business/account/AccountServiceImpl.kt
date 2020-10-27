@@ -65,7 +65,7 @@ class AccountServiceImpl(
                     level = business.toConvertLevel(db.level),
                     state = db.state,
                     gender = db.gender,
-                    birthDate = business.toConvertBirthDate(db.birthDate),
+                    birthDate = business.toConvertDateTimeLongToString(db.birthDate),
                 )
                 response.success = true
                 response.playerInfo = playerInfo

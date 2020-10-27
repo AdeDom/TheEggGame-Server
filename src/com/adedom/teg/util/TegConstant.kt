@@ -29,5 +29,7 @@ object TegConstant {
     const val MISSION_SINGLE_QTY = 3
     const val ITEM_COLLECTION_SINGLE = "single"
     const val ITEM_COLLECTION_MULTI = "multi"
+    const val ROOM_STATUS_ON = "on"
+    const val ROOM_STATUS_OFF = "off"
 
 }

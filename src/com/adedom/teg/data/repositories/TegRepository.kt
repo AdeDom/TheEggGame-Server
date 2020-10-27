@@ -53,4 +53,6 @@ interface TegRepository {
 
     fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean
 
+    fun fetchRooms(): List<RoomDb>
+
 }

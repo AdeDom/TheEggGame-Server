@@ -41,7 +41,7 @@ fun Route.room() {
             val message = when {
                 else -> {
                     val listRoom = DatabaseTransaction.getRooms()
-                    response.room = listRoom
+//                    response.rooms = listRoom
                     response.success = true
                     "Fetch rooms success"
                 }

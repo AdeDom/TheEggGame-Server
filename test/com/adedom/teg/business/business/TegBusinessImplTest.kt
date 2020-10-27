@@ -433,24 +433,24 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun toConvertBirthDate_convertBirthDate_returnNull() {
+    fun toConvertDateTimeLongToString_convertBirthDate_returnNull() {
         // given
         val birthDate: Long? = null
 
         // when
-        val result = business.toConvertBirthDate(birthDate)
+        val result = business.toConvertDateTimeLongToString(birthDate)
 
         // then
         assertEquals("Error", result)
     }
 
     @Test
-    fun toConvertBirthDate_convertBirthDate() {
+    fun toConvertDateTimeLongToString_convertBirthDate() {
         // given
         val birthDate: Long = 783450000000
 
         // when
-        val result = business.toConvertBirthDate(birthDate)
+        val result = business.toConvertDateTimeLongToString(birthDate)
 
         // then
         assertEquals("30/10/1994", result)
