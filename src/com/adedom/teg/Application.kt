@@ -25,12 +25,14 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.logging.*
 import io.ktor.features.*
 import io.ktor.gson.*
+import io.ktor.http.cio.websocket.*
 import io.ktor.locations.*
 import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 import org.koin.logger.SLF4JLogger
+import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -60,6 +62,11 @@ fun Application.module() {
     install(ContentNegotiation) {
         gson {
         }
+    }
+
+    // web socket
+    install(io.ktor.websocket.WebSockets) {
+        pingPeriod = Duration.ofSeconds(60)
     }
 
     // koin dependencies injection
