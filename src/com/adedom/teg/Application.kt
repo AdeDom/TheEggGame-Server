@@ -108,6 +108,9 @@ fun Application.module() {
             multiController(multiService)
         }
 
+        // web sockets
+        multiWebSocket()
+
         route("api") {
             authenticate {
                 headerController()

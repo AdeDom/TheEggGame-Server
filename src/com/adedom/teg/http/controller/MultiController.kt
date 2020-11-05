@@ -31,6 +31,10 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+}
+
+fun Route.multiWebSocket(){
+
     // socket + token
     val roomListSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-list") {
