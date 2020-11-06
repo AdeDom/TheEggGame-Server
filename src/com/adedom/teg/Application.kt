@@ -109,7 +109,7 @@ fun Application.module() {
         }
 
         // web sockets
-        multiWebSocket()
+        multiWebSocket(multiService)
 
         route("api") {
             authenticate {

@@ -1,7 +1,6 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
-import com.adedom.teg.models.request.FetchRoomRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
 import com.adedom.teg.util.playerId
@@ -28,14 +27,15 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
-    get<FetchRoomRequest> {
-        val response = service.fetchRooms()
-        call.respond(response)
-    }
+//    get<FetchRoomRequest> {
+//        val response = service.fetchRooms()
+//        call.respond(response)
+//    }
 
 }
 
-fun Route.multiWebSocket() {
+@KtorExperimentalLocationsAPI
+fun Route.multiWebSocket(service: MultiService) {
 
     val roomPeopleAllSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-people-all") {
@@ -51,6 +51,26 @@ fun Route.multiWebSocket() {
         } finally {
             roomPeopleAllSocket.remove(this)
             roomPeopleAllSocket.send(RoomPeopleAllOutgoing(roomPeopleAllSocket.size).toJson())
+        }
+    }
+
+    val playgroundRoom = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/playground-room") {
+        playgroundRoom.add(this)
+
+        val roomsResponse = service.fetchRooms()
+        playgroundRoom.send(roomsResponse.toJson())
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach { frame ->
+                    // TODO: 06/11/2563 create room
+                }
+                .catch { }
+                .collect()
+        } finally {
+            playgroundRoom.remove(this)
         }
     }
 
