@@ -29,6 +29,8 @@ interface TegBusiness {
 
     fun isValidateMissionSingle(dateTimeList: List<Long>): Boolean
 
+    fun isValidateRoomPeople(people: Int): Boolean
+
     fun convertBirthDateStringToLong(birthDate: String): Long
 
     fun toConvertDateTimeLongToString(date: Long?): String

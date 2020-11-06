@@ -37,8 +37,8 @@ class JwtConfigImpl : JwtConfig {
         .withExpiresAt(withExpiresAt)
         .sign(algorithm)
 
-    override fun decodeJwtGetPlayerId(refreshToken: String): String {
-        return JWT().decodeJwt(refreshToken).getClaim(PLAYER_ID).asString()
+    override fun decodeJwtGetPlayerId(token: String): String {
+        return JWT().decodeJwt(token).getClaim(PLAYER_ID).asString()
     }
 
     companion object {

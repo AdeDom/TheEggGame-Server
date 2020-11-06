@@ -1,12 +1,14 @@
 package com.adedom.teg.business.multi
 
 import com.adedom.teg.business.business.TegBusiness
+import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
 import com.adedom.teg.models.response.RoomsResponse
+import com.adedom.teg.models.websocket.CreateRoomIncoming
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -14,6 +16,7 @@ import io.ktor.locations.*
 class MultiServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
+    private val jwtConfig: JwtConfig,
 ) : MultiService {
 
     override fun itemCollection(
@@ -84,6 +87,34 @@ class MultiServiceImpl(
                 response.rooms = rooms
                 response.success = true
                 "Fetch rooms success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): BaseResponse {
+        val response = BaseResponse()
+        val (roomName, roomPeople) = createRoomIncoming
+
+        val message: String = when {
+            // validate Null Or Blank
+            accessToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(accessToken)
+            roomName.isNullOrBlank() -> business.toMessageIsNullOrBlank(createRoomIncoming::roomName)
+            roomPeople == null -> business.toMessageIsNullOrBlank1(createRoomIncoming::roomPeople)
+
+            // validate values of variable
+            business.isValidateRoomPeople(roomPeople) -> business.toMessageIncorrect1(createRoomIncoming::roomPeople)
+
+            // validate database
+
+            // execute
+            else -> {
+                val playerId: String = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+                response.success = repository.createRoom(playerId, createRoomIncoming)
+                "Create room success"
             }
         }
 

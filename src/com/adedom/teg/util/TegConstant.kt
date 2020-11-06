@@ -4,6 +4,7 @@ object TegConstant {
 
     const val BASE_URL = "https://the-egg-game.herokuapp.com/"
     const val BASE_IMAGE = "https://the-egg-game.000webhostapp.com/images/"
+    const val ACCESS_TOKEN = "access_token"
 
     const val MIN_PEOPLE = 2
     const val MIN_USERNAME = 4
@@ -31,5 +32,9 @@ object TegConstant {
     const val ITEM_COLLECTION_MULTI = "multi"
     const val ROOM_STATUS_ON = "on"
     const val ROOM_STATUS_OFF = "off"
+    const val ROOM_PEOPLE_MIN = 2
+    const val ROOM_PEOPLE_MAX = 6
+    const val ROOM_READY = "ready"
+    const val ROOM_UNREADY = "unready"
 
 }

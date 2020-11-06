@@ -2,6 +2,7 @@ package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
+import com.adedom.teg.models.websocket.CreateRoomIncoming
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -54,5 +55,7 @@ interface TegRepository {
     fun missionMain(playerId: String, missionRequest: MissionRequest): Boolean
 
     fun fetchRooms(): List<RoomDb>
+
+    fun createRoom(playerId: String, createRoomIncoming: CreateRoomIncoming): Boolean
 
 }

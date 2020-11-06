@@ -14,6 +14,6 @@ interface JwtConfig {
 
     fun makeRefreshToken(playerId: String): String
 
-    fun decodeJwtGetPlayerId(refreshToken: String): String
+    fun decodeJwtGetPlayerId(token: String): String
 
 }

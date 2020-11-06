@@ -1,12 +1,10 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.data.database.ItemCollections
-import com.adedom.teg.data.database.LogActives
-import com.adedom.teg.data.database.Players
-import com.adedom.teg.data.database.Rooms
+import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
+import com.adedom.teg.models.websocket.CreateRoomIncoming
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
@@ -334,6 +332,47 @@ class TegRepositoryImpl : TegRepository {
                 Rooms.status eq TegConstant.ROOM_STATUS_ON
             }.map { MapObject.toRoomDb(it) }
         }
+    }
+
+    override fun createRoom(playerId: String, createRoomIncoming: CreateRoomIncoming): Boolean {
+        val (roomName, roomPeople) = createRoomIncoming
+
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            var roomNo = 1
+            try {
+                roomNo = Rooms.slice(Rooms.roomNo)
+                    .selectAll()
+                    .orderBy(Rooms.roomId to SortOrder.DESC)
+                    .limit(1)
+                    .map { it[Rooms.roomNo] }
+                    .single()
+                    .toInt()
+                    .plus(1)
+            } catch (e: NoSuchElementException) {
+            }
+
+            Rooms.insert {
+                it[Rooms.roomNo] = roomNo.toString()
+                it[Rooms.name] = roomName!!
+                it[Rooms.people] = roomPeople.toString()
+                it[status] = TegConstant.ROOM_STATUS_ON
+                it[dateTime] = System.currentTimeMillis()
+            }
+
+            RoomInfos.insert {
+                it[RoomInfos.roomNo] = roomNo.toString()
+                it[RoomInfos.playerId] = playerId
+                it[latitude] = 0.0
+                it[longitude] = 0.0
+                it[team] = TegConstant.TEAM_A
+                it[status] = TegConstant.ROOM_UNREADY
+                it[dateTime] = System.currentTimeMillis()
+            }
+        }
+
+        return true
     }
 
 }

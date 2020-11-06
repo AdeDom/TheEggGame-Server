@@ -2,10 +2,9 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.MultiItemCollectionRequest
+import com.adedom.teg.models.websocket.CreateRoomIncoming
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
-import com.adedom.teg.util.playerId
-import com.adedom.teg.util.send
-import com.adedom.teg.util.toJson
+import com.adedom.teg.util.*
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.locations.*
@@ -26,11 +25,6 @@ fun Route.multiController(service: MultiService) {
         val response = service.itemCollection(call.playerId, request)
         call.respond(response)
     }
-
-//    get<FetchRoomRequest> {
-//        val response = service.fetchRooms()
-//        call.respond(response)
-//    }
 
 }
 
@@ -56,16 +50,23 @@ fun Route.multiWebSocket(service: MultiService) {
 
     val playgroundRoom = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/playground-room") {
+        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
+
         playgroundRoom.add(this)
 
-        val roomsResponse = service.fetchRooms()
-        playgroundRoom.send(roomsResponse.toJson())
+        playgroundRoom.send(service.fetchRooms().toJson())
 
         try {
             incoming
                 .consumeAsFlow()
                 .onEach { frame ->
-                    // TODO: 06/11/2563 create room
+                    val request = frame.fromJson<CreateRoomIncoming>()
+                    val result = service.createRoom(accessToken, request)
+                    if (result.success) {
+                        playgroundRoom.send(service.fetchRooms().toJson())
+                    } else {
+                        // TODO: 06/11/2563 create room failed
+                    }
                 }
                 .catch { }
                 .collect()

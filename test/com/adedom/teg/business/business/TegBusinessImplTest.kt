@@ -421,6 +421,42 @@ class TegBusinessImplTest {
     }
 
     @Test
+    fun isValidateMissionSingle_incorrectPeople1_returnTrue(){
+        // given
+        val people = 1
+
+        // when
+        val result = business.isValidateRoomPeople(people)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateMissionSingle_incorrectPeople7_returnTrue(){
+        // given
+        val people = 7
+
+        // when
+        val result = business.isValidateRoomPeople(people)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateMissionSingle_correct_returnFalse(){
+        // given
+        val people = 2
+
+        // when
+        val result = business.isValidateRoomPeople(people)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
     fun convertBirthDateStringToLong_convertEng() {
         // given
         val birthDateEng = "30/10/1994"
