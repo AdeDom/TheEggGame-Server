@@ -4,7 +4,9 @@ import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.FetchRoomRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.websocket.RoomListSocket
-import com.adedom.teg.util.*
+import com.adedom.teg.util.playerId
+import com.adedom.teg.util.send
+import com.adedom.teg.util.toJson
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.locations.*
@@ -33,25 +35,50 @@ fun Route.multiController(service: MultiService) {
 
 }
 
-fun Route.multiWebSocket(){
+fun Route.multiWebSocket() {
 
-    // socket + token
-    val roomListSocket = mutableListOf<WebSocketSession>()
-    webSocket("/websocket/multi/room-list") {
-        roomListSocket.add(this)
+//    // socket + token
+//    val roomListSocket = mutableListOf<WebSocketSession>()
+//    webSocket("/websocket/multi/room-list") {
+//        roomListSocket.add(this)
+//        try {
+//            incoming
+//                .consumeAsFlow()
+//                .onEach { frame ->
+//                    val response = RoomListSocket(
+//                        peopleAll = roomListSocket.size,
+//                    ).toJson()
+//                    roomListSocket.send(response)
+//                }
+//                .catch { }
+//                .collect()
+//        } finally {
+//            roomListSocket.remove(this)
+//        }
+//    }
+
+    val roomPeopleAllSocket = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/room-people-all") {
+        roomPeopleAllSocket.add(this)
+        roomPeopleAllSocket.send(
+            RoomListSocket(
+                peopleAll = roomPeopleAllSocket.size,
+            ).toJson()
+        )
         try {
             incoming
                 .consumeAsFlow()
                 .onEach { frame ->
-                    val response = RoomListSocket(
-                        peopleAll = roomListSocket.size,
-                    ).toJson()
-                    roomListSocket.send(response)
                 }
                 .catch { }
                 .collect()
         } finally {
-            roomListSocket.remove(this)
+            roomPeopleAllSocket.remove(this)
+            roomPeopleAllSocket.send(
+                RoomListSocket(
+                    peopleAll = roomPeopleAllSocket.size,
+                ).toJson()
+            )
         }
     }
 
