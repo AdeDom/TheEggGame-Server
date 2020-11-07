@@ -337,7 +337,7 @@ class TegRepositoryImpl : TegRepository {
     override fun createRoom(playerId: String, createRoomIncoming: CreateRoomIncoming): Boolean {
         val (roomName, roomPeople) = createRoomIncoming
 
-        transaction {
+        val statement = transaction {
             addLogger(StdOutSqlLogger)
 
             var roomNo = 1
@@ -357,22 +357,30 @@ class TegRepositoryImpl : TegRepository {
                 it[Rooms.roomNo] = roomNo.toString()
                 it[Rooms.name] = roomName!!
                 it[Rooms.people] = roomPeople.toString()
-                it[status] = TegConstant.ROOM_STATUS_ON
-                it[dateTime] = System.currentTimeMillis()
+                it[Rooms.status] = TegConstant.ROOM_STATUS_ON
+                it[Rooms.dateTime] = System.currentTimeMillis()
             }
+
+            // lat lng player
+            val (latitude,longitude) = Players.slice(Players.latitude, Players.longitude)
+                .select {
+                    Players.playerId eq playerId
+                }
+                .map { Pair(it[Players.latitude], it[Players.longitude]) }
+                .single()
 
             RoomInfos.insert {
                 it[RoomInfos.roomNo] = roomNo.toString()
                 it[RoomInfos.playerId] = playerId
-                it[latitude] = 0.0
-                it[longitude] = 0.0
-                it[team] = TegConstant.TEAM_A
-                it[status] = TegConstant.ROOM_UNREADY
-                it[dateTime] = System.currentTimeMillis()
+                it[RoomInfos.latitude] = latitude
+                it[RoomInfos.longitude] = longitude
+                it[RoomInfos.team] = TegConstant.TEAM_A
+                it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.dateTime] = System.currentTimeMillis()
             }
         }
 
-        return true
+        return statement.resultedValues?.size ?: 0 > 0
     }
 
 }

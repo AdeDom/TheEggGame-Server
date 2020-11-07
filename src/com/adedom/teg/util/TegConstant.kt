@@ -3,6 +3,7 @@ package com.adedom.teg.util
 object TegConstant {
 
     const val BASE_URL = "https://the-egg-game.herokuapp.com/"
+    const val BASE_HOST = "the-egg-game.herokuapp.com"
     const val BASE_IMAGE = "https://the-egg-game.000webhostapp.com/images/"
     const val ACCESS_TOKEN = "access_token"
 

@@ -13,6 +13,6 @@ interface MultiService {
 
     fun fetchRooms(): RoomsResponse
 
-    fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): BaseResponse
+    fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): RoomsResponse
 
 }

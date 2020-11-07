@@ -94,8 +94,8 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): BaseResponse {
-        val response = BaseResponse()
+    override fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): RoomsResponse {
+        val response = RoomsResponse()
         val (roomName, roomPeople) = createRoomIncoming
 
         val message: String = when {

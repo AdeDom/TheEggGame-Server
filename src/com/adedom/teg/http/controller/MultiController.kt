@@ -61,11 +61,9 @@ fun Route.multiWebSocket(service: MultiService) {
                 .consumeAsFlow()
                 .onEach { frame ->
                     val request = frame.fromJson<CreateRoomIncoming>()
-                    val result = service.createRoom(accessToken, request)
-                    if (result.success) {
+                    val response = service.createRoom(accessToken, request)
+                    if (response.success) {
                         playgroundRoom.send(service.fetchRooms().toJson())
-                    } else {
-                        // TODO: 06/11/2563 create room failed
                     }
                 }
                 .catch { }
