@@ -19,6 +19,8 @@ interface TegRepository {
     // if incorrect return true
     fun isValidateChangePassword(playerId: String, changePasswordRequest: ChangePasswordRequest): Boolean
 
+    fun isValidateRoomNoOnReady(roomNo: String): Boolean
+
     fun getMissionDateTimeLast(playerId: String, modeMission: String): Long
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb
@@ -57,8 +59,10 @@ interface TegRepository {
 
     fun createRoom(playerId: String, createRoomRequest: CreateRoomRequest): Boolean
 
-    fun fetchRoomInfoTitle(playerId: String): RoomDb?
+    fun fetchRoomInfoTitle(playerId: String): RoomDb
 
     fun fetchRoomInfoBody(playerId: String): List<PlayerInfoDb>
+
+    fun joinRoomInfo(playerId: String, joinRoomInfoRequest: JoinRoomInfoRequest): Boolean
 
 }

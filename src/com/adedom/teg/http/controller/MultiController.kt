@@ -2,6 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.CreateRoomRequest
+import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
@@ -35,6 +36,12 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    post<JoinRoomInfoRequest> {
+        val request = call.receive<JoinRoomInfoRequest>()
+        val response = service.joinRoomInfo(call.playerId, request)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI
@@ -59,8 +66,6 @@ fun Route.multiWebSocket(service: MultiService) {
 
     val playgroundRoom = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/playground-room") {
-        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
-
         playgroundRoom.add(this)
 
         playgroundRoom.send(service.fetchRooms().toJson())

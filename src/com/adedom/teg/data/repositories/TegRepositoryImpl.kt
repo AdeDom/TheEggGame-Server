@@ -45,6 +45,15 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun isValidateRoomNoOnReady(roomNo: String): Boolean {
+        return transaction {
+            Rooms.slice(Rooms.roomNo)
+                .select {
+                    Rooms.status eq TegConstant.ROOM_STATUS_ON and (Rooms.roomNo eq roomNo)
+                }.count().toInt() == 0
+        }
+    }
+
     override fun getMissionDateTimeLast(playerId: String, modeMission: String): Long {
         return transaction {
             try {
@@ -382,10 +391,8 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size ?: 0 > 0
     }
 
-    // TODO: 08/11/2563 wait call api create room teg
-    override fun fetchRoomInfoTitle(playerId: String): RoomDb? {
-        var roomDb: RoomDb? = null
-        transaction {
+    override fun fetchRoomInfoTitle(playerId: String): RoomDb {
+        return transaction {
             addLogger(StdOutSqlLogger)
 
             var roomNo = ""
@@ -401,17 +408,13 @@ class TegRepositoryImpl : TegRepository {
             } catch (e: NoSuchElementException) {
             }
 
-            try {
-                roomDb = Rooms
-                    .select {
-                        Rooms.roomNo eq roomNo
-                    }
-                    .map { MapObject.toRoomDb(it) }
-                    .single()
-            } catch (e: NoSuchElementException) {
-            }
+            Rooms
+                .select {
+                    Rooms.roomNo eq roomNo
+                }
+                .map { MapObject.toRoomDb(it) }
+                .single()
         }
-        return roomDb
     }
 
     override fun fetchRoomInfoBody(playerId: String): List<PlayerInfoDb> {
@@ -440,6 +443,31 @@ class TegRepositoryImpl : TegRepository {
             }
             playerInfoList
         }
+    }
+
+    override fun joinRoomInfo(playerId: String, joinRoomInfoRequest: JoinRoomInfoRequest): Boolean {
+        val (roomNo) = joinRoomInfoRequest
+
+        val statement = transaction {
+            val (latitude, longitude) = Players.slice(Players.latitude, Players.longitude)
+                .select {
+                    Players.playerId eq playerId
+                }
+                .map { Pair(it[Players.latitude], it[Players.longitude]) }
+                .single()
+
+            RoomInfos.insert {
+                it[RoomInfos.roomNo] = roomNo.toString()
+                it[RoomInfos.playerId] = playerId
+                it[RoomInfos.latitude] = latitude
+                it[RoomInfos.longitude] = longitude
+                it[RoomInfos.team] = TegConstant.TEAM_B
+                it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.dateTime] = System.currentTimeMillis()
+            }
+        }
+
+        return statement.resultedValues?.size == 1
     }
 
 }

@@ -5,6 +5,7 @@ import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.ItemCollectionRequest
+import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
@@ -139,12 +140,12 @@ class MultiServiceImpl(
                 val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
                 val roomDb = repository.fetchRoomInfoTitle(playerId)
                 val fetchRoomResponse = FetchRoomResponse(
-                    roomId = roomDb?.roomId,
-                    roomNo = roomDb?.roomNo,
-                    name = roomDb?.name,
-                    people = roomDb?.people?.toInt(),
-                    status = roomDb?.status,
-                    dateTime = business.toConvertDateTimeLongToString(roomDb?.dateTime),
+                    roomId = roomDb.roomId,
+                    roomNo = roomDb.roomNo,
+                    name = roomDb.name,
+                    people = roomDb.people?.toInt(),
+                    status = roomDb.status,
+                    dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
                 )
                 response.roomInfoTitle = fetchRoomResponse
 
@@ -164,6 +165,31 @@ class MultiServiceImpl(
 
                 response.success = true
                 "Fetch room info success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse {
+        val response = BaseResponse()
+        val (roomNo) = joinRoomInfoRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            roomNo.isNullOrBlank() -> business.toMessageIsNullOrBlank(joinRoomInfoRequest::roomNo)
+
+            // validate values of variable
+
+            // validate database
+            repository.isValidateRoomNoOnReady(roomNo) -> business.toMessageIncorrect(joinRoomInfoRequest::roomNo)
+
+            // execute
+            else -> {
+                response.success = repository.joinRoomInfo(playerId, joinRoomInfoRequest)
+                "Join room info success"
             }
         }
 
