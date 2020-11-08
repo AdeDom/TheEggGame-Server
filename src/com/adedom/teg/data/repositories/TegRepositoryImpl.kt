@@ -4,7 +4,6 @@ import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.request.*
-import com.adedom.teg.models.websocket.CreateRoomIncoming
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
@@ -334,8 +333,8 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun createRoom(playerId: String, createRoomIncoming: CreateRoomIncoming): Boolean {
-        val (roomName, roomPeople) = createRoomIncoming
+    override fun createRoom(playerId: String, createRoomRequest: CreateRoomRequest): Boolean {
+        val (roomName, roomPeople) = createRoomRequest
 
         val statement = transaction {
             addLogger(StdOutSqlLogger)

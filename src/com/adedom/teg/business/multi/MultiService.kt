@@ -1,9 +1,9 @@
 package com.adedom.teg.business.multi
 
+import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.RoomsResponse
-import com.adedom.teg.models.websocket.CreateRoomIncoming
 import com.adedom.teg.models.websocket.RoomInfoOutgoing
 import io.ktor.locations.*
 
@@ -14,7 +14,7 @@ interface MultiService {
 
     fun fetchRooms(): RoomsResponse
 
-    fun createRoom(accessToken: String?, createRoomIncoming: CreateRoomIncoming): RoomsResponse
+    fun createRoom(playerId: String?, createRoomRequest: CreateRoomRequest): BaseResponse
 
     fun fetchRoomInfo(accessToken: String?): RoomInfoOutgoing
 
