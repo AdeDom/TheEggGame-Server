@@ -137,6 +137,10 @@ class TegBusinessImpl : TegBusiness {
         return "Please enter ${kProperty0.name}"
     }
 
+    override fun toMessageIncorrect(str: String): String {
+        return "$str Incorrect"
+    }
+
     override fun toMessageIncorrect(kProperty0: KProperty0<String?>): String {
         return "${kProperty0.name} Incorrect"
     }

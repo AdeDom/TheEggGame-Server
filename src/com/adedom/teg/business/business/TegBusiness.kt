@@ -47,6 +47,8 @@ interface TegBusiness {
 
     fun toMessageIsNullOrBlank2(kProperty0: KProperty0<Double?>): String
 
+    fun toMessageIncorrect(str: String): String
+
     fun toMessageIncorrect(kProperty0: KProperty0<String?>): String
 
     fun toMessageIncorrect1(kProperty0: KProperty0<Int?>): String

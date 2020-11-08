@@ -73,4 +73,28 @@ fun Route.multiWebSocket(service: MultiService) {
         }
     }
 
+    val roomInfoList = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/room-info") {
+        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
+
+        roomInfoList.add(this)
+
+        // TODO: 08/11/2563 send room info only
+        val initial = service.fetchRoomInfo(accessToken)
+        if (initial.success) {
+            roomInfoList.send(initial.toJson())
+        }
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach { frame ->
+                }
+                .catch { }
+                .collect()
+        } finally {
+            roomInfoList.remove(this)
+        }
+    }
+
 }

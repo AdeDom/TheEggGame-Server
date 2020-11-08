@@ -58,4 +58,8 @@ interface TegRepository {
 
     fun createRoom(playerId: String, createRoomIncoming: CreateRoomIncoming): Boolean
 
+    fun fetchRoomInfoTitle(playerId: String): RoomDb?
+
+    fun fetchRoomInfoBody(playerId: String): List<PlayerInfoDb>
+
 }

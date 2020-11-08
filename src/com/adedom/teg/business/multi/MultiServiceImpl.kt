@@ -7,8 +7,10 @@ import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.response.RoomsResponse
 import com.adedom.teg.models.websocket.CreateRoomIncoming
+import com.adedom.teg.models.websocket.RoomInfoOutgoing
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -115,6 +117,55 @@ class MultiServiceImpl(
 
                 response.success = repository.createRoom(playerId, createRoomIncoming)
                 "Create room success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun fetchRoomInfo(accessToken: String?): RoomInfoOutgoing {
+        val response = RoomInfoOutgoing()
+
+        val message: String = when {
+            // validate Null Or Blank
+            accessToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(accessToken)
+
+            // validate values of variable
+            business.isValidateJwtIncorrect(accessToken, jwtConfig.playerId) -> business.toMessageIncorrect(accessToken)
+
+            // validate database
+
+            // execute
+            else -> {
+                val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+                val roomDb = repository.fetchRoomInfoTitle(playerId)
+                val fetchRoomResponse = FetchRoomResponse(
+                    roomId = roomDb?.roomId,
+                    roomNo = roomDb?.roomNo,
+                    name = roomDb?.name,
+                    people = roomDb?.people?.toInt(),
+                    status = roomDb?.status,
+                    dateTime = business.toConvertDateTimeLongToString(roomDb?.dateTime),
+                )
+                response.roomInfoTitle = fetchRoomResponse
+
+                val playerInfoList = repository.fetchRoomInfoBody(playerId).map {
+                    PlayerInfo(
+                        playerId = it.playerId,
+                        username = it.username,
+                        name = it.name,
+                        image = it.image,
+                        level = it.level,
+                        state = it.state,
+                        gender = it.gender,
+                        birthDate = business.toConvertDateTimeLongToString(it.birthDate),
+                    )
+                }
+                response.roomInfoBodyList = playerInfoList
+
+                response.success = true
+                "Fetch room info success"
             }
         }
 

@@ -362,7 +362,7 @@ class TegRepositoryImpl : TegRepository {
             }
 
             // lat lng player
-            val (latitude,longitude) = Players.slice(Players.latitude, Players.longitude)
+            val (latitude, longitude) = Players.slice(Players.latitude, Players.longitude)
                 .select {
                     Players.playerId eq playerId
                 }
@@ -381,6 +381,66 @@ class TegRepositoryImpl : TegRepository {
         }
 
         return statement.resultedValues?.size ?: 0 > 0
+    }
+
+    // TODO: 08/11/2563 wait call api create room teg
+    override fun fetchRoomInfoTitle(playerId: String): RoomDb? {
+        var roomDb: RoomDb? = null
+        transaction {
+            addLogger(StdOutSqlLogger)
+
+            var roomNo = ""
+            try {
+                roomNo = RoomInfos.slice(RoomInfos.roomNo)
+                    .select {
+                        RoomInfos.playerId eq playerId
+                    }
+                    .orderBy(RoomInfos.dateTime, SortOrder.DESC)
+                    .limit(1)
+                    .map { it[RoomInfos.roomNo] }
+                    .single()
+            } catch (e: NoSuchElementException) {
+            }
+
+            try {
+                roomDb = Rooms
+                    .select {
+                        Rooms.roomNo eq roomNo
+                    }
+                    .map { MapObject.toRoomDb(it) }
+                    .single()
+            } catch (e: NoSuchElementException) {
+            }
+        }
+        return roomDb
+    }
+
+    override fun fetchRoomInfoBody(playerId: String): List<PlayerInfoDb> {
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            val roomNo = RoomInfos.slice(RoomInfos.roomNo)
+                .select {
+                    RoomInfos.playerId eq playerId
+                }
+                .orderBy(RoomInfos.dateTime, SortOrder.DESC)
+                .limit(1)
+                .map { it[RoomInfos.roomNo] }
+                .single()
+
+            val playerIdList = RoomInfos.slice(RoomInfos.playerId)
+                .select {
+                    RoomInfos.roomNo eq roomNo
+                }
+                .orderBy(RoomInfos.dateTime, SortOrder.ASC)
+                .map { it[RoomInfos.playerId] }
+
+            val playerInfoList = mutableListOf<PlayerInfoDb>()
+            playerIdList.forEach {
+                playerInfoList.add(fetchPlayerInfo(it))
+            }
+            playerInfoList
+        }
     }
 
 }
