@@ -5,7 +5,8 @@ import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.RoomsResponse
-import com.adedom.teg.models.websocket.RoomInfoOutgoing
+import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
+import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -17,7 +18,9 @@ interface MultiService {
 
     fun createRoom(playerId: String?, createRoomRequest: CreateRoomRequest): BaseResponse
 
-    fun fetchRoomInfo(accessToken: String?): RoomInfoOutgoing
+    fun fetchRoomInfoTitle(accessToken: String?): RoomInfoTitleOutgoing
+
+    fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing
 
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse
 

@@ -83,16 +83,16 @@ fun Route.multiWebSocket(service: MultiService) {
         }
     }
 
-    val roomInfoList = mutableListOf<WebSocketSession>()
-    webSocket("/websocket/multi/room-info") {
+    val roomInfoTitle = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/room-info-title") {
         val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
 
-        roomInfoList.add(this)
+        roomInfoTitle.add(this)
 
-        // TODO: 08/11/2563 send room info only
-        val initial = service.fetchRoomInfo(accessToken)
+        // TODO: 09/11/2563
+        val initial = service.fetchRoomInfoTitle(accessToken)
         if (initial.success) {
-            roomInfoList.send(initial.toJson())
+            roomInfoTitle.send(initial.toJson())
         }
 
         try {
@@ -103,7 +103,31 @@ fun Route.multiWebSocket(service: MultiService) {
                 .catch { }
                 .collect()
         } finally {
-            roomInfoList.remove(this)
+            roomInfoTitle.remove(this)
+        }
+    }
+
+    val roomInfoPlayers = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/room-info-players") {
+        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
+
+        roomInfoPlayers.add(this)
+
+        // TODO: 09/11/2563
+        val initial = service.fetchRoomInfoPlayers(accessToken)
+        if (initial.success) {
+            roomInfoPlayers.send(initial.toJson())
+        }
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach { frame ->
+                }
+                .catch { }
+                .collect()
+        } finally {
+            roomInfoPlayers.remove(this)
         }
     }
 

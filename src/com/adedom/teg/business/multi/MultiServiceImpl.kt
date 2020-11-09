@@ -11,7 +11,8 @@ import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
 import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.response.RoomsResponse
-import com.adedom.teg.models.websocket.RoomInfoOutgoing
+import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
+import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -123,8 +124,8 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun fetchRoomInfo(accessToken: String?): RoomInfoOutgoing {
-        val response = RoomInfoOutgoing()
+    override fun fetchRoomInfoTitle(accessToken: String?): RoomInfoTitleOutgoing {
+        val response = RoomInfoTitleOutgoing()
 
         val message: String = when {
             // validate Null Or Blank
@@ -149,6 +150,30 @@ class MultiServiceImpl(
                 )
                 response.roomInfoTitle = fetchRoomResponse
 
+                response.success = true
+                "Fetch room info success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing {
+        val response = RoomInfoPlayersOutgoing()
+
+        val message: String = when {
+            // validate Null Or Blank
+            accessToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(accessToken)
+
+            // validate values of variable
+            business.isValidateJwtIncorrect(accessToken, jwtConfig.playerId) -> business.toMessageIncorrect(accessToken)
+
+            // validate database
+
+            // execute
+            else -> {
+                val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
                 val playerInfoList = repository.fetchRoomInfoBody(playerId).map {
                     PlayerInfo(
                         playerId = it.playerId,
@@ -161,7 +186,7 @@ class MultiServiceImpl(
                         birthDate = business.toConvertDateTimeLongToString(it.birthDate),
                     )
                 }
-                response.roomInfoBodyList = playerInfoList
+                response.roomInfoPlayers = playerInfoList
 
                 response.success = true
                 "Fetch room info success"

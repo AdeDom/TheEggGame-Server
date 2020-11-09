@@ -1,11 +1,9 @@
 package com.adedom.teg.models.websocket
 
 import com.adedom.teg.models.response.FetchRoomResponse
-import com.adedom.teg.models.response.PlayerInfo
 
-data class RoomInfoOutgoing(
+data class RoomInfoTitleOutgoing(
     var success: Boolean = false,
     var message: String? = null,
     var roomInfoTitle: FetchRoomResponse? = null,
-    var roomInfoBodyList: List<PlayerInfo> = emptyList(),
 )
