@@ -402,6 +402,7 @@ class TegRepositoryImpl : TegRepository {
                 it[RoomInfos.longitude] = longitude
                 it[RoomInfos.team] = TegConstant.TEAM_A
                 it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.role] = TegConstant.ROOM_ROLE_HEAD
                 it[RoomInfos.dateTime] = System.currentTimeMillis()
             }
         }
@@ -435,7 +436,7 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun fetchRoomInfoBody(playerId: String): List<PlayerInfoDb> {
+    override fun fetchRoomInfoPlayers(playerId: String): List<RoomInfoPlayersDb> {
         return transaction {
             addLogger(StdOutSqlLogger)
 
@@ -448,16 +449,28 @@ class TegRepositoryImpl : TegRepository {
                 .map { it[RoomInfos.roomNo] }
                 .single()
 
-            val playerIdList = RoomInfos.slice(RoomInfos.playerId)
+            val roomInfoDb = RoomInfos
                 .select {
                     RoomInfos.roomNo eq roomNo
                 }
                 .orderBy(RoomInfos.dateTime, SortOrder.ASC)
-                .map { it[RoomInfos.playerId] }
+                .map { MapObject.toRoomInfoDb(it) }
 
-            val playerInfoList = mutableListOf<PlayerInfoDb>()
-            playerIdList.forEach {
-                playerInfoList.add(fetchPlayerInfo(it))
+            val playerInfoList = mutableListOf<RoomInfoPlayersDb>()
+            roomInfoDb.forEach { roomInfo ->
+                val playersDb = (Players innerJoin ItemCollections).slice(
+                    Players.playerId,
+                    Players.username,
+                    Players.name,
+                    Players.image,
+                    ItemCollections.qty.sum(),
+                    Players.state,
+                    Players.gender,
+                    Players.birthDate,
+                ).select { Players.playerId eq roomInfo.playerId!! }
+                    .map { MapObject.toRoomInfoPlayersDb(it, roomInfo.role, roomInfo.status, roomInfo.team) }
+                    .single()
+                playerInfoList.add(playersDb)
             }
             playerInfoList
         }
@@ -481,6 +494,7 @@ class TegRepositoryImpl : TegRepository {
                 it[RoomInfos.longitude] = longitude
                 it[RoomInfos.team] = TegConstant.TEAM_B
                 it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.role] = TegConstant.ROOM_ROLE_TAIL
                 it[RoomInfos.dateTime] = System.currentTimeMillis()
             }
         }

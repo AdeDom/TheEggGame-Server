@@ -11,6 +11,7 @@ object RoomInfos : Table(name = DatabaseConstant.roomInfoTable) {
     val longitude = double(name = DatabaseConstant.longitude).nullable()
     val team = varchar(name = DatabaseConstant.team, length = 5)
     val status = varchar(name = DatabaseConstant.status, length = 10)
+    val role = varchar(name = DatabaseConstant.role, length = 10)
     val dateTime = long(name = DatabaseConstant.dateTime)
 
     override val primaryKey: PrimaryKey?

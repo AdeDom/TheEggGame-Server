@@ -53,4 +53,30 @@ object MapObject {
         dateTime = row[Rooms.dateTime],
     )
 
+    fun toRoomInfoDb(row: ResultRow) = RoomInfoDb(
+        infoId = row[RoomInfos.infoId],
+        roomNo = row[RoomInfos.roomNo],
+        playerId = row[RoomInfos.playerId],
+        latitude = row[RoomInfos.latitude],
+        longitude = row[RoomInfos.longitude],
+        team = row[RoomInfos.team],
+        status = row[RoomInfos.status],
+        role = row[RoomInfos.role],
+        dateTime = row[RoomInfos.dateTime],
+    )
+
+    fun toRoomInfoPlayersDb(row: ResultRow, role: String?, status: String?, team: String?) = RoomInfoPlayersDb(
+        playerId = row[Players.playerId],
+        username = row[Players.username],
+        name = row[Players.name],
+        image = row[Players.image],
+        level = row[ItemCollections.qty.sum()],
+        state = row[Players.state],
+        gender = row[Players.gender],
+        birthDate = row[Players.birthDate],
+        roleRoomInfo = role,
+        statusRoomInfo = status,
+        teamRoomInfo = team,
+    )
+
 }

@@ -9,8 +9,8 @@ import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
-import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.response.RoomsResponse
+import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
 import com.adedom.teg.util.TegConstant
@@ -174,8 +174,8 @@ class MultiServiceImpl(
             // execute
             else -> {
                 val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
-                val playerInfoList = repository.fetchRoomInfoBody(playerId).map {
-                    PlayerInfo(
+                val playerInfoList = repository.fetchRoomInfoPlayers(playerId).map {
+                    RoomInfoPlayers(
                         playerId = it.playerId,
                         username = it.username,
                         name = it.name?.capitalize(),
@@ -184,6 +184,9 @@ class MultiServiceImpl(
                         state = it.state,
                         gender = it.gender,
                         birthDate = business.toConvertDateTimeLongToString(it.birthDate),
+                        roleRoomInfo = it.roleRoomInfo,
+                        statusRoomInfo = it.statusRoomInfo,
+                        teamRoomInfo = it.teamRoomInfo,
                     )
                 }
                 response.roomInfoPlayers = playerInfoList

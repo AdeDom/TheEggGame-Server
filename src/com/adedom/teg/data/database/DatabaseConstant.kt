@@ -50,5 +50,6 @@ object DatabaseConstant {
     const val dateTimeCreated = "date_time_created"
     const val dateTimeUpdated = "date_time_updated"
     const val mode = "mode"
+    const val role = "role"
 
 }
