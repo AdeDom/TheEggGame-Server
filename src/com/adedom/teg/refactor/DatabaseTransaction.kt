@@ -3,7 +3,6 @@ package com.adedom.teg.refactor
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.MultiDb
-import com.adedom.teg.data.models.RoomDb
 import com.adedom.teg.data.models.RoomInfoDb
 import com.adedom.teg.data.models.ScoreDb
 import com.adedom.teg.models.request.*
@@ -86,12 +85,6 @@ object DatabaseTransaction {
         ScoreDb(teamA, teamB)
     }
 
-    fun getRooms(): List<RoomDb> = transaction {
-        Rooms.select { Rooms.status eq "on" }
-            .orderBy(Rooms.roomId to SortOrder.ASC)
-            .map { MapObject.toRoomDb(it) }
-    }
-
     // TODO: 12/10/2563 concern show name to capitalize
     fun getRoomInfos(roomNo: String): List<RoomInfoDb> = transaction {
         (Players innerJoin ItemCollections innerJoin RoomInfos)
@@ -140,44 +133,6 @@ object DatabaseTransaction {
                 it[MultiCollections.longitude] = longitude!!
                 it[dateTime] = System.currentTimeMillis()
             }
-        }
-    }
-
-    fun postRoom(roomRequest: RoomRequest): String {
-        val (name, people, playerId) = roomRequest
-        return transaction {
-            addLogger(StdOutSqlLogger)
-
-            val roomNo: String = (Rooms.slice(Rooms.roomNo)
-                .selectAll()
-                .orderBy(Rooms.roomId to SortOrder.DESC)
-                .limit(1)
-                .map { MapObject.toRoomNoDb(it) }
-                .single()
-                .roomNo
-                ?.toInt()
-                ?.plus(1) ?: 1)
-                .toString()
-
-            Rooms.insert {
-                it[Rooms.roomNo] = roomNo
-                it[Rooms.name] = name!!
-                it[Rooms.people] = people!!
-                it[status] = "on"
-                it[dateTime] = System.currentTimeMillis()
-            }
-
-            RoomInfos.insert {
-                it[RoomInfos.roomNo] = roomNo
-                it[RoomInfos.playerId] = playerId!!
-                it[latitude] = 0.0
-                it[longitude] = 0.0
-                it[team] = "A"
-                it[status] = "unready"
-                it[dateTime] = System.currentTimeMillis()
-            }
-
-            roomNo
         }
     }
 

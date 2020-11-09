@@ -1,13 +1,11 @@
 package com.adedom.teg.refactor
 
-import io.ktor.routing.Route
-import io.ktor.routing.route
+import io.ktor.routing.*
 
 fun Route.headerController() {
 
     route("multi") {
         getMultiScore()
-        room()
         roomInfo()
         multi()
         postMultiCollection()

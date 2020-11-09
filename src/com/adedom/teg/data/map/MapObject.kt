@@ -57,10 +57,6 @@ object MapObject {
         people = row[Rooms.people],
     )
 
-    fun toRoomNoDb(row: ResultRow) = RoomDb(
-        roomNo = row[Rooms.roomNo],
-    )
-
     // TODO: 07/10/2563 concern convert level
     fun toRoomInfoDb(row: ResultRow) = RoomInfoDb(
         roomNo = row[RoomInfos.roomNo],

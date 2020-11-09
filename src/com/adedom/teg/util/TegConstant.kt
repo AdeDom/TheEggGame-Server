@@ -7,10 +7,8 @@ object TegConstant {
     const val BASE_IMAGE = "https://the-egg-game.000webhostapp.com/images/"
     const val ACCESS_TOKEN = "access_token"
 
-    const val MIN_PEOPLE = 2
     const val MIN_USERNAME = 4
     const val MIN_PASSWORD = 4
-    const val MAX_PEOPLE = 6
     const val TEAM_A = "A"
     const val TEAM_B = "B"
     const val STATE_ONLINE = "online"
