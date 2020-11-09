@@ -54,6 +54,24 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun isValidatePeopleRoomInfo(roomNo: String): Boolean {
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            val peopleRoom: Int = Rooms.slice(Rooms.people)
+                .select { Rooms.roomNo eq roomNo }
+                .map { it[Rooms.people] }
+                .single()
+                .toInt()
+
+            val peopleRoomInfo: Int = RoomInfos.select { RoomInfos.roomNo eq roomNo }
+                .count()
+                .toInt()
+
+            peopleRoom <= peopleRoomInfo
+        }
+    }
+
     override fun getMissionDateTimeLast(playerId: String, modeMission: String): Long {
         return transaction {
             try {

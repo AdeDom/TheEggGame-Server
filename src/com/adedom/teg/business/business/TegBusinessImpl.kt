@@ -161,4 +161,8 @@ class TegBusinessImpl : TegBusiness {
         return "Please enter ${kProperty0.name} a number greater than or equal to $length"
     }
 
+    override fun toMessagePeopleRoomInfo(): String {
+        return "People in room is maximum"
+    }
+
 }

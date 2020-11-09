@@ -59,4 +59,6 @@ interface TegBusiness {
 
     fun toMessageGrateEq(kProperty0: KProperty0<String?>, length: Int): String
 
+    fun toMessagePeopleRoomInfo(): String
+
 }

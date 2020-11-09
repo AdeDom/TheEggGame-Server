@@ -3,7 +3,6 @@ package com.adedom.teg.refactor
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.MultiDb
-import com.adedom.teg.data.models.RoomInfoDb
 import com.adedom.teg.data.models.ScoreDb
 import com.adedom.teg.models.request.*
 import org.jetbrains.exposed.sql.*
@@ -43,23 +42,6 @@ object DatabaseTransaction {
         count == 0
     }
 
-    fun validatePeopleRoom(roomNo: String): Boolean = transaction {
-        addLogger(StdOutSqlLogger)
-
-        val peopleRoom: Int = Rooms.slice(Rooms.people)
-            .select { Rooms.roomNo eq roomNo }
-            .map { MapObject.toPeopleRoomDb(it) }
-            .single()
-            .people
-            ?.toInt() ?: 0
-
-        val peopleRoomInfo: Int = RoomInfos.select { RoomInfos.roomNo eq roomNo }
-            .count()
-            .toInt()
-
-        peopleRoom < peopleRoomInfo
-    }
-
     fun validateMultiRoomNo(roomNo: String): Boolean = transaction {
         val count = Multis.select { Multis.roomNo eq roomNo }
             .count()
@@ -83,27 +65,6 @@ object DatabaseTransaction {
             .toInt()
 
         ScoreDb(teamA, teamB)
-    }
-
-    // TODO: 12/10/2563 concern show name to capitalize
-    fun getRoomInfos(roomNo: String): List<RoomInfoDb> = transaction {
-        (Players innerJoin ItemCollections innerJoin RoomInfos)
-            .slice(
-                RoomInfos.roomNo,
-                RoomInfos.latitude,
-                RoomInfos.longitude,
-                RoomInfos.team,
-                RoomInfos.status,
-                Players.playerId,
-                Players.name,
-                Players.image,
-                ItemCollections.qty.sum(),
-                Players.state,
-                Players.gender
-            ).select { RoomInfos.roomNo eq roomNo }
-            .groupBy(Players.playerId)
-            .orderBy(RoomInfos.infoId to SortOrder.ASC)
-            .map { MapObject.toRoomInfoDb(it) }
     }
 
     fun postMulti(multiRequest: MultiRequest) {
@@ -131,21 +92,6 @@ object DatabaseTransaction {
                 it[MultiCollections.team] = team!!
                 it[MultiCollections.latitude] = latitude!!
                 it[MultiCollections.longitude] = longitude!!
-                it[dateTime] = System.currentTimeMillis()
-            }
-        }
-    }
-
-    fun postRoomInfo(roomInfoRequest: RoomInfoRequest) {
-        val (roomNo, playerId) = roomInfoRequest
-        transaction {
-            RoomInfos.insert {
-                it[RoomInfos.roomNo] = roomNo!!
-                it[RoomInfos.playerId] = playerId!!
-                it[latitude] = 0.0
-                it[longitude] = 0.0
-                it[team] = "B"
-                it[status] = "unready"
                 it[dateTime] = System.currentTimeMillis()
             }
         }

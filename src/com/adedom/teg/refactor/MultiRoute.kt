@@ -3,7 +3,6 @@ package com.adedom.teg.refactor
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MultisResponse
-import com.adedom.teg.models.response.RoomInfoResponse
 import com.adedom.teg.models.response.ScoreResponse
 import com.adedom.teg.util.*
 import io.ktor.application.*
@@ -39,52 +38,6 @@ fun Route.getMultiScore() {
 fun Route.roomInfo() {
 
     route("room-info") {
-        get("fetch-room-info{${GetConstant.ROOM_NO}}") {
-            val response = RoomInfoResponse()
-            val roomNo = call.parameters[GetConstant.ROOM_NO]
-            val message = when {
-                roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
-                DatabaseTransaction.validateRoom(roomNo) -> GetConstant.ROOM_NO.validateIncorrect()
-
-                else -> {
-                    val listRoomInfo = DatabaseTransaction.getRoomInfos(roomNo)
-                    response.roomInfo = listRoomInfo
-                    response.success = true
-                    "Fetch room info success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-
-        post("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId) = call.receive<RoomInfoRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
-                DatabaseTransaction.validatePeopleRoom(roomNo) -> "People in room is maximum"
-
-                playerId == null -> RoomInfoRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
-
-                else -> {
-                    DatabaseTransaction.postRoomInfo(
-                        roomInfoRequest = RoomInfoRequest(
-                            roomNo = roomNo,
-                            playerId = playerId
-                        )
-                    )
-                    response.success = true
-                    "Post room info success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-
         delete("/") {
             val response = BaseResponse()
             val (roomNo, playerId) = call.receive<RoomInfoRequest>()

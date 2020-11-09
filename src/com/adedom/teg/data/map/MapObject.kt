@@ -53,23 +53,4 @@ object MapObject {
         dateTime = row[Rooms.dateTime],
     )
 
-    fun toPeopleRoomDb(row: ResultRow) = RoomDb(
-        people = row[Rooms.people],
-    )
-
-    // TODO: 07/10/2563 concern convert level
-    fun toRoomInfoDb(row: ResultRow) = RoomInfoDb(
-        roomNo = row[RoomInfos.roomNo],
-        latitude = row[RoomInfos.latitude],
-        longitude = row[RoomInfos.longitude],
-        team = row[RoomInfos.team],
-        status = row[RoomInfos.status],
-        playerId = row[Players.playerId],
-        name = row[Players.name],
-        image = row[Players.image],
-        level = row[ItemCollections.qty.sum()],
-        state = row[Players.state],
-        gender = row[Players.gender],
-    )
-
 }

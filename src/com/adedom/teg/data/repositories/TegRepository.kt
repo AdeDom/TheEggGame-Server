@@ -21,6 +21,8 @@ interface TegRepository {
 
     fun isValidateRoomNoOnReady(roomNo: String): Boolean
 
+    fun isValidatePeopleRoomInfo(roomNo: String): Boolean
+
     fun getMissionDateTimeLast(playerId: String, modeMission: String): Long
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb

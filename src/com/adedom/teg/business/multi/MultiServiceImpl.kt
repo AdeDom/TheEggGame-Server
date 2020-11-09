@@ -142,7 +142,7 @@ class MultiServiceImpl(
                 val fetchRoomResponse = FetchRoomResponse(
                     roomId = roomDb.roomId,
                     roomNo = roomDb.roomNo,
-                    name = roomDb.name,
+                    name = roomDb.name?.capitalize(),
                     people = roomDb.people?.toInt(),
                     status = roomDb.status,
                     dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
@@ -153,7 +153,7 @@ class MultiServiceImpl(
                     PlayerInfo(
                         playerId = it.playerId,
                         username = it.username,
-                        name = it.name,
+                        name = it.name?.capitalize(),
                         image = it.image,
                         level = it.level,
                         state = it.state,
@@ -185,6 +185,7 @@ class MultiServiceImpl(
 
             // validate database
             repository.isValidateRoomNoOnReady(roomNo) -> business.toMessageIncorrect(joinRoomInfoRequest::roomNo)
+            repository.isValidatePeopleRoomInfo(roomNo) -> business.toMessagePeopleRoomInfo()
 
             // execute
             else -> {
