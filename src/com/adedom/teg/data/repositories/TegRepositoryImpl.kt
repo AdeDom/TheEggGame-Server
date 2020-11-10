@@ -509,18 +509,38 @@ class TegRepositoryImpl : TegRepository {
 
     override fun leaveRoomInfo(playerId: String): Boolean {
         val result = transaction {
-            val infoId = RoomInfos.slice(RoomInfos.infoId)
-                .select {
-                    RoomInfos.playerId eq playerId
+            addLogger(StdOutSqlLogger)
+
+            // change head next
+            val roomNo = currentRoomNo(playerId)
+
+            val countRoomInfo = RoomInfos.select { RoomInfos.roomNo eq roomNo }
+                .count()
+                .toInt()
+
+            if (countRoomInfo > 1) {
+                val infoId = RoomInfos
+                    .slice(RoomInfos.infoId)
+                    .select { RoomInfos.roomNo eq roomNo and (RoomInfos.role eq TegConstant.ROOM_ROLE_TAIL) }
+                    .orderBy(RoomInfos.dateTime, SortOrder.ASC)
+                    .limit(1)
+                    .map { it[RoomInfos.infoId] }
+                    .single()
+
+                RoomInfos.update({ RoomInfos.infoId eq infoId }) {
+                    it[RoomInfos.role] = TegConstant.ROOM_ROLE_HEAD
                 }
+            }
+
+            // delete player in room info
+            val infoId = RoomInfos.slice(RoomInfos.infoId)
+                .select { RoomInfos.playerId eq playerId }
                 .orderBy(RoomInfos.dateTime, SortOrder.DESC)
                 .limit(1)
                 .map { it[RoomInfos.infoId] }
                 .single()
 
-            RoomInfos.deleteWhere {
-                RoomInfos.infoId eq infoId
-            }
+            RoomInfos.deleteWhere { RoomInfos.infoId eq infoId }
         }
 
         return result == 1
