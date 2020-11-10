@@ -4,6 +4,7 @@ import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.CurrentRoomNoResponse
 import com.adedom.teg.models.response.RoomsResponse
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
@@ -21,6 +22,8 @@ interface MultiService {
     fun fetchRoomInfoTitle(accessToken: String?): RoomInfoTitleOutgoing
 
     fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing
+
+    fun currentRoomNo(playerId: String?): CurrentRoomNoResponse
 
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse
 

@@ -495,6 +495,18 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun currentRoomNo(playerId: String): String {
+        return transaction {
+            RoomInfos
+                .slice(RoomInfos.roomNo)
+                .select { RoomInfos.playerId eq playerId }
+                .orderBy(RoomInfos.dateTime, SortOrder.DESC)
+                .limit(1)
+                .map { it[RoomInfos.roomNo] }
+                .single()
+        }
+    }
+
     override fun joinRoomInfo(playerId: String, joinRoomInfoRequest: JoinRoomInfoRequest): Boolean {
         val (roomNo) = joinRoomInfoRequest
 

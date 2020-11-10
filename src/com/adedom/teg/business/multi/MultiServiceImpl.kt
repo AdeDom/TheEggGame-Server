@@ -9,6 +9,7 @@ import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.FetchRoomResponse
+import com.adedom.teg.models.response.CurrentRoomNoResponse
 import com.adedom.teg.models.response.RoomsResponse
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
@@ -193,6 +194,29 @@ class MultiServiceImpl(
 
                 response.success = true
                 "Fetch room info success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun currentRoomNo(playerId: String?): CurrentRoomNoResponse {
+        val response = CurrentRoomNoResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = true
+                response.roomNo = repository.currentRoomNo(playerId)
+                "Fetch room no current success"
             }
         }
 

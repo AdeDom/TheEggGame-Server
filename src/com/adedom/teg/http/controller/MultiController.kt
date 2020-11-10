@@ -1,10 +1,7 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
-import com.adedom.teg.models.request.CreateRoomRequest
-import com.adedom.teg.models.request.JoinRoomInfoRequest
-import com.adedom.teg.models.request.LeaveRoomInfoRequest
-import com.adedom.teg.models.request.MultiItemCollectionRequest
+import com.adedom.teg.models.request.*
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
@@ -34,6 +31,11 @@ fun Route.multiController(service: MultiService) {
     post<CreateRoomRequest> {
         val request = call.receive<CreateRoomRequest>()
         val response = service.createRoom(call.playerId, request)
+        call.respond(response)
+    }
+
+    get<CurrentRoomNoRequest> {
+        val response = service.currentRoomNo(call.playerId)
         call.respond(response)
     }
 
@@ -91,15 +93,11 @@ fun Route.multiWebSocket(service: MultiService) {
 
     val roomInfoTitle = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-info-title") {
-        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
         roomInfoTitle.add(this)
 
-        // TODO: 09/11/2563
-        val initial = service.fetchRoomInfoTitle(accessToken)
-        if (initial.success) {
-            roomInfoTitle.send(initial.toJson())
-        }
+        roomInfoTitle.send(service.fetchRoomInfoTitle(accessToken).toJson())
 
         try {
             incoming
@@ -119,11 +117,7 @@ fun Route.multiWebSocket(service: MultiService) {
 
         roomInfoPlayers.add(this)
 
-        // TODO: 09/11/2563
-        val initial = service.fetchRoomInfoPlayers(accessToken)
-        if (initial.success) {
-            roomInfoPlayers.send(initial.toJson())
-        }
+        roomInfoPlayers.send(service.fetchRoomInfoPlayers(accessToken).toJson())
 
         try {
             incoming
