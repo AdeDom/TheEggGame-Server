@@ -97,7 +97,8 @@ fun Route.multiWebSocket(service: MultiService) {
 
         roomInfoTitle.add(this)
 
-        roomInfoTitle.send(service.fetchRoomInfoTitle(accessToken).toJson())
+        val roomNo: String = service.currentRoomNo(accessToken)
+        roomInfoTitle.send(service.fetchRoomInfoTitle(roomNo).toJson())
 
         try {
             incoming

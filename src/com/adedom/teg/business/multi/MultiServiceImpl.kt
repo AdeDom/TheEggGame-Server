@@ -125,22 +125,19 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun fetchRoomInfoTitle(accessToken: String?): RoomInfoTitleOutgoing {
+    override fun fetchRoomInfoTitle(roomNo: String): RoomInfoTitleOutgoing {
         val response = RoomInfoTitleOutgoing()
 
         val message: String = when {
             // validate Null Or Blank
-            accessToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(accessToken)
 
             // validate values of variable
-            business.isValidateJwtIncorrect(accessToken, jwtConfig.playerId) -> business.toMessageIncorrect(accessToken)
 
             // validate database
 
             // execute
             else -> {
-                val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
-                val roomDb = repository.fetchRoomInfoTitle(playerId)
+                val roomDb = repository.fetchRoomInfoTitle(roomNo)
                 val fetchRoomResponse = FetchRoomResponse(
                     roomId = roomDb.roomId,
                     roomNo = roomDb.roomNo,
@@ -150,6 +147,8 @@ class MultiServiceImpl(
                     dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
                 )
                 response.roomInfoTitle = fetchRoomResponse
+
+                response.roomNo = roomNo
 
                 response.success = true
                 "Fetch room info success"
@@ -222,6 +221,11 @@ class MultiServiceImpl(
 
         response.message = message
         return response
+    }
+
+    override fun currentRoomNo(accessToken: String): String {
+        val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+        return repository.currentRoomNo(playerId)
     }
 
     override fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse {

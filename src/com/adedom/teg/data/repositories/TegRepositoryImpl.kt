@@ -429,27 +429,12 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size ?: 0 > 0
     }
 
-    override fun fetchRoomInfoTitle(playerId: String): RoomDb {
+    override fun fetchRoomInfoTitle(roomNo: String): RoomDb {
         return transaction {
             addLogger(StdOutSqlLogger)
 
-            var roomNo = ""
-            try {
-                roomNo = RoomInfos.slice(RoomInfos.roomNo)
-                    .select {
-                        RoomInfos.playerId eq playerId
-                    }
-                    .orderBy(RoomInfos.dateTime, SortOrder.DESC)
-                    .limit(1)
-                    .map { it[RoomInfos.roomNo] }
-                    .single()
-            } catch (e: NoSuchElementException) {
-            }
-
             Rooms
-                .select {
-                    Rooms.roomNo eq roomNo
-                }
+                .select { Rooms.roomNo eq roomNo }
                 .map { MapObject.toRoomDb(it) }
                 .single()
         }

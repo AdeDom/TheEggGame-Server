@@ -19,11 +19,13 @@ interface MultiService {
 
     fun createRoom(playerId: String?, createRoomRequest: CreateRoomRequest): BaseResponse
 
-    fun fetchRoomInfoTitle(accessToken: String?): RoomInfoTitleOutgoing
+    fun fetchRoomInfoTitle(roomNo: String): RoomInfoTitleOutgoing
 
     fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing
 
     fun currentRoomNo(playerId: String?): CurrentRoomNoResponse
+
+    fun currentRoomNo(accessToken: String): String
 
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse
 
