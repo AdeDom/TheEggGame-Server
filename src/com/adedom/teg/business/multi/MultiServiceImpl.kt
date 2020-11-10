@@ -8,8 +8,8 @@ import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.models.response.FetchRoomResponse
 import com.adedom.teg.models.response.CurrentRoomNoResponse
+import com.adedom.teg.models.response.FetchRoomResponse
 import com.adedom.teg.models.response.RoomsResponse
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
@@ -159,28 +159,25 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing {
+    override fun fetchRoomInfoPlayers(roomNo: String): RoomInfoPlayersOutgoing {
         val response = RoomInfoPlayersOutgoing()
 
         val message: String = when {
             // validate Null Or Blank
-            accessToken.isNullOrBlank() -> business.toMessageIsNullOrBlank(accessToken)
 
             // validate values of variable
-            business.isValidateJwtIncorrect(accessToken, jwtConfig.playerId) -> business.toMessageIncorrect(accessToken)
 
             // validate database
 
             // execute
             else -> {
-                val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
-                val playerInfoList = repository.fetchRoomInfoPlayers(playerId).map {
+                val playerInfoList = repository.fetchRoomInfoPlayers(roomNo).map {
                     RoomInfoPlayers(
                         playerId = it.playerId,
                         username = it.username,
                         name = it.name?.capitalize(),
                         image = it.image,
-                        level = it.level,
+                        level = business.toConvertLevel(it.level),
                         state = it.state,
                         gender = it.gender,
                         birthDate = business.toConvertDateTimeLongToString(it.birthDate),
@@ -190,6 +187,8 @@ class MultiServiceImpl(
                     )
                 }
                 response.roomInfoPlayers = playerInfoList
+
+                response.roomNo = roomNo
 
                 response.success = true
                 "Fetch room info success"

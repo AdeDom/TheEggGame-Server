@@ -114,16 +114,18 @@ fun Route.multiWebSocket(service: MultiService) {
 
     val roomInfoPlayers = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-info-players") {
-        val accessToken = call.request.header(TegConstant.ACCESS_TOKEN)
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
         roomInfoPlayers.add(this)
 
-        roomInfoPlayers.send(service.fetchRoomInfoPlayers(accessToken).toJson())
+        val roomNo: String = service.currentRoomNo(accessToken)
+        roomInfoPlayers.send(service.fetchRoomInfoPlayers(roomNo).toJson())
 
         try {
             incoming
                 .consumeAsFlow()
                 .onEach { frame ->
+                    roomInfoPlayers.send(service.fetchRoomInfoPlayers(roomNo).toJson())
                 }
                 .catch { }
                 .collect()

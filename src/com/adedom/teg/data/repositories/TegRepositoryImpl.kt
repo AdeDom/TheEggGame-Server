@@ -440,23 +440,12 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun fetchRoomInfoPlayers(playerId: String): List<RoomInfoPlayersDb> {
+    override fun fetchRoomInfoPlayers(roomNo: String): List<RoomInfoPlayersDb> {
         return transaction {
             addLogger(StdOutSqlLogger)
 
-            val roomNo = RoomInfos.slice(RoomInfos.roomNo)
-                .select {
-                    RoomInfos.playerId eq playerId
-                }
-                .orderBy(RoomInfos.dateTime, SortOrder.DESC)
-                .limit(1)
-                .map { it[RoomInfos.roomNo] }
-                .single()
-
             val roomInfoDb = RoomInfos
-                .select {
-                    RoomInfos.roomNo eq roomNo
-                }
+                .select { RoomInfos.roomNo eq roomNo }
                 .orderBy(RoomInfos.dateTime, SortOrder.ASC)
                 .map { MapObject.toRoomInfoDb(it) }
 

@@ -63,7 +63,7 @@ interface TegRepository {
 
     fun fetchRoomInfoTitle(roomNo: String): RoomDb
 
-    fun fetchRoomInfoPlayers(playerId: String): List<RoomInfoPlayersDb>
+    fun fetchRoomInfoPlayers(roomNo: String): List<RoomInfoPlayersDb>
 
     fun currentRoomNo(playerId: String): String
 

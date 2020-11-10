@@ -21,7 +21,7 @@ interface MultiService {
 
     fun fetchRoomInfoTitle(roomNo: String): RoomInfoTitleOutgoing
 
-    fun fetchRoomInfoPlayers(accessToken: String?): RoomInfoPlayersOutgoing
+    fun fetchRoomInfoPlayers(roomNo: String): RoomInfoPlayersOutgoing
 
     fun currentRoomNo(playerId: String?): CurrentRoomNoResponse
 
