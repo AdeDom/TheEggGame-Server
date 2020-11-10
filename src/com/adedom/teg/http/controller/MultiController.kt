@@ -3,6 +3,7 @@ package com.adedom.teg.http.controller
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
+import com.adedom.teg.models.request.LeaveRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
@@ -39,6 +40,11 @@ fun Route.multiController(service: MultiService) {
     post<JoinRoomInfoRequest> {
         val request = call.receive<JoinRoomInfoRequest>()
         val response = service.joinRoomInfo(call.playerId, request)
+        call.respond(response)
+    }
+
+    delete<LeaveRoomInfoRequest> {
+        val response = service.leaveRoomInfo(call.playerId)
         call.respond(response)
     }
 

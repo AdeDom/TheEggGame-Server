@@ -67,4 +67,6 @@ interface TegRepository {
 
     fun joinRoomInfo(playerId: String, joinRoomInfoRequest: JoinRoomInfoRequest): Boolean
 
+    fun leaveRoomInfo(playerId: String): Boolean
+
 }

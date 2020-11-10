@@ -24,4 +24,6 @@ interface MultiService {
 
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse
 
+    fun leaveRoomInfo(playerId: String?): BaseResponse
+
 }

@@ -502,4 +502,23 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size == 1
     }
 
+    override fun leaveRoomInfo(playerId: String): Boolean {
+        val result = transaction {
+            val infoId = RoomInfos.slice(RoomInfos.infoId)
+                .select {
+                    RoomInfos.playerId eq playerId
+                }
+                .orderBy(RoomInfos.dateTime, SortOrder.DESC)
+                .limit(1)
+                .map { it[RoomInfos.infoId] }
+                .single()
+
+            RoomInfos.deleteWhere {
+                RoomInfos.infoId eq infoId
+            }
+        }
+
+        return result == 1
+    }
+
 }
