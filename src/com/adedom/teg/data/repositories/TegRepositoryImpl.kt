@@ -354,9 +354,28 @@ class TegRepositoryImpl : TegRepository {
 
     override fun fetchRooms(): List<RoomDb> {
         return transaction {
-            Rooms.select {
-                Rooms.status eq TegConstant.ROOM_STATUS_ON
-            }.map { MapObject.toRoomDb(it) }
+            addLogger(StdOutSqlLogger)
+
+            val roomNoList = Rooms
+                .slice(Rooms.roomNo)
+                .select { Rooms.status eq TegConstant.ROOM_STATUS_ON }
+                .map { it[Rooms.roomNo] }
+
+            roomNoList.forEach {
+                val count = RoomInfos
+                    .select { RoomInfos.roomNo eq it }
+                    .count()
+                    .toInt()
+
+                if (count == 0) {
+                    Rooms.update({ Rooms.roomNo eq it }) {
+                        it[Rooms.status] = TegConstant.ROOM_STATUS_OFF
+                    }
+                }
+            }
+
+            Rooms.select { Rooms.status eq TegConstant.ROOM_STATUS_ON }
+                .map { MapObject.toRoomDb(it) }
         }
     }
 
