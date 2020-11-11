@@ -582,24 +582,24 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
-    override fun isValidateTegMultiPeople(roomNo: String?): Boolean {
+    override fun isValidateTegMultiPeople(roomNo: String): Boolean {
         val result = transaction {
-            RoomInfos.select { RoomInfos.roomNo eq roomNo!! }
+            RoomInfos.select { RoomInfos.roomNo eq roomNo }
                 .count()
         }
 
         return result.toInt() < 2
     }
 
-    override fun isValidateTegMultiTeam(roomNo: String?): Boolean {
+    override fun isValidateTegMultiTeam(roomNo: String): Boolean {
         val (countTeamA, countTeamB) = transaction {
             val countTeamA = RoomInfos.slice(RoomInfos.team)
-                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.team eq TegConstant.TEAM_A) }
+                .select { RoomInfos.roomNo eq roomNo and (RoomInfos.team eq TegConstant.TEAM_A) }
                 .map { it[RoomInfos.team] }
                 .size
 
             val countTeamB = RoomInfos.slice(RoomInfos.team)
-                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.team eq TegConstant.TEAM_B) }
+                .select { RoomInfos.roomNo eq roomNo and (RoomInfos.team eq TegConstant.TEAM_B) }
                 .map { it[RoomInfos.team] }
                 .size
 
@@ -609,14 +609,28 @@ class TegRepositoryImpl : TegRepository {
         return countTeamA == 0 || countTeamB == 0
     }
 
-    override fun isValidateTegMultiStatus(roomNo: String?): Boolean {
+    override fun isValidateTegMultiStatus(roomNo: String): Boolean {
         val result = transaction {
             RoomInfos
-                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.role eq TegConstant.ROOM_ROLE_TAIL) and (RoomInfos.status eq TegConstant.ROOM_STATUS_UNREADY) }
+                .select { RoomInfos.roomNo eq roomNo and (RoomInfos.role eq TegConstant.ROOM_ROLE_TAIL) and (RoomInfos.status eq TegConstant.ROOM_STATUS_UNREADY) }
                 .count()
         }
 
         return result.toInt() > 0
+    }
+
+    override fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean {
+        val result = transaction {
+            Rooms.update({ Rooms.roomNo eq roomNo }) {
+                it[Rooms.status] = TegConstant.ROOM_STATUS_OFF
+            }
+
+            RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {
+                it[RoomInfos.status] = TegConstant.ROOM_STATUS_READY
+            }
+        }
+
+        return result == 2
     }
 
 }

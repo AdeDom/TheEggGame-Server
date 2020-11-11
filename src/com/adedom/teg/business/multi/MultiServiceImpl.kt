@@ -319,7 +319,7 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun tegMulti(playerId: String?): BaseResponse {
+    override fun roomInfoTegMulti(playerId: String?): BaseResponse {
         val response = BaseResponse()
 
         val roomNo = playerId?.let { repository.currentRoomNo(it) }
@@ -327,18 +327,19 @@ class MultiServiceImpl(
         val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            roomNo.isNullOrBlank() -> business.toMessageIsNullOrBlank(roomNo)
 
             // validate values of variable
 
             // validate database
             repository.isValidateTegMultiPeople(roomNo) -> business.toMessageTegMultiPeople()
             repository.isValidateTegMultiTeam(roomNo) -> business.toMessageTegMultiTeam()
-            repository.isValidateTegMultiStatus(roomNo)->business.toMessageTegMultiStatus()
+            repository.isValidateTegMultiStatus(roomNo) -> business.toMessageTegMultiStatus()
 
             // execute
             else -> {
-                response.success = repository.changeStatusRoomInfo(playerId)
-                "Teg multi success"
+                response.success = repository.roomInfoTegMulti(playerId, roomNo)
+                "Room info teg multi success"
             }
         }
 

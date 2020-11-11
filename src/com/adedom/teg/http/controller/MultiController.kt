@@ -61,8 +61,8 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
-    patch<TegMultiRequest> {
-        val response = service.tegMulti(call.playerId)
+    patch<RoomInfoTegMultiRequest> {
+        val response = service.roomInfoTegMulti(call.playerId)
         call.respond(response)
     }
 

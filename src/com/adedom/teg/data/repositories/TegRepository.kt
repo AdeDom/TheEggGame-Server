@@ -75,10 +75,12 @@ interface TegRepository {
 
     fun changeStatusRoomInfo(playerId: String): Boolean
 
-    fun isValidateTegMultiPeople(roomNo: String?): Boolean
+    fun isValidateTegMultiPeople(roomNo: String): Boolean
 
-    fun isValidateTegMultiTeam(roomNo: String?): Boolean
+    fun isValidateTegMultiTeam(roomNo: String): Boolean
 
-    fun isValidateTegMultiStatus(roomNo: String?): Boolean
+    fun isValidateTegMultiStatus(roomNo: String): Boolean
+
+    fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean
 
 }
