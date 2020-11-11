@@ -297,7 +297,7 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun changeGoTeg(playerId: String?): BaseResponse {
+    override fun changeStatusRoomInfo(playerId: String?): BaseResponse {
         val response = BaseResponse()
 
         val message: String = when {
@@ -310,8 +310,8 @@ class MultiServiceImpl(
 
             // execute
             else -> {
-                response.success = repository.changeGoTeg(playerId)
-                "Change go teg success"
+                response.success = repository.changeStatusRoomInfo(playerId)
+                "Change status room info success"
             }
         }
 

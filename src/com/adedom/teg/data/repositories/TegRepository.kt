@@ -73,6 +73,6 @@ interface TegRepository {
 
     fun changeTeam(playerId: String, changeTeamRequest: ChangeTeamRequest): Boolean
 
-    fun changeGoTeg(playerId: String): Boolean
+    fun changeStatusRoomInfo(playerId: String): Boolean
 
 }

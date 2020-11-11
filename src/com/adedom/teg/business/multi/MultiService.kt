@@ -34,6 +34,6 @@ interface MultiService {
 
     fun changeTeam(playerId: String?, changeTeamRequest: ChangeTeamRequest): BaseResponse
 
-    fun changeGoTeg(playerId: String?): BaseResponse
+    fun changeStatusRoomInfo(playerId: String?): BaseResponse
 
 }

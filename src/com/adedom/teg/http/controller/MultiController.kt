@@ -55,8 +55,8 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
-    patch<ChangeGoTegRequest> {
-        val response = service.changeGoTeg(call.playerId)
+    patch<ChangeStatusRoomInfoRequest> {
+        val response = service.changeStatusRoomInfo(call.playerId)
         call.respond(response)
     }
 

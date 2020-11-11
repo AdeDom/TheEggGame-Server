@@ -560,7 +560,7 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
-    override fun changeGoTeg(playerId: String): Boolean {
+    override fun changeStatusRoomInfo(playerId: String): Boolean {
         val result = transaction {
             val roomNo = currentRoomNo(playerId)
 
