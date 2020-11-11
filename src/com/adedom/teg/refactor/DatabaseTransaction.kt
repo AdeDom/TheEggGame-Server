@@ -4,9 +4,15 @@ import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.MultiDb
 import com.adedom.teg.data.models.ScoreDb
-import com.adedom.teg.models.request.*
-import org.jetbrains.exposed.sql.*
+import com.adedom.teg.models.request.MultiCollectionRequest
+import com.adedom.teg.models.request.MultiRequest
+import com.adedom.teg.models.request.ReadyRequest
+import com.adedom.teg.models.request.TeamRequest
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 object DatabaseTransaction {
 
@@ -97,18 +103,6 @@ object DatabaseTransaction {
         }
     }
 
-    fun putLatLng(latlngRequest: LatlngRequest) {
-        val (roomNo, playerId, latitude, longitude) = latlngRequest
-        transaction {
-            RoomInfos.update({
-                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
-            }) {
-                it[RoomInfos.latitude] = latitude!!
-                it[RoomInfos.longitude] = longitude!!
-            }
-        }
-    }
-
     fun putReady(readyRequest: ReadyRequest) {
         val (roomNo, playerId, status) = readyRequest
         transaction {
@@ -120,12 +114,6 @@ object DatabaseTransaction {
         }
     }
 
-    fun putRoomOff(roomNo: String) = transaction {
-        Rooms.update({ Rooms.roomNo eq roomNo }) {
-            it[status] = "off"
-        }
-    }
-
     fun putTeam(teamRequest: TeamRequest) {
         val (roomNo, playerId, team) = teamRequest
         transaction {
@@ -133,23 +121,6 @@ object DatabaseTransaction {
                 RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }) {
                 it[RoomInfos.team] = team!!
-            }
-        }
-    }
-
-    fun deletePlayerRoomInfo(roomInfoRequest: RoomInfoRequest) {
-        val (roomNo, playerId) = roomInfoRequest
-        transaction {
-            addLogger(StdOutSqlLogger)
-
-            val count = RoomInfos.select { RoomInfos.roomNo eq roomNo!! }
-                .count()
-                .toInt()
-
-            if (count == 1) Rooms.deleteWhere { Rooms.roomNo eq roomNo!! }
-
-            RoomInfos.deleteWhere {
-                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
             }
         }
     }

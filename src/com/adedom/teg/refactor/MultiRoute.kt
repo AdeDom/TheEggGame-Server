@@ -1,6 +1,9 @@
 package com.adedom.teg.refactor
 
-import com.adedom.teg.models.request.*
+import com.adedom.teg.models.request.MultiCollectionRequest
+import com.adedom.teg.models.request.MultiRequest
+import com.adedom.teg.models.request.ReadyRequest
+import com.adedom.teg.models.request.TeamRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MultisResponse
 import com.adedom.teg.models.response.ScoreResponse
@@ -26,38 +29,6 @@ fun Route.getMultiScore() {
                     response.score = score
                     response.success = true
                     "Fetch multi score success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.roomInfo() {
-
-    route("room-info") {
-        delete("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId) = call.receive<RoomInfoRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> RoomInfoRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> RoomInfoRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> RoomInfoRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> RoomInfoRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> RoomInfoRequest::playerId.name.validateNotFound()
-
-                else -> {
-                    DatabaseTransaction.deletePlayerRoomInfo(
-                        roomInfoRequest = RoomInfoRequest(
-                            roomNo = roomNo,
-                            playerId = playerId
-                        )
-                    )
-                    response.success = true
-                    "Delete room info success"
                 }
             }
             response.message = message
@@ -167,44 +138,6 @@ fun Route.postMultiCollection() {
 
 }
 
-fun Route.putLatlng() {
-
-    route("latlng") {
-        put("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId, latitude, longitude) = call.receive<LatlngRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> LatlngRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> LatlngRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> LatlngRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> LatlngRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> LatlngRequest::playerId.name.validateNotFound()
-
-                latitude == null -> LatlngRequest::latitude.name.validateIsNullOrBlank()
-
-                longitude == null -> LatlngRequest::longitude.name.validateIsNullOrBlank()
-
-                else -> {
-                    DatabaseTransaction.putLatLng(
-                        latlngRequest = LatlngRequest(
-                            roomNo = roomNo,
-                            playerId = playerId,
-                            latitude = latitude,
-                            longitude = longitude
-                        )
-                    )
-                    response.success = true
-                    "Put latlng success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
 fun Route.putReady() {
 
     route("ready") {
@@ -231,29 +164,6 @@ fun Route.putReady() {
                     )
                     response.success = true
                     "Put ready success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.putRoomOff() {
-
-    route("room-off") {
-        put("/") {
-            val response = BaseResponse()
-            val (roomNo) = call.receive<RoomOffRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> RoomOffRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> RoomOffRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoom(roomNo) -> RoomOffRequest::roomNo.name.validateNotFound()
-                else -> {
-                    DatabaseTransaction.putRoomOff(roomNo)
-                    response.success = true
-                    "Put room off success"
                 }
             }
             response.message = message
