@@ -55,6 +55,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    patch<ChangeGoTegRequest> {
+        val response = service.changeGoTeg(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI

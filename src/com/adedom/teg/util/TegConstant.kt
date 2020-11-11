@@ -33,8 +33,8 @@ object TegConstant {
     const val ROOM_STATUS_OFF = "off"
     const val ROOM_PEOPLE_MIN = 2
     const val ROOM_PEOPLE_MAX = 6
-    const val ROOM_READY = "ready"
-    const val ROOM_UNREADY = "unready"
+    const val ROOM_STATUS_READY = "ready"
+    const val ROOM_STATUS_UNREADY = "unready"
     const val ROOM_ROLE_HEAD = "head"
     const val ROOM_ROLE_TAIL = "tail"
 

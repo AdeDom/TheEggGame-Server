@@ -297,4 +297,26 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun changeGoTeg(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.changeGoTeg(playerId)
+                "Change go teg success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

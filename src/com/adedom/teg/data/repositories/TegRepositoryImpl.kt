@@ -420,7 +420,7 @@ class TegRepositoryImpl : TegRepository {
                 it[RoomInfos.latitude] = latitude
                 it[RoomInfos.longitude] = longitude
                 it[RoomInfos.team] = TegConstant.TEAM_A
-                it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.status] = TegConstant.ROOM_STATUS_UNREADY
                 it[RoomInfos.role] = TegConstant.ROOM_ROLE_HEAD
                 it[RoomInfos.dateTime] = System.currentTimeMillis()
             }
@@ -498,7 +498,7 @@ class TegRepositoryImpl : TegRepository {
                 it[RoomInfos.latitude] = latitude
                 it[RoomInfos.longitude] = longitude
                 it[RoomInfos.team] = TegConstant.TEAM_B
-                it[RoomInfos.status] = TegConstant.ROOM_UNREADY
+                it[RoomInfos.status] = TegConstant.ROOM_STATUS_UNREADY
                 it[RoomInfos.role] = TegConstant.ROOM_ROLE_TAIL
                 it[RoomInfos.dateTime] = System.currentTimeMillis()
             }
@@ -554,6 +554,30 @@ class TegRepositoryImpl : TegRepository {
 
             RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {
                 it[RoomInfos.team] = team!!
+            }
+        }
+
+        return result == 1
+    }
+
+    override fun changeGoTeg(playerId: String): Boolean {
+        val result = transaction {
+            val roomNo = currentRoomNo(playerId)
+
+            var roomInfoStatus = RoomInfos
+                .slice(RoomInfos.status)
+                .select { RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }
+                .map { it[RoomInfos.status] }
+                .single()
+
+            roomInfoStatus = if (roomInfoStatus == TegConstant.ROOM_STATUS_READY) {
+                TegConstant.ROOM_STATUS_UNREADY
+            } else {
+                TegConstant.ROOM_STATUS_READY
+            }
+
+            RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {
+                it[RoomInfos.status] = roomInfoStatus
             }
         }
 
