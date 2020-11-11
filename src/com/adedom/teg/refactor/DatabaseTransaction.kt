@@ -6,8 +6,6 @@ import com.adedom.teg.data.models.MultiDb
 import com.adedom.teg.data.models.ScoreDb
 import com.adedom.teg.models.request.MultiCollectionRequest
 import com.adedom.teg.models.request.MultiRequest
-import com.adedom.teg.models.request.ReadyRequest
-import com.adedom.teg.models.request.TeamRequest
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -99,28 +97,6 @@ object DatabaseTransaction {
                 it[MultiCollections.latitude] = latitude!!
                 it[MultiCollections.longitude] = longitude!!
                 it[dateTime] = System.currentTimeMillis()
-            }
-        }
-    }
-
-    fun putReady(readyRequest: ReadyRequest) {
-        val (roomNo, playerId, status) = readyRequest
-        transaction {
-            RoomInfos.update({
-                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
-            }) {
-                it[RoomInfos.status] = status!!
-            }
-        }
-    }
-
-    fun putTeam(teamRequest: TeamRequest) {
-        val (roomNo, playerId, team) = teamRequest
-        transaction {
-            RoomInfos.update({
-                RoomInfos.roomNo eq roomNo!! and (RoomInfos.playerId eq playerId!!)
-            }) {
-                it[RoomInfos.team] = team!!
             }
         }
     }

@@ -2,8 +2,6 @@ package com.adedom.teg.refactor
 
 import com.adedom.teg.models.request.MultiCollectionRequest
 import com.adedom.teg.models.request.MultiRequest
-import com.adedom.teg.models.request.ReadyRequest
-import com.adedom.teg.models.request.TeamRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MultisResponse
 import com.adedom.teg.models.response.ScoreResponse
@@ -129,77 +127,6 @@ fun Route.postMultiCollection() {
                     )
                     response.success = true
                     "Post multi collection success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.putReady() {
-
-    route("ready") {
-        put("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId, status) = call.receive<ReadyRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> ReadyRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> ReadyRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> ReadyRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> ReadyRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> ReadyRequest::playerId.name.validateNotFound()
-
-                status.isNullOrBlank() -> ReadyRequest::status.name.validateIsNullOrBlank()
-
-                else -> {
-                    DatabaseTransaction.putReady(
-                        readyRequest = ReadyRequest(
-                            roomNo = roomNo,
-                            playerId = playerId,
-                            status = status
-                        )
-                    )
-                    response.success = true
-                    "Put ready success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.putTeam() {
-
-    route("team") {
-        put("/") {
-            val response = BaseResponse()
-            val (roomNo, playerId, team) = call.receive<TeamRequest>()
-            val message = when {
-                roomNo.isNullOrBlank() -> TeamRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> TeamRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> TeamRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> TeamRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> TeamRequest::playerId.name.validateNotFound()
-
-                team.isNullOrBlank() -> TeamRequest::team.name.validateIsNullOrBlank()
-                !team.validateTeam() -> TeamRequest::team.name.validateIncorrect()
-
-                else -> {
-                    DatabaseTransaction.putTeam(
-                        teamRequest = TeamRequest(
-                            roomNo = roomNo,
-                            playerId = playerId,
-                            team = team
-                        )
-                    )
-                    response.success = true
-                    "Put team success"
                 }
             }
             response.message = message

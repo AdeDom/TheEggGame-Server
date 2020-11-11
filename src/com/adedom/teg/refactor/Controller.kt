@@ -8,8 +8,6 @@ fun Route.headerController() {
         getMultiScore()
         multi()
         postMultiCollection()
-        putReady()
-        putTeam()
     }
 
 }
