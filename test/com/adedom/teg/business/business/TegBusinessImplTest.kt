@@ -421,7 +421,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMissionSingle_incorrectPeople1_returnTrue(){
+    fun isValidateMissionSingle_incorrectPeople1_returnTrue() {
         // given
         val people = 1
 
@@ -433,7 +433,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMissionSingle_incorrectPeople7_returnTrue(){
+    fun isValidateMissionSingle_incorrectPeople7_returnTrue() {
         // given
         val people = 7
 
@@ -445,7 +445,7 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateMissionSingle_correct_returnFalse(){
+    fun isValidateMissionSingle_correct_returnFalse() {
         // given
         val people = 2
 
@@ -454,6 +454,42 @@ class TegBusinessImplTest {
 
         // then
         assertFalse(result)
+    }
+
+    @Test
+    fun isValidateRoomPeople_incorrect_returnFalse() {
+        // given
+        val team = "AB"
+
+        // when
+        val result = business.isValidateTeam(team)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidateRoomPeople_correctTeamA_returnTrue() {
+        // given
+        val team = TegConstant.TEAM_A
+
+        // when
+        val result = business.isValidateTeam(team)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidateRoomPeople_correctTeamB_returnTrue() {
+        // given
+        val team = TegConstant.TEAM_B
+
+        // when
+        val result = business.isValidateTeam(team)
+
+        // then
+        assertTrue(result)
     }
 
     @Test

@@ -71,4 +71,6 @@ interface TegRepository {
 
     fun leaveRoomInfo(playerId: String): Boolean
 
+    fun changeTeam(playerId: String, changeTeamRequest: ChangeTeamRequest): Boolean
+
 }

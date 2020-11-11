@@ -89,6 +89,10 @@ class TegBusinessImpl : TegBusiness {
         return people !in TegConstant.ROOM_PEOPLE_MIN..TegConstant.ROOM_PEOPLE_MAX
     }
 
+    override fun isValidateTeam(team: String): Boolean {
+        return team == TegConstant.TEAM_A || team == TegConstant.TEAM_B
+    }
+
     override fun convertBirthDateStringToLong(birthDate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
         return sdf.parse(birthDate).time

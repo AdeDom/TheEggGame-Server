@@ -546,4 +546,18 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
+    override fun changeTeam(playerId: String, changeTeamRequest: ChangeTeamRequest): Boolean {
+        val (team) = changeTeamRequest
+
+        val result = transaction {
+            val roomNo = currentRoomNo(playerId)
+
+            RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {
+                it[RoomInfos.team] = team!!
+            }
+        }
+
+        return result == 1
+    }
+
 }

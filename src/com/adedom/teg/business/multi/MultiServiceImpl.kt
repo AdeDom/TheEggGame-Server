@@ -3,10 +3,7 @@ package com.adedom.teg.business.multi
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.models.request.CreateRoomRequest
-import com.adedom.teg.models.request.ItemCollectionRequest
-import com.adedom.teg.models.request.JoinRoomInfoRequest
-import com.adedom.teg.models.request.MultiItemCollectionRequest
+import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.CurrentRoomNoResponse
 import com.adedom.teg.models.response.FetchRoomResponse
@@ -268,6 +265,31 @@ class MultiServiceImpl(
             else -> {
                 response.success = repository.leaveRoomInfo(playerId)
                 "Leave room info success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun changeTeam(playerId: String?, changeTeamRequest: ChangeTeamRequest): BaseResponse {
+        val response = BaseResponse()
+        val (team) = changeTeamRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            team.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeTeamRequest::team)
+
+            // validate values of variable
+            !business.isValidateTeam(team) -> business.toMessageIncorrect(changeTeamRequest::team)
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.changeTeam(playerId, changeTeamRequest)
+                "Change team success"
             }
         }
 

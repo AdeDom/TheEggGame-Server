@@ -1,5 +1,6 @@
 package com.adedom.teg.business.multi
 
+import com.adedom.teg.models.request.ChangeTeamRequest
 import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
@@ -30,5 +31,7 @@ interface MultiService {
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse
 
     fun leaveRoomInfo(playerId: String?): BaseResponse
+
+    fun changeTeam(playerId: String?, changeTeamRequest: ChangeTeamRequest): BaseResponse
 
 }

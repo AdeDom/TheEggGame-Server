@@ -31,6 +31,8 @@ interface TegBusiness {
 
     fun isValidateRoomPeople(people: Int): Boolean
 
+    fun isValidateTeam(team: String): Boolean
+
     fun convertBirthDateStringToLong(birthDate: String): Long
 
     fun toConvertDateTimeLongToString(date: Long?): String

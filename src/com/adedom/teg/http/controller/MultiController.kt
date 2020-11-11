@@ -50,6 +50,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    patch<ChangeTeamRequest> { request ->
+        val response = service.changeTeam(call.playerId, request)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI
