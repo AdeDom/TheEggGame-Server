@@ -2,6 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.*
+import com.adedom.teg.models.websocket.RoomInfoTegMultiOutgoing
 import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
@@ -146,6 +147,32 @@ fun Route.multiWebSocket(service: MultiService) {
                 .collect()
         } finally {
             roomInfoPlayers.remove(this)
+        }
+    }
+
+    val roomInfoTegMulti = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/multi/room-info-teg-multi") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+
+        roomInfoTegMulti.add(this)
+
+        val roomNo: String = service.currentRoomNo(accessToken)
+        val roomInfoTegMultiOutgoing = RoomInfoTegMultiOutgoing(
+            success = true,
+            message = "Teg multi",
+            roomNo = roomNo,
+        )
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach { frame ->
+                    roomInfoTegMulti.send(roomInfoTegMultiOutgoing.toJson())
+                }
+                .catch { }
+                .collect()
+        } finally {
+            roomInfoTegMulti.remove(this)
         }
     }
 
