@@ -63,4 +63,10 @@ interface TegBusiness {
 
     fun toMessagePeopleRoomInfo(): String
 
+    fun toMessageTegMultiPeople(): String
+
+    fun toMessageTegMultiTeam(): String
+
+    fun toMessageTegMultiStatus(): String
+
 }

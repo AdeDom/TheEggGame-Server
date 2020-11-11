@@ -486,13 +486,11 @@ class TegRepositoryImpl : TegRepository {
 
         val statement = transaction {
             val (latitude, longitude) = Players.slice(Players.latitude, Players.longitude)
-                .select {
-                    Players.playerId eq playerId
-                }
+                .select { Players.playerId eq playerId }
                 .map { Pair(it[Players.latitude], it[Players.longitude]) }
                 .single()
 
-            RoomInfos.insert {
+            RoomInfos.replace {
                 it[RoomInfos.roomNo] = roomNo.toString()
                 it[RoomInfos.playerId] = playerId
                 it[RoomInfos.latitude] = latitude
@@ -582,6 +580,43 @@ class TegRepositoryImpl : TegRepository {
         }
 
         return result == 1
+    }
+
+    override fun isValidateTegMultiPeople(roomNo: String?): Boolean {
+        val result = transaction {
+            RoomInfos.select { RoomInfos.roomNo eq roomNo!! }
+                .count()
+        }
+
+        return result.toInt() < 2
+    }
+
+    override fun isValidateTegMultiTeam(roomNo: String?): Boolean {
+        val (countTeamA, countTeamB) = transaction {
+            val countTeamA = RoomInfos.slice(RoomInfos.team)
+                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.team eq TegConstant.TEAM_A) }
+                .map { it[RoomInfos.team] }
+                .size
+
+            val countTeamB = RoomInfos.slice(RoomInfos.team)
+                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.team eq TegConstant.TEAM_B) }
+                .map { it[RoomInfos.team] }
+                .size
+
+            Pair(countTeamA, countTeamB)
+        }
+
+        return countTeamA == 0 || countTeamB == 0
+    }
+
+    override fun isValidateTegMultiStatus(roomNo: String?): Boolean {
+        val result = transaction {
+            RoomInfos
+                .select { RoomInfos.roomNo eq roomNo!! and (RoomInfos.role eq TegConstant.ROOM_ROLE_TAIL) and (RoomInfos.status eq TegConstant.ROOM_STATUS_UNREADY) }
+                .count()
+        }
+
+        return result.toInt() > 0
     }
 
 }

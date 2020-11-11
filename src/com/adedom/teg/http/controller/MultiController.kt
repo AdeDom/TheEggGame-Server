@@ -60,6 +60,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    patch<TegMultiRequest> {
+        val response = service.tegMulti(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI

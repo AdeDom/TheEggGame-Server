@@ -169,4 +169,16 @@ class TegBusinessImpl : TegBusiness {
         return "People in room is maximum"
     }
 
+    override fun toMessageTegMultiPeople(): String {
+        return "A minimum of 2 players is required"
+    }
+
+    override fun toMessageTegMultiTeam(): String {
+        return "There must be at least 1 player per team"
+    }
+
+    override fun toMessageTegMultiStatus(): String {
+        return "The players in the room are not ready yet"
+    }
+
 }

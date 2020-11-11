@@ -36,4 +36,6 @@ interface MultiService {
 
     fun changeStatusRoomInfo(playerId: String?): BaseResponse
 
+    fun tegMulti(playerId: String?): BaseResponse
+
 }
