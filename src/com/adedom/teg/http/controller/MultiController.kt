@@ -66,6 +66,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    patch<ChangeStatusUnreadyRequest> {
+        val response = service.changeStatusUnready(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI

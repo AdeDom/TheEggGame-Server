@@ -630,7 +630,19 @@ class TegRepositoryImpl : TegRepository {
             }
         }
 
-        return result == 2
+        return result == 1
+    }
+
+    override fun changeStatusUnready(playerId: String): Boolean {
+        val result = transaction {
+            val roomNo = currentRoomNo(playerId)
+
+            RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {
+                it[RoomInfos.status] = TegConstant.ROOM_STATUS_UNREADY
+            }
+        }
+
+        return result == 1
     }
 
 }

@@ -83,4 +83,6 @@ interface TegRepository {
 
     fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean
 
+    fun changeStatusUnready(playerId: String): Boolean
+
 }
