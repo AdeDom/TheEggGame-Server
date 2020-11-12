@@ -81,7 +81,7 @@ class MultiServiceImpl(
                         roomId = it.roomId,
                         roomNo = it.roomNo,
                         name = it.name,
-                        people = it.people?.toInt(),
+                        people = it.people,
                         status = it.status,
                         dateTime = business.toConvertDateTimeLongToString(it.dateTime),
                     )
@@ -139,7 +139,7 @@ class MultiServiceImpl(
                     roomId = roomDb.roomId,
                     roomNo = roomDb.roomNo,
                     name = roomDb.name?.capitalize(),
-                    people = roomDb.people?.toInt(),
+                    people = roomDb.people,
                     status = roomDb.status,
                     dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
                 )

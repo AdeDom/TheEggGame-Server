@@ -62,7 +62,6 @@ class TegRepositoryImpl : TegRepository {
                 .select { Rooms.roomNo eq roomNo }
                 .map { it[Rooms.people] }
                 .single()
-                .toInt()
 
             val peopleRoomInfo: Int = RoomInfos.select { RoomInfos.roomNo eq roomNo }
                 .count()
@@ -401,7 +400,7 @@ class TegRepositoryImpl : TegRepository {
             Rooms.insert {
                 it[Rooms.roomNo] = roomNo.toString()
                 it[Rooms.name] = roomName!!
-                it[Rooms.people] = roomPeople.toString()
+                it[Rooms.people] = roomPeople!!
                 it[Rooms.status] = TegConstant.ROOM_STATUS_ON
                 it[Rooms.dateTime] = System.currentTimeMillis()
             }
