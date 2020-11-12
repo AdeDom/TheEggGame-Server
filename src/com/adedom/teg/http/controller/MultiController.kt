@@ -71,6 +71,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    get<FetchMultiPlayerRequest> {
+        val response = service.fetchMultiPlayer(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI

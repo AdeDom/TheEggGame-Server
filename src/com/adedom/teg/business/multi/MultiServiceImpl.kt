@@ -4,10 +4,7 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.*
-import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.models.response.CurrentRoomNoResponse
-import com.adedom.teg.models.response.FetchRoomResponse
-import com.adedom.teg.models.response.RoomsResponse
+import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
@@ -141,6 +138,8 @@ class MultiServiceImpl(
                     name = roomDb.name?.capitalize(),
                     people = roomDb.people,
                     status = roomDb.status,
+                    startTime = roomDb.startTime,
+                    endTime = roomDb.endTime,
                     dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
                 )
                 response.roomInfoTitle = fetchRoomResponse
@@ -362,6 +361,60 @@ class MultiServiceImpl(
             else -> {
                 response.success = repository.changeStatusUnready(playerId)
                 "Change status unready success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun fetchMultiPlayer(playerId: String?): FetchMultiPlayerResponse {
+        val response = FetchMultiPlayerResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                val roomNo = repository.currentRoomNo(playerId)
+
+                val roomDb = repository.fetchRoomInfoTitle(roomNo)
+                val fetchRoomResponse = FetchRoomResponse(
+                    roomId = roomDb.roomId,
+                    roomNo = roomDb.roomNo,
+                    name = roomDb.name?.capitalize(),
+                    people = roomDb.people,
+                    status = roomDb.status,
+                    startTime = roomDb.startTime,
+                    endTime = roomDb.endTime,
+                    dateTime = business.toConvertDateTimeLongToString(roomDb.dateTime),
+                )
+                response.roomInfoTitle = fetchRoomResponse
+
+                val playerInfoList = repository.fetchRoomInfoPlayers(roomNo).map {
+                    RoomInfoPlayers(
+                        playerId = it.playerId,
+                        username = it.username,
+                        name = it.name?.capitalize(),
+                        image = it.image,
+                        level = business.toConvertLevel(it.level),
+                        state = it.state,
+                        gender = it.gender,
+                        birthDate = business.toConvertDateTimeLongToString(it.birthDate),
+                        roleRoomInfo = it.roleRoomInfo,
+                        statusRoomInfo = it.statusRoomInfo,
+                        teamRoomInfo = it.teamRoomInfo,
+                    )
+                }
+                response.roomInfoPlayers = playerInfoList
+
+                response.success = true
+                "Fetch multi player success"
             }
         }
 

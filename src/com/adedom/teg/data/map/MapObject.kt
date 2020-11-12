@@ -50,6 +50,8 @@ object MapObject {
         name = row[Rooms.name],
         people = row[Rooms.people],
         status = row[Rooms.status],
+        startTime = row[Rooms.startTime],
+        endTime = row[Rooms.endTime],
         dateTime = row[Rooms.dateTime],
     )
 

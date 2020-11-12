@@ -622,6 +622,7 @@ class TegRepositoryImpl : TegRepository {
         val result = transaction {
             Rooms.update({ Rooms.roomNo eq roomNo }) {
                 it[Rooms.status] = TegConstant.ROOM_STATUS_OFF
+                it[Rooms.startTime] = System.currentTimeMillis()
             }
 
             RoomInfos.update({ RoomInfos.roomNo eq roomNo and (RoomInfos.playerId eq playerId) }) {

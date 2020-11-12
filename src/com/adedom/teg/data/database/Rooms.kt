@@ -9,6 +9,8 @@ object Rooms : Table(name = DatabaseConstant.roomTable) {
     val name = varchar(name = DatabaseConstant.name, length = 100)
     val people = integer(name = DatabaseConstant.people)
     val status = varchar(name = DatabaseConstant.status, length = 10)
+    val startTime = long(name = DatabaseConstant.startTime).nullable()
+    val endTime = long(name = DatabaseConstant.endTime).nullable()
     val dateTime = long(name = DatabaseConstant.dateTime)
 
     override val primaryKey: PrimaryKey?
