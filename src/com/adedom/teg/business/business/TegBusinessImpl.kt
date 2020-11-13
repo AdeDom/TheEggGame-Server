@@ -93,6 +93,10 @@ class TegBusinessImpl : TegBusiness {
         return team == TegConstant.TEAM_A || team == TegConstant.TEAM_B
     }
 
+    override fun isValidatePlayMode(mode: String): Boolean {
+        return mode == TegConstant.PLAY_MODE_MAIN || mode == TegConstant.PLAY_MODE_SINGLE || mode == TegConstant.PLAY_MODE_MULTI
+    }
+
     override fun convertBirthDateStringToLong(birthDate: String): Long {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("en", "EN"))
         return sdf.parse(birthDate).time

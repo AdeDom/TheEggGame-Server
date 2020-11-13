@@ -37,5 +37,8 @@ object TegConstant {
     const val ROOM_STATUS_UNREADY = "unready"
     const val ROOM_ROLE_HEAD = "head"
     const val ROOM_ROLE_TAIL = "tail"
+    const val PLAY_MODE_MAIN = "main"
+    const val PLAY_MODE_SINGLE = "single"
+    const val PLAY_MODE_MULTI = "multi"
 
 }

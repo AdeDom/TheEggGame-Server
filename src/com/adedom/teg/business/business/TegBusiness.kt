@@ -33,6 +33,8 @@ interface TegBusiness {
 
     fun isValidateTeam(team: String): Boolean
 
+    fun isValidatePlayMode(mode: String): Boolean
+
     fun convertBirthDateStringToLong(birthDate: String): Long
 
     fun toConvertDateTimeLongToString(date: Long?): String

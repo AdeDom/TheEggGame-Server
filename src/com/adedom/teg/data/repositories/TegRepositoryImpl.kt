@@ -649,4 +649,16 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
+    override fun changeCurrentMode(playerId: String, changeCurrentModeRequest: ChangeCurrentModeRequest): Boolean {
+        val (mode) = changeCurrentModeRequest
+
+        val result = transaction {
+            Players.update({ Players.playerId eq playerId }) {
+                it[Players.currentMode] = mode
+            }
+        }
+
+        return result == 1
+    }
+
 }

@@ -13,6 +13,7 @@ object Players : Table(name = DatabaseConstant.playerTable) {
     val state = varchar(name = DatabaseConstant.state, length = 10).nullable()
     val latitude = double(name = DatabaseConstant.latitude).nullable()
     val longitude = double(name = DatabaseConstant.longitude).nullable()
+    val currentMode = varchar(name = DatabaseConstant.currentMode, length = 10).nullable()
     val dateTimeCreated = long(name = DatabaseConstant.dateTimeCreated)
     val dateTimeUpdated = long(name = DatabaseConstant.dateTimeUpdated).nullable()
 

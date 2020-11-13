@@ -1,5 +1,6 @@
 package com.adedom.teg.business.application
 
+import com.adedom.teg.models.request.ChangeCurrentModeRequest
 import com.adedom.teg.models.request.MissionRequest
 import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.BaseResponse
@@ -19,5 +20,7 @@ interface ApplicationService {
     fun fetchMissionMain(playerId: String?): MissionResponse
 
     fun missionMain(playerId: String?, missionRequest: MissionRequest): BaseResponse
+
+    fun changeCurrentMode(playerId: String?, changeCurrentModeRequest: ChangeCurrentModeRequest): BaseResponse
 
 }

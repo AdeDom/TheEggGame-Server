@@ -85,4 +85,6 @@ interface TegRepository {
 
     fun changeStatusUnready(playerId: String): Boolean
 
+    fun changeCurrentMode(playerId: String, changeCurrentModeRequest: ChangeCurrentModeRequest): Boolean
+
 }

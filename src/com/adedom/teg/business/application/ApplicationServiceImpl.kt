@@ -2,6 +2,7 @@ package com.adedom.teg.business.application
 
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.request.ChangeCurrentModeRequest
 import com.adedom.teg.models.request.MissionRequest
 import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.*
@@ -170,6 +171,34 @@ class ApplicationServiceImpl(
             else -> {
                 response.success = repository.missionMain(playerId, missionRequest)
                 "Post mission success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
+    override fun changeCurrentMode(
+        playerId: String?,
+        changeCurrentModeRequest: ChangeCurrentModeRequest
+    ): BaseResponse {
+        val response = BaseResponse()
+        val (mode) = changeCurrentModeRequest
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            mode.isNullOrBlank() -> business.toMessageIsNullOrBlank(changeCurrentModeRequest::mode)
+
+            // validate values of variable
+            !business.isValidatePlayMode(mode) -> business.toMessageIncorrect(changeCurrentModeRequest::mode)
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.changeCurrentMode(playerId, changeCurrentModeRequest)
+                "Change current mode success"
             }
         }
 

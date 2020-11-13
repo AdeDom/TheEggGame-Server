@@ -1,10 +1,7 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.application.ApplicationService
-import com.adedom.teg.models.request.LogActiveRequest
-import com.adedom.teg.models.request.MissionInfoRequest
-import com.adedom.teg.models.request.MissionRequest
-import com.adedom.teg.models.request.RankPlayersRequest
+import com.adedom.teg.models.request.*
 import com.adedom.teg.util.playerId
 import io.ktor.application.*
 import io.ktor.locations.*
@@ -40,6 +37,11 @@ fun Route.applicationController(service: ApplicationService) {
     post<MissionRequest> {
         val request = call.receive<MissionRequest>()
         val response = service.missionMain(call.playerId, request)
+        call.respond(response)
+    }
+
+    patch<ChangeCurrentModeRequest> {
+        val response = service.changeCurrentMode(call.playerId, it)
         call.respond(response)
     }
 

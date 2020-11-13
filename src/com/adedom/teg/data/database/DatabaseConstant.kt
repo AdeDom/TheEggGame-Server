@@ -53,5 +53,6 @@ object DatabaseConstant {
     const val role = "role"
     const val startTime = "start_time"
     const val endTime = "end_time"
+    const val currentMode = "current_mode"
 
 }

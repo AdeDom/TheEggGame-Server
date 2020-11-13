@@ -493,6 +493,54 @@ class TegBusinessImplTest {
     }
 
     @Test
+    fun isValidatePlayMode_incorrect_returnFalse() {
+        // given
+        val playMode = "teg"
+
+        // when
+        val result = business.isValidatePlayMode(playMode)
+
+        // then
+        assertFalse(result)
+    }
+
+    @Test
+    fun isValidatePlayMode_correctPlayModeMain_returnTrue() {
+        // given
+        val playMode = TegConstant.PLAY_MODE_MAIN
+
+        // when
+        val result = business.isValidatePlayMode(playMode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidatePlayMode_correctPlayModeSingle_returnTrue() {
+        // given
+        val playMode = TegConstant.PLAY_MODE_SINGLE
+
+        // when
+        val result = business.isValidatePlayMode(playMode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
+    fun isValidatePlayMode_correctPlayModeMulti_returnTrue() {
+        // given
+        val playMode = TegConstant.PLAY_MODE_MULTI
+
+        // when
+        val result = business.isValidatePlayMode(playMode)
+
+        // then
+        assertTrue(result)
+    }
+
+    @Test
     fun convertBirthDateStringToLong_convertEng() {
         // given
         val birthDateEng = "30/10/1994"
