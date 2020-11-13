@@ -16,6 +16,8 @@ object MapObject {
         state = row[Players.state],
         gender = row[Players.gender],
         birthDate = row[Players.birthDate],
+        latitude = row[Players.latitude],
+        longitude = row[Players.longitude],
     )
 
     fun toPlayerIdDb(row: ResultRow) = PlayerIdDb(

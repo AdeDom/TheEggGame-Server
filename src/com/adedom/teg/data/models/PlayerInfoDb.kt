@@ -9,4 +9,6 @@ data class PlayerInfoDb(
     val state: String? = null,
     val gender: String? = null,
     val birthDate: Long? = null,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
 )

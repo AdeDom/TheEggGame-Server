@@ -66,6 +66,8 @@ class AccountServiceImpl(
                     state = db.state,
                     gender = db.gender,
                     birthDate = business.toConvertDateTimeLongToString(db.birthDate),
+                    latitude = db.latitude,
+                    longitude = db.longitude,
                 )
                 response.success = true
                 response.playerInfo = playerInfo

@@ -42,6 +42,8 @@ class ApplicationServiceImpl(
                         state = it.state,
                         gender = it.gender,
                         birthDate = business.toConvertDateTimeLongToString(it.birthDate),
+                        latitude = it.latitude,
+                        longitude = it.longitude,
                     )
                 }
                 response.success = true

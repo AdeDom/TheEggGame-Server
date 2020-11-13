@@ -141,6 +141,8 @@ class TegRepositoryImpl : TegRepository {
                 Players.state,
                 Players.gender,
                 Players.birthDate,
+                Players.latitude,
+                Players.longitude,
             ).select { Players.playerId eq playerId }
                 .map { MapObject.toPlayerInfoDb(it) }
                 .single()
@@ -212,6 +214,8 @@ class TegRepositoryImpl : TegRepository {
                     Players.state,
                     Players.gender,
                     Players.birthDate,
+                    Players.latitude,
+                    Players.longitude,
                 )
                 .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
                 .groupBy(Players.playerId)

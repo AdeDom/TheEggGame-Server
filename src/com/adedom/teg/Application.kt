@@ -109,6 +109,7 @@ fun Application.module() {
         }
 
         // web sockets
+        singleWebSocket(singleService)
         multiWebSocket(multiService)
 
         route("api") {

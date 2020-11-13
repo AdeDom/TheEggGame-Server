@@ -3,7 +3,7 @@ package com.adedom.teg.http.controller
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.websocket.RoomInfoTegMultiOutgoing
-import com.adedom.teg.models.websocket.RoomPeopleAllOutgoing
+import com.adedom.teg.models.websocket.PeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
 import com.adedom.teg.util.send
@@ -84,7 +84,7 @@ fun Route.multiWebSocket(service: MultiService) {
     val roomPeopleAllSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-people-all") {
         roomPeopleAllSocket.add(this)
-        roomPeopleAllSocket.send(RoomPeopleAllOutgoing(roomPeopleAllSocket.size).toJson())
+        roomPeopleAllSocket.send(PeopleAllOutgoing(roomPeopleAllSocket.size).toJson())
         try {
             incoming
                 .consumeAsFlow()
@@ -94,7 +94,7 @@ fun Route.multiWebSocket(service: MultiService) {
                 .collect()
         } finally {
             roomPeopleAllSocket.remove(this)
-            roomPeopleAllSocket.send(RoomPeopleAllOutgoing(roomPeopleAllSocket.size).toJson())
+            roomPeopleAllSocket.send(PeopleAllOutgoing(roomPeopleAllSocket.size).toJson())
         }
     }
 

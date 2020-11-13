@@ -1,5 +1,5 @@
 package com.adedom.teg.models.websocket
 
-data class RoomPeopleAllOutgoing(
+data class PeopleAllOutgoing(
     val peopleAll: Int,
 )
