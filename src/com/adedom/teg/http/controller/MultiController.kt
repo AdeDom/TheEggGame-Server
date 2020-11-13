@@ -117,14 +117,15 @@ fun Route.multiWebSocket(service: MultiService) {
         }
     }
 
-    val roomInfoTitle = mutableListOf<WebSocketSession>()
+    val roomInfoTitle = mutableListOf<Pair<WebSocketSession, String>>()
     webSocket("/websocket/multi/room-info-title") {
         val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
-        roomInfoTitle.add(this)
-
         val roomNo: String = service.currentRoomNo(accessToken)
-        roomInfoTitle.send(service.fetchRoomInfoTitle(roomNo).toJson())
+        roomInfoTitle.add(Pair(this, roomNo))
+
+        roomInfoTitle.filter { it.second == roomNo }
+            .onEach { it.first.send(service.fetchRoomInfoTitle(roomNo).toJson()) }
 
         try {
             incoming
@@ -134,55 +135,57 @@ fun Route.multiWebSocket(service: MultiService) {
                 .catch { }
                 .collect()
         } finally {
-            roomInfoTitle.remove(this)
+            roomInfoTitle.remove(Pair(this, roomNo))
         }
     }
 
-    val roomInfoPlayers = mutableListOf<WebSocketSession>()
+    val roomInfoPlayers = mutableListOf<Pair<WebSocketSession, String>>()
     webSocket("/websocket/multi/room-info-players") {
         val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
-        roomInfoPlayers.add(this)
-
         val roomNo: String = service.currentRoomNo(accessToken)
-        roomInfoPlayers.send(service.fetchRoomInfoPlayers(roomNo).toJson())
+        roomInfoPlayers.add(Pair(this, roomNo))
+
+        roomInfoPlayers.filter { it.second == roomNo }
+            .onEach { it.first.send(service.fetchRoomInfoPlayers(roomNo).toJson()) }
 
         try {
             incoming
                 .consumeAsFlow()
                 .onEach { frame ->
-                    roomInfoPlayers.send(service.fetchRoomInfoPlayers(roomNo).toJson())
+                    roomInfoPlayers.filter { it.second == roomNo }
+                        .onEach { it.first.send(service.fetchRoomInfoPlayers(roomNo).toJson()) }
                 }
                 .catch { }
                 .collect()
         } finally {
-            roomInfoPlayers.remove(this)
+            roomInfoPlayers.remove(Pair(this, roomNo))
         }
     }
 
-    val roomInfoTegMulti = mutableListOf<WebSocketSession>()
+    val roomInfoTegMulti = mutableListOf<Pair<WebSocketSession, String>>()
     webSocket("/websocket/multi/room-info-teg-multi") {
         val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
-        roomInfoTegMulti.add(this)
-
         val roomNo: String = service.currentRoomNo(accessToken)
-        val roomInfoTegMultiOutgoing = RoomInfoTegMultiOutgoing(
-            success = true,
-            message = "Teg multi",
-            roomNo = roomNo,
-        )
+        roomInfoTegMulti.add(Pair(this, roomNo))
 
         try {
             incoming
                 .consumeAsFlow()
                 .onEach { frame ->
-                    roomInfoTegMulti.send(roomInfoTegMultiOutgoing.toJson())
+                    val roomInfoTegMultiOutgoing = RoomInfoTegMultiOutgoing(
+                        success = true,
+                        message = "Teg multi",
+                        roomNo = roomNo,
+                    )
+                    roomInfoTegMulti.filter { it.second == roomNo }
+                        .onEach { it.first.send(roomInfoTegMultiOutgoing.toJson()) }
                 }
                 .catch { }
                 .collect()
         } finally {
-            roomInfoTegMulti.remove(this)
+            roomInfoTegMulti.remove(Pair(this, roomNo))
         }
     }
 
