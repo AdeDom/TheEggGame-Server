@@ -3,11 +3,11 @@ package com.adedom.teg.business.single
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.models.request.AddSingleItemRequest
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.websocket.SingleItemOutgoing
+import com.adedom.teg.util.LatLng
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -83,14 +83,15 @@ class SingleServiceImpl(
 
                 val (latitude, longitude) = repository.getCurrentLatLngPlayer(playerId)
 
-                val addSingleItemRequest = AddSingleItemRequest(
-                    itemId = (1..3).random(),
-                    qty = 1,
-                    latitude = latitude!! + 0.05,
-                    longitude = longitude!! + 0.05,
-                )
+                if (latitude != null && longitude != null) {
+                    val currentLatLng = LatLng(latitude, longitude)
 
-                repository.addSingleItem(playerId, addSingleItemRequest)
+                    val singleItems = repository.fetchSingleItem()
+
+                    repeat(business.addSingleItemTimes(currentLatLng,singleItems)) {
+                        repository.addSingleItem(playerId, business.generateSingleItem(currentLatLng))
+                    }
+                }
             }
         }
 

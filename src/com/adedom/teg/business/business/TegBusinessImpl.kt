@@ -1,5 +1,8 @@
 package com.adedom.teg.business.business
 
+import com.adedom.teg.data.models.SingleItemDb
+import com.adedom.teg.models.request.AddSingleItemRequest
+import com.adedom.teg.util.LatLng
 import com.adedom.teg.util.TegConstant
 import com.auth0.jwt.JWT
 import java.io.UnsupportedEncodingException
@@ -8,6 +11,10 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.asin
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.reflect.KProperty0
 
 class TegBusinessImpl : TegBusiness {
@@ -127,6 +134,108 @@ class TegBusinessImpl : TegBusiness {
             e.printStackTrace()
         }
         return sha
+    }
+
+    override fun distanceBetween(startP: LatLng, endP: LatLng): Double {
+        val lat1: Double = startP.latitude
+        val lat2: Double = endP.latitude
+        val lon1: Double = startP.longitude
+        val lon2: Double = endP.longitude
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * asin(sqrt(a))
+        return 6366000 * c
+    }
+
+    override fun generateSingleItem(currentLatLng: LatLng): AddSingleItemRequest {
+        val item = listOf<Int>(
+            TegConstant.SINGLE_ITEM_ONE,
+            TegConstant.SINGLE_ITEM_TWO,
+            TegConstant.SINGLE_ITEM_THREE,
+        )
+
+        var itemId = 0
+        var qty = 0
+
+        when ((1..4).random()) {
+            1 -> {
+                itemId = TegConstant.ITEM_LEVEL
+                qty = (20..100).random()
+            }
+            2 -> {
+                when ((0..1).random()) {
+                    0 -> {
+                        itemId = TegConstant.ITEM_LEVEL
+                        qty = (50..100).random()
+                    }
+                    1 -> {
+                        itemId = item.random()
+                        qty = 1
+                    }
+                }
+            }
+            3 -> {
+                itemId = item.random()
+                qty = (1..3).random()
+            }
+            4 -> {
+                itemId = TegConstant.ITEM_LEVEL
+                qty = (300..500).random()
+            }
+        }
+
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+        var distant: Double = 0.0
+        while (distant < 200) {
+            when ((1..4).random()) {
+                1 -> {
+                    latitude = currentLatLng.latitude + (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude + (((2..10).random()).toDouble() / 1000)
+                }
+                2 -> {
+                    latitude = currentLatLng.latitude + (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude - (((2..10).random()).toDouble() / 1000)
+                }
+                3 -> {
+                    latitude = currentLatLng.latitude - (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude + (((2..10).random()).toDouble() / 1000)
+                }
+                4 -> {
+                    latitude = currentLatLng.latitude - (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude - (((2..10).random()).toDouble() / 1000)
+                }
+            }
+            distant = distanceBetween(currentLatLng, LatLng(latitude, longitude))
+        }
+
+        return AddSingleItemRequest(
+            itemId = itemId,
+            qty = qty,
+            latitude = latitude,
+            longitude = longitude,
+        )
+    }
+
+    override fun addSingleItemTimes(currentLatLng: LatLng, singleItems: List<SingleItemDb>): Int {
+        val distanceList = mutableListOf<Double>()
+        singleItems
+            .filter { it.latitude != null && it.longitude != null }
+            .onEach {
+                val distance = distanceBetween(currentLatLng, LatLng(it.latitude!!, it.longitude!!))
+                distanceList.add(distance)
+            }
+
+        val addSingleItemCount = distanceList.filter { it < 3000 }.count()
+
+        return if (addSingleItemCount < 10) {
+            10 - addSingleItemCount
+        } else {
+            0
+        }
     }
 
     override fun toMessageIsNullOrBlank(values: String?): String {

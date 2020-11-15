@@ -1,5 +1,7 @@
 package com.adedom.teg.business.business
 
+import com.adedom.teg.data.models.SingleItemDb
+import com.adedom.teg.util.LatLng
 import com.adedom.teg.util.TegConstant
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -622,6 +624,116 @@ class TegBusinessImplTest {
 
         // then
         assertEquals("03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", result)
+    }
+
+    @Test
+    fun distanceBetween_start() {
+        // given
+        val startP = LatLng(13.6041, 100.6973523)
+        val endP = LatLng(13.61437, 100.3702932)
+
+        // when
+        val result = business.distanceBetween(startP, endP)
+
+        // then
+        assertEquals(35336.91635246766, result)
+    }
+
+    @Test
+    fun distanceBetween_end() {
+        // given
+        val startP = LatLng(13.6041, 100.6973523)
+        val endP = LatLng(13.603433, 100.7058903)
+
+        // when
+        val result = business.distanceBetween(startP, endP)
+
+        // then
+        assertEquals(924.9971982818975, result)
+    }
+
+    @Test
+    fun distanceBetween_top() {
+        // given
+        val startP = LatLng(13.6041, 100.6973523)
+        val endP = LatLng(19.116848, 99.8469598)
+
+        // when
+        val result = business.distanceBetween(startP, endP)
+
+        // then
+        assertEquals(619175.1058225221, result)
+    }
+
+    @Test
+    fun distanceBetween_bottom() {
+        // given
+        val startP = LatLng(13.6041, 100.6973523)
+        val endP = LatLng(13.523571, 100.7535358)
+
+        // when
+        val result = business.distanceBetween(startP, endP)
+
+        // then
+        assertEquals(10811.112868471584, result)
+    }
+
+    @Test
+    fun addSingleItemTimes_near_returnZero() {
+        // given
+        val currentLatLng = LatLng(13.6041, 100.6973523)
+        val singleItems = listOf<SingleItemDb>(
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
+        )
+
+        // when
+        val result = business.addSingleItemTimes(currentLatLng, singleItems)
+
+        // then
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun addSingleItemTimes_far_returnZero() {
+        // given
+        val currentLatLng = LatLng(13.6041, 100.6973523)
+        val singleItems = listOf<SingleItemDb>(
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
+        )
+
+        // when
+        val result = business.addSingleItemTimes(currentLatLng, singleItems)
+
+        // then
+        assertEquals(10, result)
     }
 
 }

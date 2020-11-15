@@ -1,5 +1,8 @@
 package com.adedom.teg.business.business
 
+import com.adedom.teg.data.models.SingleItemDb
+import com.adedom.teg.models.request.AddSingleItemRequest
+import com.adedom.teg.util.LatLng
 import kotlin.reflect.KProperty0
 
 interface TegBusiness {
@@ -42,6 +45,12 @@ interface TegBusiness {
     fun toConvertLevel(point: Int?): Int
 
     fun encryptSHA(password: String): String
+
+    fun distanceBetween(startP: LatLng, endP: LatLng): Double
+
+    fun generateSingleItem(currentLatLng: LatLng): AddSingleItemRequest
+
+    fun addSingleItemTimes(currentLatLng: LatLng, singleItems: List<SingleItemDb>): Int
 
     fun toMessageIsNullOrBlank(values: String?): String
 
