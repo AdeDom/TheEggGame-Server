@@ -109,7 +109,7 @@ fun Application.module() {
         }
 
         // web sockets
-        singleWebSocket(singleService)
+        singleWebSocket(singleService, jwtConfig)
         multiWebSocket(multiService)
 
         route("api") {

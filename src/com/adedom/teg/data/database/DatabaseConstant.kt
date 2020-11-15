@@ -10,6 +10,7 @@ object DatabaseConstant {
     const val multiCollectionTable = "multi_collection"
     const val roomTable = "room"
     const val roomInfoTable = "room_info"
+    const val singleItem = "single_item"
 
     //primary key
     const val playerPk = "PK_Player_ID"
@@ -19,6 +20,7 @@ object DatabaseConstant {
     const val multiCollectionPk = "PK_MultiCollection_ID"
     const val roomPk = "PK_Room_ID"
     const val roomInfoPk = "PK_RoomInfo_ID"
+    const val singleItemPk = "PK_SingleItem_ID"
 
     //column
     const val playerId = "player_id"
@@ -54,5 +56,6 @@ object DatabaseConstant {
     const val startTime = "start_time"
     const val endTime = "end_time"
     const val currentMode = "current_mode"
+    const val singleId = "single_id"
 
 }

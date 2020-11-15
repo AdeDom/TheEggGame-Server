@@ -38,6 +38,18 @@ object MapObject {
         dateTime = row[ItemCollections.dateTime],
     )
 
+    fun toSingleItemDb(row: ResultRow) = SingleItemDb(
+        singleId = row[SingleItems.singleId],
+        itemId = row[SingleItems.itemId],
+        qty = row[SingleItems.qty],
+        latitude = row[SingleItems.latitude],
+        longitude = row[SingleItems.longitude],
+        playerId = row[SingleItems.playerId],
+        status = row[SingleItems.status],
+        dateTimeCreated = row[SingleItems.dateTimeCreated],
+        dateTimeUpdated = row[SingleItems.dateTimeUpdated],
+    )
+
     fun toMultiDb(row: ResultRow) = MultiDb(
         multiId = row[Multis.multiId],
         roomNo = row[Multis.roomNo],
