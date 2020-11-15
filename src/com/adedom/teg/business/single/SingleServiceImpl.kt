@@ -1,10 +1,13 @@
 package com.adedom.teg.business.single
 
 import com.adedom.teg.business.business.TegBusiness
+import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.request.AddSingleItemRequest
 import com.adedom.teg.models.request.ItemCollectionRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.websocket.SingleItemOutgoing
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
@@ -12,6 +15,7 @@ import io.ktor.locations.*
 class SingleServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
+    private val jwtConfig: JwtConfig,
 ) : SingleService {
 
     override fun fetchItemCollection(playerId: String?): BackpackResponse {
@@ -68,6 +72,29 @@ class SingleServiceImpl(
 
         response.message = message
         return response
+    }
+
+    override fun singleItem(accessToken: String): SingleItemOutgoing {
+        when {
+            business.isValidateJwtExpires(accessToken) -> business.toMessageIncorrect(accessToken)
+            business.isValidateJwtIncorrect(accessToken, jwtConfig.playerId) -> business.toMessageIncorrect(accessToken)
+            else -> {
+                val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+                val (latitude, longitude) = repository.getCurrentLatLngPlayer(playerId)
+
+                val addSingleItemRequest = AddSingleItemRequest(
+                    itemId = (1..3).random(),
+                    qty = 1,
+                    latitude = latitude!! + 0.05,
+                    longitude = longitude!! + 0.05,
+                )
+
+                repository.addSingleItem(playerId, addSingleItemRequest)
+            }
+        }
+
+        return SingleItemOutgoing(repository.fetchSingleItem())
     }
 
 }

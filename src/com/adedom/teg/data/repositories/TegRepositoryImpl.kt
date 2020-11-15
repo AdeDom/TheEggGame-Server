@@ -661,4 +661,36 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
+    override fun getCurrentLatLngPlayer(playerId: String): Pair<Double?, Double?> {
+        return transaction {
+            Players.select { Players.playerId eq playerId }
+                .map { Pair(it[Players.latitude], it[Players.longitude]) }
+                .single()
+        }
+    }
+
+    override fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean {
+        val (itemId, qty, latitude, longitude) = addSingleItemRequest
+
+        val statement = transaction {
+            SingleItems.insert {
+                it[SingleItems.itemId] = itemId!!
+                it[SingleItems.qty] = qty!!
+                it[SingleItems.latitude] = latitude!!
+                it[SingleItems.longitude] = longitude!!
+                it[SingleItems.status] = TegConstant.SINGLE_ITEM_STATUS_ON
+                it[SingleItems.dateTimeCreated] = System.currentTimeMillis()
+            }
+        }
+
+        return statement.resultedValues?.size == 1
+    }
+
+    override fun fetchSingleItem(): List<SingleItemDb> {
+        return transaction {
+            SingleItems.select { SingleItems.status eq TegConstant.SINGLE_ITEM_STATUS_ON }
+                .map { MapObject.toSingleItemDb(it) }
+        }
+    }
+
 }

@@ -87,4 +87,10 @@ interface TegRepository {
 
     fun changeCurrentMode(playerId: String, changeCurrentModeRequest: ChangeCurrentModeRequest): Boolean
 
+    fun getCurrentLatLngPlayer(playerId: String): Pair<Double?, Double?>
+
+    fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean
+
+    fun fetchSingleItem(): List<SingleItemDb>
+
 }
