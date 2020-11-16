@@ -7,7 +7,7 @@ import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.websocket.SingleItemOutgoing
-import com.adedom.teg.util.LatLng
+import com.adedom.teg.models.TegLatLng
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -75,7 +75,7 @@ class SingleServiceImpl(
                 val (latitude, longitude) = repository.getCurrentLatLngPlayer(playerId)
 
                 if (latitude != null && longitude != null) {
-                    val currentLatLng = LatLng(latitude, longitude)
+                    val currentLatLng = TegLatLng(latitude, longitude)
 
                     val singleItems = repository.fetchSingleItem()
 

@@ -2,7 +2,7 @@ package com.adedom.teg.business.business
 
 import com.adedom.teg.data.models.SingleItemDb
 import com.adedom.teg.models.request.AddSingleItemRequest
-import com.adedom.teg.util.LatLng
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.util.TegConstant
 import com.auth0.jwt.JWT
 import java.io.UnsupportedEncodingException
@@ -136,7 +136,7 @@ class TegBusinessImpl : TegBusiness {
         return sha
     }
 
-    override fun distanceBetween(startP: LatLng, endP: LatLng): Double {
+    override fun distanceBetween(startP: TegLatLng, endP: TegLatLng): Double {
         val lat1: Double = startP.latitude
         val lat2: Double = endP.latitude
         val lon1: Double = startP.longitude
@@ -150,7 +150,7 @@ class TegBusinessImpl : TegBusiness {
         return 6366000 * c
     }
 
-    override fun generateSingleItem(currentLatLng: LatLng): AddSingleItemRequest {
+    override fun generateSingleItem(currentLatLng: TegLatLng): AddSingleItemRequest {
         val item = listOf(
             TegConstant.SINGLE_ITEM_ONE,
             TegConstant.SINGLE_ITEM_TWO,
@@ -209,7 +209,7 @@ class TegBusinessImpl : TegBusiness {
                     longitude = currentLatLng.longitude - (((2..10).random()).toDouble() / 1000)
                 }
             }
-            distant = distanceBetween(currentLatLng, LatLng(latitude, longitude))
+            distant = distanceBetween(currentLatLng, TegLatLng(latitude, longitude))
         }
 
         return AddSingleItemRequest(
@@ -220,10 +220,10 @@ class TegBusinessImpl : TegBusiness {
         )
     }
 
-    override fun addSingleItemTimes(currentLatLng: LatLng, singleItems: List<SingleItemDb>): Int {
+    override fun addSingleItemTimes(currentLatLng: TegLatLng, singleItems: List<SingleItemDb>): Int {
         val addSingleItemCount = singleItems
             .filter { it.latitude != null && it.longitude != null }
-            .map { distanceBetween(currentLatLng, LatLng(it.latitude!!, it.longitude!!)) }
+            .map { distanceBetween(currentLatLng, TegLatLng(it.latitude!!, it.longitude!!)) }
             .filter { it < 3000 }
             .count()
 
