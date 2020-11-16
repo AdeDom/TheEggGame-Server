@@ -49,7 +49,9 @@ interface TegRepository {
 
     fun fetchItemCollection(playerId: String): BackpackDb
 
-    fun itemCollection(playerId: String, modeMission: String, itemCollectionRequest: ItemCollectionRequest): Boolean
+    fun singleItemCollection(playerId: String, singleItemRequest: SingleItemRequest): Boolean
+
+    fun multiItemCollection(playerId: String, multiItemCollectionRequest: MultiItemCollectionRequest): Boolean
 
     fun fetchMissionSingle(playerId: String): List<Long>
 

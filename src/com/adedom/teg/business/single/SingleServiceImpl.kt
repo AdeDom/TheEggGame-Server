@@ -3,12 +3,11 @@ package com.adedom.teg.business.single
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.models.request.ItemCollectionRequest
+import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.websocket.SingleItemOutgoing
 import com.adedom.teg.util.LatLng
-import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -41,31 +40,22 @@ class SingleServiceImpl(
         return response
     }
 
-    override fun itemCollection(playerId: String?, itemCollectionRequest: ItemCollectionRequest): BaseResponse {
+    override fun itemCollection(playerId: String?, singleItemRequest: SingleItemRequest): BaseResponse {
         val response = BaseResponse()
-        val (itemId, qty, latitude, longitude) = itemCollectionRequest
+        val (singleId) = singleItemRequest
 
         val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
-            itemId == null -> business.toMessageIsNullOrBlank1(itemCollectionRequest::itemId)
-            qty == null -> business.toMessageIsNullOrBlank1(itemCollectionRequest::qty)
-            latitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::latitude)
-            longitude == null -> business.toMessageIsNullOrBlank2(itemCollectionRequest::longitude)
+            singleId == null -> business.toMessageIsNullOrBlank1(singleItemRequest::singleId)
 
             // validate values of variable
-            business.isValidateLessThanOrEqualToZero(itemId) -> business.toMessageIncorrect1(itemCollectionRequest::itemId)
-            business.isValidateLessThanOrEqualToZero(qty) -> business.toMessageIncorrect1(itemCollectionRequest::qty)
 
             // validate database
 
             // execute
             else -> {
-                response.success = repository.itemCollection(
-                    playerId,
-                    TegConstant.ITEM_COLLECTION_SINGLE,
-                    itemCollectionRequest
-                )
+                response.success = repository.singleItemCollection(playerId, singleItemRequest)
                 "Post item collection success"
             }
         }
@@ -88,7 +78,7 @@ class SingleServiceImpl(
 
                     val singleItems = repository.fetchSingleItem()
 
-                    repeat(business.addSingleItemTimes(currentLatLng,singleItems)) {
+                    repeat(business.addSingleItemTimes(currentLatLng, singleItems)) {
                         repository.addSingleItem(playerId, business.generateSingleItem(currentLatLng))
                     }
                 }

@@ -151,7 +151,7 @@ class TegBusinessImpl : TegBusiness {
     }
 
     override fun generateSingleItem(currentLatLng: LatLng): AddSingleItemRequest {
-        val item = listOf<Int>(
+        val item = listOf(
             TegConstant.SINGLE_ITEM_ONE,
             TegConstant.SINGLE_ITEM_TWO,
             TegConstant.SINGLE_ITEM_THREE,
@@ -187,9 +187,9 @@ class TegBusinessImpl : TegBusiness {
             }
         }
 
-        var latitude: Double = 0.0
-        var longitude: Double = 0.0
-        var distant: Double = 0.0
+        var latitude = 0.0
+        var longitude = 0.0
+        var distant = 0.0
         while (distant < 200) {
             when ((1..4).random()) {
                 1 -> {
@@ -221,21 +221,13 @@ class TegBusinessImpl : TegBusiness {
     }
 
     override fun addSingleItemTimes(currentLatLng: LatLng, singleItems: List<SingleItemDb>): Int {
-        val distanceList = mutableListOf<Double>()
-        singleItems
+        val addSingleItemCount = singleItems
             .filter { it.latitude != null && it.longitude != null }
-            .onEach {
-                val distance = distanceBetween(currentLatLng, LatLng(it.latitude!!, it.longitude!!))
-                distanceList.add(distance)
-            }
+            .map { distanceBetween(currentLatLng, LatLng(it.latitude!!, it.longitude!!)) }
+            .filter { it < 3000 }
+            .count()
 
-        val addSingleItemCount = distanceList.filter { it < 3000 }.count()
-
-        return if (addSingleItemCount < 10) {
-            10 - addSingleItemCount
-        } else {
-            0
-        }
+        return if (addSingleItemCount < 10) 10 - addSingleItemCount else 0
     }
 
     override fun toMessageIsNullOrBlank(values: String?): String {

@@ -3,12 +3,14 @@ package com.adedom.teg.business.multi
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
-import com.adedom.teg.models.request.*
+import com.adedom.teg.models.request.ChangeTeamRequest
+import com.adedom.teg.models.request.CreateRoomRequest
+import com.adedom.teg.models.request.JoinRoomInfoRequest
+import com.adedom.teg.models.request.MultiItemCollectionRequest
 import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
-import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -41,12 +43,10 @@ class MultiServiceImpl(
 
             // execute
             else -> {
-                response.success = repository.itemCollection(
+                response.success = repository.multiItemCollection(
                     playerId,
-                    TegConstant.ITEM_COLLECTION_MULTI,
 
-                    // TODO: 25/10/2563 multi item collection
-                    ItemCollectionRequest(
+                    MultiItemCollectionRequest(
                         itemId = itemId,
                         qty = qty,
                         latitude = latitude,

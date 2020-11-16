@@ -2,7 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.models.request.BackpackRequest
-import com.adedom.teg.models.request.ItemCollectionRequest
+import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.websocket.PeopleAllOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
@@ -28,9 +28,8 @@ fun Route.singleController(service: SingleService) {
         call.respond(response)
     }
 
-    post<ItemCollectionRequest> {
-        val request = call.receive<ItemCollectionRequest>()
-        val response = service.itemCollection(call.playerId, request)
+    patch<SingleItemRequest> {
+        val response = service.itemCollection(call.playerId, it)
         call.respond(response)
     }
 

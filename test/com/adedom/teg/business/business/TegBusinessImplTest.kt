@@ -682,7 +682,7 @@ class TegBusinessImplTest {
     fun addSingleItemTimes_near_returnZero() {
         // given
         val currentLatLng = LatLng(13.6041, 100.6973523)
-        val singleItems = listOf<SingleItemDb>(
+        val singleItems = listOf(
             SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
             SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
             SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
@@ -708,10 +708,10 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun addSingleItemTimes_far_returnZero() {
+    fun addSingleItemTimes_far_returnTen() {
         // given
         val currentLatLng = LatLng(13.6041, 100.6973523)
-        val singleItems = listOf<SingleItemDb>(
+        val singleItems = listOf(
             SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
             SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
             SingleItemDb(latitude = 14.6041, longitude = 100.6973523),

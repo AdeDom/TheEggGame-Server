@@ -282,12 +282,39 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun itemCollection(
+    override fun singleItemCollection(playerId: String, singleItemRequest: SingleItemRequest): Boolean {
+        val (singleId) = singleItemRequest
+
+        val statement = transaction {
+            SingleItems.update({ SingleItems.singleId eq singleId!! }) {
+                it[SingleItems.playerId] = playerId
+                it[SingleItems.status] = TegConstant.SINGLE_ITEM_STATUS_OFF
+                it[SingleItems.dateTimeUpdated] = System.currentTimeMillis()
+            }
+
+            val (_, itemId, qty, latitude, longitude) = SingleItems.select { SingleItems.singleId eq singleId!! }
+                .map { MapObject.toSingleItemDb(it) }
+                .single()
+
+            ItemCollections.insert {
+                it[ItemCollections.playerId] = playerId
+                it[ItemCollections.itemId] = itemId!!
+                it[ItemCollections.qty] = qty!!
+                it[ItemCollections.latitude] = latitude!!
+                it[ItemCollections.longitude] = longitude!!
+                it[ItemCollections.dateTime] = System.currentTimeMillis()
+                it[ItemCollections.mode] = TegConstant.ITEM_COLLECTION_SINGLE
+            }
+        }
+
+        return statement.resultedValues?.size == 1
+    }
+
+    override fun multiItemCollection(
         playerId: String,
-        modeMission: String,
-        itemCollectionRequest: ItemCollectionRequest
+        multiItemCollectionRequest: MultiItemCollectionRequest
     ): Boolean {
-        val (itemId, qty, latitude, longitude) = itemCollectionRequest
+        val (itemId, qty, latitude, longitude) = multiItemCollectionRequest
 
         val statement = transaction {
             ItemCollections.insert {
@@ -297,7 +324,7 @@ class TegRepositoryImpl : TegRepository {
                 it[ItemCollections.latitude] = latitude!!
                 it[ItemCollections.longitude] = longitude!!
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
-                it[ItemCollections.mode] = modeMission
+                it[ItemCollections.mode] = TegConstant.ITEM_COLLECTION_MULTI
             }
         }
 
