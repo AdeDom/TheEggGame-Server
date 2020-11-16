@@ -3,11 +3,11 @@ package com.adedom.teg.business.single
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.websocket.SingleItemOutgoing
-import com.adedom.teg.models.TegLatLng
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -56,7 +56,14 @@ class SingleServiceImpl(
 
             // execute
             else -> {
-                response.success = repository.singleItemCollection(playerId, singleItemRequest)
+                val singleItemDb = repository.getSingleItemDb(singleId)
+
+                response.success = repository.singleItemCollection(
+                    playerId,
+                    singleItemRequest,
+                    business.randomSingleItemCollection(singleItemDb.itemTypeId),
+                    TegLatLng(singleItemDb.latitude ?: 0.0, singleItemDb.longitude ?: 0.0),
+                )
                 "Post item collection success"
             }
         }

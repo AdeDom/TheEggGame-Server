@@ -40,8 +40,7 @@ object MapObject {
 
     fun toSingleItemDb(row: ResultRow) = SingleItemDb(
         singleId = row[SingleItems.singleId],
-        itemId = row[SingleItems.itemId],
-        qty = row[SingleItems.qty],
+        itemTypeId = row[SingleItems.itemTypeId],
         latitude = row[SingleItems.latitude],
         longitude = row[SingleItems.longitude],
         playerId = row[SingleItems.playerId],

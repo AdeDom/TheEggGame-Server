@@ -57,5 +57,6 @@ object DatabaseConstant {
     const val endTime = "end_time"
     const val currentMode = "current_mode"
     const val singleId = "single_id"
+    const val itemTypeId = "item_type_id"
 
 }

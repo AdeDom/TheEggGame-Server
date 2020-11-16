@@ -5,8 +5,7 @@ import org.jetbrains.exposed.sql.Table
 object SingleItems : Table(name = DatabaseConstant.singleItem) {
 
     val singleId = integer(name = DatabaseConstant.singleId).autoIncrement()
-    val itemId = integer(name = DatabaseConstant.itemId)
-    val qty = integer(name = DatabaseConstant.qty)
+    val itemTypeId = integer(name = DatabaseConstant.itemTypeId)
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)
     val playerId = varchar(name = DatabaseConstant.playerId, length = 50).references(Players.playerId).nullable()

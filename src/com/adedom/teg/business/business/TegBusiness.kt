@@ -1,8 +1,8 @@
 package com.adedom.teg.business.business
 
 import com.adedom.teg.data.models.SingleItemDb
-import com.adedom.teg.models.request.AddSingleItemRequest
 import com.adedom.teg.models.TegLatLng
+import com.adedom.teg.models.request.AddSingleItemRequest
 import kotlin.reflect.KProperty0
 
 interface TegBusiness {
@@ -49,6 +49,8 @@ interface TegBusiness {
     fun distanceBetween(startP: TegLatLng, endP: TegLatLng): Double
 
     fun generateSingleItem(currentLatLng: TegLatLng): AddSingleItemRequest
+
+    fun randomSingleItemCollection(itemTypeId: Int?): Pair<Int, Int>
 
     fun addSingleItemTimes(currentLatLng: TegLatLng, singleItems: List<SingleItemDb>): Int
 

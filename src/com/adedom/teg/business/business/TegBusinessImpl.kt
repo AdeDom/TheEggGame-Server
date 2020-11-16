@@ -1,8 +1,8 @@
 package com.adedom.teg.business.business
 
 import com.adedom.teg.data.models.SingleItemDb
-import com.adedom.teg.models.request.AddSingleItemRequest
 import com.adedom.teg.models.TegLatLng
+import com.adedom.teg.models.request.AddSingleItemRequest
 import com.adedom.teg.util.TegConstant
 import com.auth0.jwt.JWT
 import java.io.UnsupportedEncodingException
@@ -151,42 +151,6 @@ class TegBusinessImpl : TegBusiness {
     }
 
     override fun generateSingleItem(currentLatLng: TegLatLng): AddSingleItemRequest {
-        val item = listOf(
-            TegConstant.SINGLE_ITEM_ONE,
-            TegConstant.SINGLE_ITEM_TWO,
-            TegConstant.SINGLE_ITEM_THREE,
-        )
-
-        var itemId = 0
-        var qty = 0
-
-        when ((1..4).random()) {
-            1 -> {
-                itemId = TegConstant.ITEM_LEVEL
-                qty = (20..100).random()
-            }
-            2 -> {
-                when ((0..1).random()) {
-                    0 -> {
-                        itemId = TegConstant.ITEM_LEVEL
-                        qty = (50..100).random()
-                    }
-                    1 -> {
-                        itemId = item.random()
-                        qty = 1
-                    }
-                }
-            }
-            3 -> {
-                itemId = item.random()
-                qty = (1..3).random()
-            }
-            4 -> {
-                itemId = TegConstant.ITEM_LEVEL
-                qty = (300..500).random()
-            }
-        }
-
         var latitude = 0.0
         var longitude = 0.0
         var distant = 0.0
@@ -213,11 +177,50 @@ class TegBusinessImpl : TegBusiness {
         }
 
         return AddSingleItemRequest(
-            itemId = itemId,
-            qty = qty,
+            itemTypeId = (1..4).random(),
             latitude = latitude,
             longitude = longitude,
         )
+    }
+
+    override fun randomSingleItemCollection(itemTypeId: Int?): Pair<Int, Int> {
+        val item = listOf(
+            TegConstant.SINGLE_ITEM_ONE,
+            TegConstant.SINGLE_ITEM_TWO,
+            TegConstant.SINGLE_ITEM_THREE,
+        )
+
+        var itemId = 0
+        var qty = 0
+
+        when (itemTypeId) {
+            1 -> {
+                itemId = TegConstant.ITEM_LEVEL
+                qty = (20..100).random()
+            }
+            2 -> {
+                when ((0..1).random()) {
+                    0 -> {
+                        itemId = TegConstant.ITEM_LEVEL
+                        qty = (50..100).random()
+                    }
+                    1 -> {
+                        itemId = item.random()
+                        qty = 1
+                    }
+                }
+            }
+            3 -> {
+                itemId = item.random()
+                qty = (1..3).random()
+            }
+            4 -> {
+                itemId = TegConstant.ITEM_LEVEL
+                qty = (300..500).random()
+            }
+        }
+
+        return Pair(itemId, qty)
     }
 
     override fun addSingleItemTimes(currentLatLng: TegLatLng, singleItems: List<SingleItemDb>): Int {

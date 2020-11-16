@@ -3,6 +3,7 @@ package com.adedom.teg.data.repositories
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.*
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.*
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
@@ -292,7 +293,12 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun singleItemCollection(playerId: String, singleItemRequest: SingleItemRequest): Boolean {
+    override fun singleItemCollection(
+        playerId: String,
+        singleItemRequest: SingleItemRequest,
+        randomSingleItemCollection: Pair<Int, Int>,
+        latLng: TegLatLng
+    ): Boolean {
         val (singleId) = singleItemRequest
 
         val statement = transaction {
@@ -302,16 +308,16 @@ class TegRepositoryImpl : TegRepository {
                 it[SingleItems.dateTimeUpdated] = System.currentTimeMillis()
             }
 
-            val (_, itemId, qty, latitude, longitude) = SingleItems.select { SingleItems.singleId eq singleId!! }
-                .map { MapObject.toSingleItemDb(it) }
-                .single()
+            val (itemId, qty) = randomSingleItemCollection
+
+            val (latitude, longitude) = latLng
 
             ItemCollections.insert {
                 it[ItemCollections.playerId] = playerId
-                it[ItemCollections.itemId] = itemId!!
-                it[ItemCollections.qty] = qty!!
-                it[ItemCollections.latitude] = latitude!!
-                it[ItemCollections.longitude] = longitude!!
+                it[ItemCollections.itemId] = itemId
+                it[ItemCollections.qty] = qty
+                it[ItemCollections.latitude] = latitude
+                it[ItemCollections.longitude] = longitude
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
                 it[ItemCollections.mode] = TegConstant.ITEM_COLLECTION_SINGLE
             }
@@ -707,12 +713,11 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean {
-        val (itemId, qty, latitude, longitude) = addSingleItemRequest
+        val (itemTypeId, latitude, longitude) = addSingleItemRequest
 
         val statement = transaction {
             SingleItems.insert {
-                it[SingleItems.itemId] = itemId!!
-                it[SingleItems.qty] = qty!!
+                it[SingleItems.itemTypeId] = itemTypeId!!
                 it[SingleItems.latitude] = latitude!!
                 it[SingleItems.longitude] = longitude!!
                 it[SingleItems.status] = TegConstant.SINGLE_ITEM_STATUS_ON
@@ -727,6 +732,14 @@ class TegRepositoryImpl : TegRepository {
         return transaction {
             SingleItems.select { SingleItems.status eq TegConstant.SINGLE_ITEM_STATUS_ON }
                 .map { MapObject.toSingleItemDb(it) }
+        }
+    }
+
+    override fun getSingleItemDb(singleId: Int): SingleItemDb {
+        return transaction {
+            SingleItems.select { SingleItems.singleId eq singleId }
+                .map { MapObject.toSingleItemDb(it) }
+                .single()
         }
     }
 

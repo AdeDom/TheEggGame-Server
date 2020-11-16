@@ -1,6 +1,7 @@
 package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.models.*
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.*
 import io.ktor.locations.*
 
@@ -51,7 +52,12 @@ interface TegRepository {
 
     fun fetchItemCollection(playerId: String): BackpackDb
 
-    fun singleItemCollection(playerId: String, singleItemRequest: SingleItemRequest): Boolean
+    fun singleItemCollection(
+        playerId: String,
+        singleItemRequest: SingleItemRequest,
+        randomSingleItemCollection: Pair<Int, Int>,
+        latLng: TegLatLng,
+    ): Boolean
 
     fun multiItemCollection(playerId: String, multiItemCollectionRequest: MultiItemCollectionRequest): Boolean
 
@@ -96,5 +102,7 @@ interface TegRepository {
     fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean
 
     fun fetchSingleItem(): List<SingleItemDb>
+
+    fun getSingleItemDb(singleId: Int): SingleItemDb
 
 }
