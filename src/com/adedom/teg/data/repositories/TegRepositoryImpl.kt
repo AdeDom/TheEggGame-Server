@@ -71,6 +71,16 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun isValidateSingleItemId(singleId: Int): Boolean {
+        val count = transaction {
+            SingleItems.select { SingleItems.singleId eq singleId }
+                .count()
+                .toInt()
+        }
+
+        return count == 0
+    }
+
     override fun getMissionDateTimeLast(playerId: String, modeMission: String): Long {
         return transaction {
             try {

@@ -52,6 +52,7 @@ class SingleServiceImpl(
             // validate values of variable
 
             // validate database
+            repository.isValidateSingleItemId(singleId) -> business.toMessageIncorrect1(singleItemRequest::singleId)
 
             // execute
             else -> {
