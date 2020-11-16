@@ -40,6 +40,7 @@ class SingleServiceImpl(
         return response
     }
 
+    // TODO: 16/11/2563 validate distance & check item != status off
     override fun itemCollection(playerId: String?, singleItemRequest: SingleItemRequest): BaseResponse {
         val response = BaseResponse()
         val (singleId) = singleItemRequest
@@ -72,6 +73,7 @@ class SingleServiceImpl(
         return response
     }
 
+    // TODO: 16/11/2563 delete item old
     override fun singleItem(accessToken: String): SingleItemOutgoing {
         when {
             business.isValidateJwtExpires(accessToken) -> business.toMessageIncorrect(accessToken)
@@ -80,15 +82,12 @@ class SingleServiceImpl(
                 val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
 
                 val (latitude, longitude) = repository.getCurrentLatLngPlayer(playerId)
+                val currentLatLng = TegLatLng(latitude ?: 0.0, longitude ?: 0.0)
 
-                if (latitude != null && longitude != null) {
-                    val currentLatLng = TegLatLng(latitude, longitude)
+                val singleItems = repository.fetchSingleItem()
 
-                    val singleItems = repository.fetchSingleItem()
-
-                    repeat(business.addSingleItemTimes(currentLatLng, singleItems)) {
-                        repository.addSingleItem(playerId, business.generateSingleItem(currentLatLng))
-                    }
+                repeat(business.addSingleItemTimes(currentLatLng, singleItems)) {
+                    repository.addSingleItem(playerId, business.generateSingleItem(currentLatLng))
                 }
             }
         }
