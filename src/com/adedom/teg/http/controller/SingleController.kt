@@ -76,4 +76,23 @@ fun Route.singleWebSocket(service: SingleService) {
         }
     }
 
+    val singleSuccessAnnouncementSocket = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/single/single-success-announcement") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+
+        singleSuccessAnnouncementSocket.add(this)
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach {
+                    singleSuccessAnnouncementSocket.send(service.singleSuccessAnnouncement(accessToken).toJson())
+                }
+                .catch { }
+                .collect()
+        } finally {
+            singleSuccessAnnouncementSocket.remove(this)
+        }
+    }
+
 }

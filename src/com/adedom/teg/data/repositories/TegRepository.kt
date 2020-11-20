@@ -3,6 +3,7 @@ package com.adedom.teg.data.repositories
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.*
+import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -104,5 +105,7 @@ interface TegRepository {
     fun fetchSingleItem(): List<SingleItemDb>
 
     fun getSingleItemDb(singleId: Int): SingleItemDb
+
+    fun fetchSingleSuccessAnnouncement(playerId: String): SingleSuccessAnnouncementOutgoing
 
 }

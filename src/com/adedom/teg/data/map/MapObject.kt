@@ -2,6 +2,7 @@ package com.adedom.teg.data.map
 
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.models.*
+import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.sum
 
@@ -92,6 +93,12 @@ object MapObject {
         roleRoomInfo = role,
         statusRoomInfo = status,
         teamRoomInfo = team,
+    )
+
+    fun toSingleSuccessAnnouncement(row: ResultRow) = SingleSuccessAnnouncementOutgoing(
+        itemId = row[ItemCollections.itemId],
+        qty = row[ItemCollections.qty],
+        name = row[Players.name],
     )
 
 }

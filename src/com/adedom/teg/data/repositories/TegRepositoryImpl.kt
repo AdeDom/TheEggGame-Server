@@ -5,6 +5,7 @@ import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.*
+import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
@@ -739,6 +740,17 @@ class TegRepositoryImpl : TegRepository {
         return transaction {
             SingleItems.select { SingleItems.singleId eq singleId }
                 .map { MapObject.toSingleItemDb(it) }
+                .single()
+        }
+    }
+
+    override fun fetchSingleSuccessAnnouncement(playerId: String): SingleSuccessAnnouncementOutgoing {
+        return transaction {
+            (Players innerJoin ItemCollections).slice(ItemCollections.itemId, ItemCollections.qty, Players.name)
+                .select { ItemCollections.playerId eq playerId }
+                .orderBy(ItemCollections.dateTime, SortOrder.DESC)
+                .limit(1)
+                .map { MapObject.toSingleSuccessAnnouncement(it) }
                 .single()
         }
     }

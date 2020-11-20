@@ -8,6 +8,7 @@ import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.websocket.SingleItemOutgoing
+import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -93,6 +94,12 @@ class SingleServiceImpl(
         }
 
         return SingleItemOutgoing(repository.fetchSingleItem())
+    }
+
+    override fun singleSuccessAnnouncement(accessToken: String): SingleSuccessAnnouncementOutgoing {
+        val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+        return repository.fetchSingleSuccessAnnouncement(playerId)
     }
 
 }
