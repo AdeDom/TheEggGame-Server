@@ -92,6 +92,8 @@ interface TegRepository {
 
     fun isValidateTegMultiStatus(roomNo: String): Boolean
 
+    fun isValidateSingleItemStatusIncorrect(singleId: Int): Boolean
+
     fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean
 
     fun changeStatusUnready(playerId: String): Boolean

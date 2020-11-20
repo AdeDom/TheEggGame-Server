@@ -41,7 +41,7 @@ class SingleServiceImpl(
         return response
     }
 
-    // TODO: 16/11/2563 validate distance & check item != status off
+    // TODO: 16/11/2563 validate distance
     override fun itemCollection(playerId: String?, singleItemRequest: SingleItemRequest): BaseResponse {
         val response = BaseResponse()
         val (singleId) = singleItemRequest
@@ -55,6 +55,7 @@ class SingleServiceImpl(
 
             // validate database
             repository.isValidateSingleItemId(singleId) -> business.toMessageIncorrect1(singleItemRequest::singleId)
+            repository.isValidateSingleItemStatusIncorrect(singleId) -> business.toMessageIncorrect1(singleItemRequest::singleId)
 
             // execute
             else -> {
@@ -74,7 +75,6 @@ class SingleServiceImpl(
         return response
     }
 
-    // TODO: 16/11/2563 delete item old
     override fun singleItem(accessToken: String): SingleItemOutgoing {
         when {
             business.isValidateJwtExpires(accessToken) -> business.toMessageIncorrect(accessToken)

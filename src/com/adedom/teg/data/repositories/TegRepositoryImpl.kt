@@ -666,6 +666,18 @@ class TegRepositoryImpl : TegRepository {
         return result.toInt() > 0
     }
 
+    override fun isValidateSingleItemStatusIncorrect(singleId: Int): Boolean {
+        val result = transaction {
+            SingleItems
+                .slice(SingleItems.status)
+                .select { SingleItems.singleId eq singleId }
+                .map { it[SingleItems.status] }
+                .single()
+        }
+
+        return result == TegConstant.SINGLE_ITEM_STATUS_OFF
+    }
+
     override fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean {
         val result = transaction {
             Rooms.update({ Rooms.roomNo eq roomNo }) {
