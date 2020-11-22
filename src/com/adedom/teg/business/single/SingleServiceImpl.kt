@@ -7,6 +7,8 @@ import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.PlayerInfo
+import com.adedom.teg.models.websocket.PlaygroundSinglePlayerOutgoing
 import com.adedom.teg.models.websocket.SingleItemOutgoing
 import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
@@ -100,6 +102,25 @@ class SingleServiceImpl(
         val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
 
         return repository.fetchSingleSuccessAnnouncement(playerId)
+    }
+
+    override fun fetchPlaygroundSinglePlayer(): PlaygroundSinglePlayerOutgoing {
+        val players = repository.fetchPlaygroundSinglePlayer().map {
+            PlayerInfo(
+                playerId = it.playerId,
+                username = it.username,
+                name = it.name?.capitalize(),
+                image = it.image,
+                level = business.toConvertLevel(it.level),
+                state = it.state,
+                gender = it.gender,
+                birthDate = business.toConvertDateTimeLongToString(it.birthDate),
+                latitude = it.latitude,
+                longitude = it.longitude,
+            )
+        }
+
+        return PlaygroundSinglePlayerOutgoing(players)
     }
 
 }

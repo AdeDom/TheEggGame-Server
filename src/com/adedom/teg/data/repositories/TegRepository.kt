@@ -110,4 +110,6 @@ interface TegRepository {
 
     fun fetchSingleSuccessAnnouncement(playerId: String): SingleSuccessAnnouncementOutgoing
 
+    fun fetchPlaygroundSinglePlayer(): List<PlayerInfoDb>
+
 }

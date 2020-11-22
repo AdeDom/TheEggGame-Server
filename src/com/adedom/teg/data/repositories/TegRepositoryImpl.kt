@@ -767,4 +767,24 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun fetchPlaygroundSinglePlayer(): List<PlayerInfoDb> {
+        return transaction {
+            (Players innerJoin ItemCollections).slice(
+                Players.playerId,
+                Players.username,
+                Players.name,
+                Players.image,
+                ItemCollections.qty.sum(),
+                Players.state,
+                Players.gender,
+                Players.birthDate,
+                Players.latitude,
+                Players.longitude,
+            ).select { Players.state eq TegConstant.STATE_ONLINE }
+                .andWhere { Players.latitude neq null and (Players.longitude neq null) }
+                .andWhere { Players.currentMode eq TegConstant.PLAY_MODE_SINGLE }
+                .map { MapObject.toPlayerInfoDb(it) }
+        }
+    }
+
 }

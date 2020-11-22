@@ -3,6 +3,7 @@ package com.adedom.teg.business.single
 import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.websocket.PlaygroundSinglePlayerOutgoing
 import com.adedom.teg.models.websocket.SingleItemOutgoing
 import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
@@ -17,5 +18,7 @@ interface SingleService {
     fun singleItem(accessToken: String): SingleItemOutgoing
 
     fun singleSuccessAnnouncement(accessToken: String): SingleSuccessAnnouncementOutgoing
+
+    fun fetchPlaygroundSinglePlayer(): PlaygroundSinglePlayerOutgoing
 
 }

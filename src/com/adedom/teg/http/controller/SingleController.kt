@@ -95,4 +95,23 @@ fun Route.singleWebSocket(service: SingleService) {
         }
     }
 
+    val playgroundSinglePlayerSocket = mutableListOf<WebSocketSession>()
+    webSocket("/websocket/single/playground-single-player") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+
+        playgroundSinglePlayerSocket.add(this)
+        playgroundSinglePlayerSocket.send(service.fetchPlaygroundSinglePlayer().toJson())
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach {
+                }
+                .catch { }
+                .collect()
+        } finally {
+            playgroundSinglePlayerSocket.remove(this)
+        }
+    }
+
 }
