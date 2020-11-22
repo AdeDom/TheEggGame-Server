@@ -123,4 +123,22 @@ class SingleServiceImpl(
         return PlaygroundSinglePlayerOutgoing(players)
     }
 
+    override fun setPlaygroundSinglePlayer(
+        players: MutableList<PlayerInfo>,
+        accessToken: String,
+        latLng: TegLatLng
+    ): PlaygroundSinglePlayerOutgoing {
+        val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+        val playerInfo = players.singleOrNull { it.playerId == playerId }
+
+        val indexOf = players.indexOf(playerInfo)
+
+        val newPosition = playerInfo?.copy(latitude = latLng.latitude, longitude = latLng.longitude)
+
+        newPosition?.let { players.set(indexOf, it) }
+
+        return PlaygroundSinglePlayerOutgoing(players)
+    }
+
 }

@@ -1,13 +1,12 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.single.SingleService
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.BackpackRequest
 import com.adedom.teg.models.request.SingleItemRequest
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.websocket.PeopleAllOutgoing
-import com.adedom.teg.util.TegConstant
-import com.adedom.teg.util.playerId
-import com.adedom.teg.util.send
-import com.adedom.teg.util.toJson
+import com.adedom.teg.util.*
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.locations.*
@@ -100,12 +99,23 @@ fun Route.singleWebSocket(service: SingleService) {
         val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
 
         playgroundSinglePlayerSocket.add(this)
-        playgroundSinglePlayerSocket.send(service.fetchPlaygroundSinglePlayer().toJson())
+
+        val playgroundSinglePlayerOutgoing = service.fetchPlaygroundSinglePlayer()
+        playgroundSinglePlayerSocket.send(playgroundSinglePlayerOutgoing.toJson())
 
         try {
             incoming
                 .consumeAsFlow()
-                .onEach {
+                .onEach { frame ->
+                    val latLng = frame.fromJson<TegLatLng>()
+
+                    playgroundSinglePlayerSocket.send(
+                        service.setPlaygroundSinglePlayer(
+                            playgroundSinglePlayerOutgoing.players as MutableList<PlayerInfo>,
+                            accessToken,
+                            latLng
+                        ).toJson()
+                    )
                 }
                 .catch { }
                 .collect()

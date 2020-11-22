@@ -1,8 +1,10 @@
 package com.adedom.teg.business.single
 
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.SingleItemRequest
 import com.adedom.teg.models.response.BackpackResponse
 import com.adedom.teg.models.response.BaseResponse
+import com.adedom.teg.models.response.PlayerInfo
 import com.adedom.teg.models.websocket.PlaygroundSinglePlayerOutgoing
 import com.adedom.teg.models.websocket.SingleItemOutgoing
 import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
@@ -20,5 +22,11 @@ interface SingleService {
     fun singleSuccessAnnouncement(accessToken: String): SingleSuccessAnnouncementOutgoing
 
     fun fetchPlaygroundSinglePlayer(): PlaygroundSinglePlayerOutgoing
+
+    fun setPlaygroundSinglePlayer(
+        players: MutableList<PlayerInfo>,
+        accessToken: String,
+        latLng: TegLatLng
+    ): PlaygroundSinglePlayerOutgoing
 
 }
