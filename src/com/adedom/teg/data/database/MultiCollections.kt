@@ -7,7 +7,6 @@ object MultiCollections : Table(name = DatabaseConstant.multiCollectionTable) {
     val collectionId = integer(name = DatabaseConstant.collectionId).autoIncrement()
     val roomNo = varchar(name = DatabaseConstant.roomNo, length = 10)
     val playerId = varchar(name = DatabaseConstant.playerId, length = 50)
-    val score = integer(name = DatabaseConstant.score)
     val team = varchar(name = DatabaseConstant.team, length = 5)
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)

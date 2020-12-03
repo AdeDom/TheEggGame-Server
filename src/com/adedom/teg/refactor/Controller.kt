@@ -5,7 +5,6 @@ import io.ktor.routing.*
 fun Route.headerController() {
 
     route("multi") {
-        getMultiScore()
         multi()
         postMultiCollection()
     }

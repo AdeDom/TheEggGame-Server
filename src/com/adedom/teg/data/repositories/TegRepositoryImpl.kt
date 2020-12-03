@@ -787,4 +787,24 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun fetchMultiScore(playerId: String): ScoreDb {
+        val roomNo = currentRoomNo(playerId)
+
+        val teamA = transaction {
+            MultiCollections.select { MultiCollections.roomNo eq roomNo }
+                .andWhere { MultiCollections.team eq TegConstant.TEAM_A }
+                .count()
+                .toInt()
+        }
+
+        val teamB = transaction {
+            MultiCollections.select { MultiCollections.roomNo eq roomNo }
+                .andWhere { MultiCollections.team eq TegConstant.TEAM_B }
+                .count()
+                .toInt()
+        }
+
+        return ScoreDb(teamA, teamB)
+    }
+
 }

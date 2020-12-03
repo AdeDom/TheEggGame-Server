@@ -4,10 +4,7 @@ import com.adedom.teg.models.request.ChangeTeamRequest
 import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
 import com.adedom.teg.models.request.MultiItemCollectionRequest
-import com.adedom.teg.models.response.BaseResponse
-import com.adedom.teg.models.response.CurrentRoomNoResponse
-import com.adedom.teg.models.response.FetchMultiPlayerResponse
-import com.adedom.teg.models.response.RoomsResponse
+import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
 import io.ktor.locations.*
@@ -42,5 +39,7 @@ interface MultiService {
     fun changeStatusUnready(playerId: String?): BaseResponse
 
     fun fetchMultiPlayer(playerId: String?): FetchMultiPlayerResponse
+
+    fun fetchMultiScore(playerId: String?): ScoreResponse
 
 }

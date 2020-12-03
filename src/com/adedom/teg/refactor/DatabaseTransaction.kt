@@ -1,12 +1,13 @@
 package com.adedom.teg.refactor
 
-import com.adedom.teg.data.database.*
+import com.adedom.teg.data.database.MultiCollections
+import com.adedom.teg.data.database.Multis
+import com.adedom.teg.data.database.Players
+import com.adedom.teg.data.database.RoomInfos
 import com.adedom.teg.data.map.MapObject
 import com.adedom.teg.data.models.MultiDb
-import com.adedom.teg.data.models.ScoreDb
 import com.adedom.teg.models.request.MultiCollectionRequest
 import com.adedom.teg.models.request.MultiRequest
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,14 +17,6 @@ object DatabaseTransaction {
 
     fun validatePlayer(playerId: String): Boolean = transaction {
         val count = Players.select { Players.playerId eq playerId }
-            .count()
-            .toInt()
-
-        count == 0
-    }
-
-    fun validateRoom(roomNo: String): Boolean = transaction {
-        val count = Rooms.select { Rooms.roomNo eq roomNo }
             .count()
             .toInt()
 
@@ -59,18 +52,6 @@ object DatabaseTransaction {
             .map { MapObject.toMultiDb(it) }
     }
 
-    fun getMultiScore(roomNo: String): ScoreDb = transaction {
-        val teamA = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "A") }
-            .count()
-            .toInt()
-
-        val teamB = MultiCollections.select { MultiCollections.roomNo eq roomNo and (MultiCollections.team eq "B") }
-            .count()
-            .toInt()
-
-        ScoreDb(teamA, teamB)
-    }
-
     fun postMulti(multiRequest: MultiRequest) {
         val (roomNo, latitude, longitude) = multiRequest
         transaction {
@@ -92,8 +73,6 @@ object DatabaseTransaction {
             MultiCollections.insert {
                 it[MultiCollections.roomNo] = roomNo!!
                 it[MultiCollections.playerId] = playerId!!
-                it[score] = 0
-                it[MultiCollections.team] = team!!
                 it[MultiCollections.latitude] = latitude!!
                 it[MultiCollections.longitude] = longitude!!
                 it[dateTime] = System.currentTimeMillis()

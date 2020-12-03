@@ -112,4 +112,6 @@ interface TegRepository {
 
     fun fetchPlaygroundSinglePlayer(): List<PlayerInfoDb>
 
+    fun fetchMultiScore(playerId: String): ScoreDb
+
 }

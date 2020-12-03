@@ -422,4 +422,27 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun fetchMultiScore(playerId: String?): ScoreResponse {
+        val response = ScoreResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.score = repository.fetchMultiScore(playerId)
+                response.success = true
+                "Fetch multi score success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

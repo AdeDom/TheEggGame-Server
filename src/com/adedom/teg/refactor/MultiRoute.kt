@@ -4,37 +4,11 @@ import com.adedom.teg.models.request.MultiCollectionRequest
 import com.adedom.teg.models.request.MultiRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MultisResponse
-import com.adedom.teg.models.response.ScoreResponse
 import com.adedom.teg.util.*
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-
-fun Route.getMultiScore() {
-
-    route("score") {
-        get("fetch-score{${GetConstant.ROOM_NO}}") {
-            val response = ScoreResponse()
-            val roomNo = call.parameters[GetConstant.ROOM_NO]
-            val message = when {
-                roomNo.isNullOrBlank() -> GetConstant.ROOM_NO.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> GetConstant.ROOM_NO.validateLessEqZero()
-                DatabaseTransaction.validateRoom(roomNo) -> GetConstant.ROOM_NO.validateIncorrect()
-
-                else -> {
-                    val score = DatabaseTransaction.getMultiScore(roomNo)
-                    response.score = score
-                    response.success = true
-                    "Fetch multi score success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
 
 fun Route.multi() {
 
