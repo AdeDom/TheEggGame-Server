@@ -114,4 +114,6 @@ interface TegRepository {
 
     fun fetchMultiScore(playerId: String): ScoreDb
 
+    fun addMultiScore(playerId: String): Boolean
+
 }

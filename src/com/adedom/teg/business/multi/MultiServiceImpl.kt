@@ -445,4 +445,26 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun addMultiScore(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.addMultiScore(playerId)
+                "Add multi score success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

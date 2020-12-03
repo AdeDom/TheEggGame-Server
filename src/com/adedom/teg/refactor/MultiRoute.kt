@@ -1,10 +1,12 @@
 package com.adedom.teg.refactor
 
-import com.adedom.teg.models.request.MultiCollectionRequest
 import com.adedom.teg.models.request.MultiRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MultisResponse
-import com.adedom.teg.util.*
+import com.adedom.teg.util.validateIncorrect
+import com.adedom.teg.util.validateIsNullOrBlank
+import com.adedom.teg.util.validateLessEqZero
+import com.adedom.teg.util.validateNotFound
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -54,53 +56,6 @@ fun Route.multi() {
                     )
                     response.success = true
                     "Post multi success"
-                }
-            }
-            response.message = message
-            call.respond(response)
-        }
-    }
-
-}
-
-fun Route.postMultiCollection() {
-
-    route("multi-collection") {
-        post("/") {
-            val response = BaseResponse()
-            val (multiId, roomNo, playerId, team, latitude, longitude) = call.receive<MultiCollectionRequest>()
-            val message = when {
-                multiId == null -> MultiCollectionRequest::multiId.name.validateIsNullOrBlank()
-                multiId <= 0 -> MultiCollectionRequest::multiId.name.validateLessEqZero()
-                DatabaseTransaction.validateMulti(multiId) -> MultiCollectionRequest::multiId.name.validateNotFound()
-
-                roomNo.isNullOrBlank() -> MultiCollectionRequest::roomNo.name.validateIsNullOrBlank()
-                roomNo.toInt() <= 0 -> MultiCollectionRequest::roomNo.name.validateLessEqZero()
-                DatabaseTransaction.validateRoomInfo(roomNo) -> MultiCollectionRequest::roomNo.name.validateNotFound()
-
-                playerId == null -> MultiCollectionRequest::playerId.name.validateIsNullOrBlank()
-                DatabaseTransaction.validatePlayer(playerId) -> MultiCollectionRequest::playerId.name.validateNotFound()
-
-                team.isNullOrBlank() -> MultiCollectionRequest::team.name.validateIsNullOrBlank()
-                !team.validateTeam() -> MultiCollectionRequest::team.name.validateIncorrect()
-
-                latitude == null -> MultiCollectionRequest::latitude.name.validateIsNullOrBlank()
-
-                longitude == null -> MultiCollectionRequest::longitude.name.validateIsNullOrBlank()
-
-                else -> {
-                    DatabaseTransaction.postMultiCollection(
-                        multiCollectionRequest = MultiCollectionRequest(
-                            multiId = multiId,
-                            roomNo = roomNo,
-                            playerId = playerId,
-                            team = team,
-                            latitude = latitude,
-                            longitude = longitude
-                        )
-                    )
-                    response.success = true
-                    "Post multi collection success"
                 }
             }
             response.message = message

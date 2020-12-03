@@ -2,8 +2,8 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.*
-import com.adedom.teg.models.websocket.RoomInfoTegMultiOutgoing
 import com.adedom.teg.models.websocket.PeopleAllOutgoing
+import com.adedom.teg.models.websocket.RoomInfoTegMultiOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
 import com.adedom.teg.util.send
@@ -78,6 +78,11 @@ fun Route.multiController(service: MultiService) {
 
     get<FetchMultiScoreRequest> {
         val response = service.fetchMultiScore(call.playerId)
+        call.respond(response)
+    }
+
+    post<AddMultiScoreRequest> {
+        val response = service.addMultiScore(call.playerId)
         call.respond(response)
     }
 

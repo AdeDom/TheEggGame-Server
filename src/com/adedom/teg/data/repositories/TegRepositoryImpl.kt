@@ -807,4 +807,34 @@ class TegRepositoryImpl : TegRepository {
         return ScoreDb(teamA, teamB)
     }
 
+    override fun addMultiScore(playerId: String): Boolean {
+        val roomNo = currentRoomNo(playerId)
+
+        val statement = transaction {
+            val team = RoomInfos
+                .slice(RoomInfos.team)
+                .select { RoomInfos.roomNo eq roomNo }
+                .andWhere { RoomInfos.playerId eq playerId }
+                .map { it[RoomInfos.team] }
+                .single()
+
+            val (latitude, longitude) = Players
+                .slice(Players.latitude, Players.longitude)
+                .select { Players.playerId eq playerId }
+                .map { Pair(it[Players.latitude], it[Players.longitude]) }
+                .single()
+
+            MultiCollections.insert {
+                it[MultiCollections.roomNo] = roomNo
+                it[MultiCollections.playerId] = playerId
+                it[MultiCollections.team] = team
+                it[MultiCollections.latitude] = latitude ?: 0.0
+                it[MultiCollections.longitude] = longitude ?: 0.0
+                it[MultiCollections.dateTime] = System.currentTimeMillis()
+            }
+        }
+
+        return statement.resultedValues?.size == 1
+    }
+
 }

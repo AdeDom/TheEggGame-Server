@@ -6,7 +6,6 @@ fun Route.headerController() {
 
     route("multi") {
         multi()
-        postMultiCollection()
     }
 
 }
