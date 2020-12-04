@@ -11,6 +11,7 @@ import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
+import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
@@ -504,10 +505,17 @@ class MultiServiceImpl(
             // validate values of variable
 
             // validate database
+            repository.isValidateHeadRoomInfo(playerId) -> business.toMessageIncorrect(playerId)
 
             // execute
             else -> {
-                response.success = repository.addMultiItem(playerId, roomNo)
+                val currentPlayer = repository.currentPlayer(playerId)
+                repeat(TegConstant.MULTI_PLAYER_MAX_ITEM) {
+                    val latLng = business.generateMultiItem(currentPlayer)
+                    repository.addMultiItem(playerId, roomNo, latLng.latitude, latLng.longitude)
+                }
+
+                response.success = true
                 "Add multi item success"
             }
         }

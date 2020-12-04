@@ -84,13 +84,12 @@ class SingleServiceImpl(
             else -> {
                 val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
 
-                val (latitude, longitude) = repository.getCurrentLatLngPlayer(playerId)
-                val currentLatLng = TegLatLng(latitude ?: 0.0, longitude ?: 0.0)
+                val currentPlayer = repository.currentPlayer(playerId)
 
                 val singleItems = repository.fetchSingleItem()
 
-                repeat(business.addSingleItemTimes(currentLatLng, singleItems)) {
-                    repository.addSingleItem(playerId, business.generateSingleItem(currentLatLng))
+                repeat(business.addSingleItemTimes(currentPlayer, singleItems)) {
+                    repository.addSingleItem(playerId, business.generateSingleItem(currentPlayer))
                 }
             }
         }

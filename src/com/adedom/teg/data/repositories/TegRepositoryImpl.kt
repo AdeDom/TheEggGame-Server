@@ -83,6 +83,21 @@ class TegRepositoryImpl : TegRepository {
         return count == 0
     }
 
+    override fun isValidateHeadRoomInfo(playerId: String): Boolean {
+        val roomNo = currentRoomNo(playerId)
+
+        val role = transaction {
+            RoomInfos
+                .slice(RoomInfos.role)
+                .select { RoomInfos.roomNo eq roomNo }
+                .andWhere { RoomInfos.playerId eq playerId }
+                .map { it[RoomInfos.role] }
+                .single()
+        }
+
+        return role != TegConstant.ROOM_ROLE_HEAD
+    }
+
     override fun getMissionDateTimeLast(playerId: String, modeMission: String): Long {
         return transaction {
             try {
@@ -454,12 +469,7 @@ class TegRepositoryImpl : TegRepository {
             }
 
             // lat lng player
-            val (latitude, longitude) = Players.slice(Players.latitude, Players.longitude)
-                .select {
-                    Players.playerId eq playerId
-                }
-                .map { Pair(it[Players.latitude], it[Players.longitude]) }
-                .single()
+            val (latitude, longitude) = currentPlayer(playerId)
 
             RoomInfos.insert {
                 it[RoomInfos.roomNo] = roomNo.toString()
@@ -532,10 +542,7 @@ class TegRepositoryImpl : TegRepository {
         val (roomNo) = joinRoomInfoRequest
 
         val statement = transaction {
-            val (latitude, longitude) = Players.slice(Players.latitude, Players.longitude)
-                .select { Players.playerId eq playerId }
-                .map { Pair(it[Players.latitude], it[Players.longitude]) }
-                .single()
+            val (latitude, longitude) = currentPlayer(playerId)
 
             RoomInfos.replace {
                 it[RoomInfos.roomNo] = roomNo.toString()
@@ -717,14 +724,6 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
-    override fun getCurrentLatLngPlayer(playerId: String): Pair<Double?, Double?> {
-        return transaction {
-            Players.select { Players.playerId eq playerId }
-                .map { Pair(it[Players.latitude], it[Players.longitude]) }
-                .single()
-        }
-    }
-
     override fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean {
         val (itemTypeId, latitude, longitude) = addSingleItemRequest
 
@@ -818,18 +817,14 @@ class TegRepositoryImpl : TegRepository {
                 .map { it[RoomInfos.team] }
                 .single()
 
-            val (latitude, longitude) = Players
-                .slice(Players.latitude, Players.longitude)
-                .select { Players.playerId eq playerId }
-                .map { Pair(it[Players.latitude], it[Players.longitude]) }
-                .single()
+            val (latitude, longitude) = currentPlayer(playerId)
 
             MultiCollections.insert {
                 it[MultiCollections.roomNo] = roomNo
                 it[MultiCollections.playerId] = playerId
                 it[MultiCollections.team] = team
-                it[MultiCollections.latitude] = latitude ?: 0.0
-                it[MultiCollections.longitude] = longitude ?: 0.0
+                it[MultiCollections.latitude] = latitude
+                it[MultiCollections.longitude] = longitude
                 it[MultiCollections.dateTime] = System.currentTimeMillis()
             }
         }
@@ -847,25 +842,31 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun addMultiItem(playerId: String, roomNo: String): Boolean {
+    override fun addMultiItem(playerId: String, roomNo: String, latitude: Double, longitude: Double): Boolean {
         val statement = transaction {
-            val (latitude, longitude) = Players
-                .slice(Players.latitude, Players.longitude)
-                .select { Players.playerId eq playerId }
-                .map { Pair(it[Players.latitude], it[Players.longitude]) }
-                .single()
-
             MultiItems.insert {
                 it[MultiItems.roomNo] = roomNo
                 it[MultiItems.playerId] = playerId
-                it[MultiItems.latitude] = latitude ?: 0.0
-                it[MultiItems.longitude] = longitude ?: 0.0
+                it[MultiItems.latitude] = latitude
+                it[MultiItems.longitude] = longitude
                 it[MultiItems.status] = TegConstant.MULTI_ITEM_STATUS_ON
                 it[MultiItems.dateTimeCreated] = System.currentTimeMillis()
             }
         }
 
         return statement.resultedValues?.size == 1
+    }
+
+    override fun currentPlayer(playerId: String): TegLatLng {
+        val (latitude, longitude) = transaction {
+            Players
+                .slice(Players.latitude, Players.longitude)
+                .select { Players.playerId eq playerId }
+                .map { Pair(it[Players.latitude] ?: 0.0, it[Players.longitude] ?: 0.0) }
+                .single()
+        }
+
+        return TegLatLng(latitude, longitude)
     }
 
 }

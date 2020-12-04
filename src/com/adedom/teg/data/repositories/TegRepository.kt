@@ -27,6 +27,8 @@ interface TegRepository {
 
     fun isValidateSingleItemId(singleId: Int): Boolean
 
+    fun isValidateHeadRoomInfo(playerId: String): Boolean
+
     fun getMissionDateTimeLast(playerId: String, modeMission: String): Long
 
     fun signIn(signInRequest: SignInRequest): PlayerIdDb
@@ -100,8 +102,6 @@ interface TegRepository {
 
     fun changeCurrentMode(playerId: String, changeCurrentModeRequest: ChangeCurrentModeRequest): Boolean
 
-    fun getCurrentLatLngPlayer(playerId: String): Pair<Double?, Double?>
-
     fun addSingleItem(playerId: String, addSingleItemRequest: AddSingleItemRequest): Boolean
 
     fun fetchSingleItem(): List<SingleItemDb>
@@ -118,6 +118,8 @@ interface TegRepository {
 
     fun fetchMultiItem(playerId: String): List<MultiItemDb>
 
-    fun addMultiItem(playerId: String, roomNo: String): Boolean
+    fun addMultiItem(playerId: String, roomNo: String, latitude: Double, longitude: Double): Boolean
+
+    fun currentPlayer(playerId: String): TegLatLng
 
 }

@@ -233,6 +233,35 @@ class TegBusinessImpl : TegBusiness {
         return if (addSingleItemCount < 10) 10 - addSingleItemCount else 0
     }
 
+    override fun generateMultiItem(currentLatLng: TegLatLng): TegLatLng {
+        var latitude = 0.0
+        var longitude = 0.0
+        var distant = 0.0
+        while (distant < 200) {
+            when ((1..4).random()) {
+                1 -> {
+                    latitude = currentLatLng.latitude + (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude + (((2..10).random()).toDouble() / 1000)
+                }
+                2 -> {
+                    latitude = currentLatLng.latitude + (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude - (((2..10).random()).toDouble() / 1000)
+                }
+                3 -> {
+                    latitude = currentLatLng.latitude - (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude + (((2..10).random()).toDouble() / 1000)
+                }
+                4 -> {
+                    latitude = currentLatLng.latitude - (((2..10).random()).toDouble() / 1000)
+                    longitude = currentLatLng.longitude - (((2..10).random()).toDouble() / 1000)
+                }
+            }
+            distant = distanceBetween(currentLatLng, TegLatLng(latitude, longitude))
+        }
+
+        return TegLatLng(latitude, longitude)
+    }
+
     override fun toMessageIsNullOrBlank(values: String?): String {
         return "Please enter $values"
     }

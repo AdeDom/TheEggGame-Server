@@ -54,6 +54,8 @@ interface TegBusiness {
 
     fun addSingleItemTimes(currentLatLng: TegLatLng, singleItems: List<SingleItemDb>): Int
 
+    fun generateMultiItem(currentLatLng: TegLatLng): TegLatLng
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String
