@@ -847,4 +847,25 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun addMultiItem(playerId: String, roomNo: String): Boolean {
+        val statement = transaction {
+            val (latitude, longitude) = Players
+                .slice(Players.latitude, Players.longitude)
+                .select { Players.playerId eq playerId }
+                .map { Pair(it[Players.latitude], it[Players.longitude]) }
+                .single()
+
+            MultiItems.insert {
+                it[MultiItems.roomNo] = roomNo
+                it[MultiItems.playerId] = playerId
+                it[MultiItems.latitude] = latitude ?: 0.0
+                it[MultiItems.longitude] = longitude ?: 0.0
+                it[MultiItems.status] = TegConstant.MULTI_ITEM_STATUS_ON
+                it[MultiItems.dateTimeCreated] = System.currentTimeMillis()
+            }
+        }
+
+        return statement.resultedValues?.size == 1
+    }
+
 }

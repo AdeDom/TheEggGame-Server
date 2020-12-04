@@ -46,4 +46,6 @@ interface MultiService {
 
     fun fetchMultiItem(playerId: String?): MultiItemResponse
 
+    fun addMultiItem(playerId: String?): BaseResponse
+
 }

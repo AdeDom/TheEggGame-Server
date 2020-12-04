@@ -491,4 +491,29 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun addMultiItem(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val roomNo = playerId?.let { repository.currentRoomNo(it) }
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            roomNo.isNullOrBlank() -> business.toMessageIsNullOrBlank(roomNo)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.success = repository.addMultiItem(playerId, roomNo)
+                "Add multi item success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

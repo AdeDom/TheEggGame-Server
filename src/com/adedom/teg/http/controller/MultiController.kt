@@ -91,6 +91,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    post<AddMultiItemRequest> {
+        val response = service.addMultiItem(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI

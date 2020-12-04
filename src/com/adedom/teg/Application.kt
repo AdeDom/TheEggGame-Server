@@ -10,7 +10,6 @@ import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.data.di.getDataModule
 import com.adedom.teg.http.controller.*
-import com.adedom.teg.refactor.headerController
 import com.adedom.teg.util.DatabaseConfig
 import com.adedom.teg.util.DatabaseConfigMode
 import com.zaxxer.hikari.HikariConfig
@@ -111,12 +110,6 @@ fun Application.module() {
         // web sockets
         singleWebSocket(singleService)
         multiWebSocket(multiService)
-
-        route("api") {
-            authenticate {
-                headerController()
-            }
-        }
     }
 }
 

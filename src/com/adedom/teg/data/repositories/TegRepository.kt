@@ -118,4 +118,6 @@ interface TegRepository {
 
     fun fetchMultiItem(playerId: String): List<MultiItemDb>
 
+    fun addMultiItem(playerId: String, roomNo: String): Boolean
+
 }
