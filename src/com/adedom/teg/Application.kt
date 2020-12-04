@@ -11,7 +11,6 @@ import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.data.di.getDataModule
 import com.adedom.teg.http.controller.*
 import com.adedom.teg.util.DatabaseConfig
-import com.adedom.teg.util.DatabaseConfigMode
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
@@ -39,7 +38,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
 
     // database mysql
-    val databaseConfig = DatabaseConfig(DatabaseConfigMode.END_POINT)
+    val databaseConfig = DatabaseConfig.Heroku
     val config = HikariConfig().apply {
         jdbcUrl = databaseConfig.jdbcUrl
         driverClassName = "com.mysql.cj.jdbc.Driver"
