@@ -6,7 +6,6 @@ object MultiItems : Table(name = DatabaseConstant.multiItemTable) {
 
     val multiId = integer(name = DatabaseConstant.multiId).autoIncrement()
     val roomNo = varchar(name = DatabaseConstant.roomNo, length = 10)
-    val playerId = varchar(name = DatabaseConstant.playerId, length = 50).references(Players.playerId)
     val latitude = double(name = DatabaseConstant.latitude)
     val longitude = double(name = DatabaseConstant.longitude)
     val status = varchar(name = DatabaseConstant.status, length = 10)

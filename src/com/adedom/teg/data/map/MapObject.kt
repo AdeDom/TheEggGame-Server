@@ -53,7 +53,6 @@ object MapObject {
     fun toMultiItemDb(row: ResultRow) = MultiItemDb(
         multiId = row[MultiItems.multiId],
         roomNo = row[MultiItems.roomNo],
-        playerId = row[MultiItems.playerId],
         latitude = row[MultiItems.latitude],
         longitude = row[MultiItems.longitude],
         status = row[MultiItems.status],

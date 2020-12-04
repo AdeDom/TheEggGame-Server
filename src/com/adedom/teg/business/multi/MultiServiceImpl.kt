@@ -3,6 +3,7 @@ package com.adedom.teg.business.multi
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
+import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.ChangeTeamRequest
 import com.adedom.teg.models.request.CreateRoomRequest
 import com.adedom.teg.models.request.JoinRoomInfoRequest
@@ -512,7 +513,31 @@ class MultiServiceImpl(
                 val currentPlayer = repository.currentPlayer(playerId)
                 repeat(TegConstant.MULTI_PLAYER_MAX_ITEM) {
                     val latLng = business.generateMultiItem(currentPlayer)
-                    repository.addMultiItem(playerId, roomNo, latLng.latitude, latLng.longitude)
+                    repository.addMultiItem(roomNo, latLng.latitude, latLng.longitude)
+                }
+
+                repository.fetchLocationOtherPlayer(roomNo).forEach { latLngPlayer ->
+                    val locationPlayer = TegLatLng(latLngPlayer.latitude, latLngPlayer.longitude)
+
+                    var countItem = 0
+                    repository.fetchMultiItem(playerId).forEach { latLngItem ->
+                        val locationItem = TegLatLng(latLngItem.latitude ?: 0.0, latLngItem.longitude ?: 0.0)
+
+                        val distance = business.distanceBetween(locationPlayer, locationItem)
+                        if (distance < TegConstant.THREE_HUNDRED_METER) {
+                            countItem++
+                        }
+                    }
+
+                    countItem = if (countItem > TegConstant.MULTI_PLAYER_MAX_ITEM) {
+                        TegConstant.MULTI_PLAYER_MAX_ITEM
+                    } else {
+                        countItem
+                    }
+                    repeat(TegConstant.MULTI_PLAYER_MAX_ITEM - countItem) {
+                        val latLng = business.generateMultiItem(locationPlayer)
+                        repository.addMultiItem(roomNo, latLng.latitude, latLng.longitude)
+                    }
                 }
 
                 response.success = true

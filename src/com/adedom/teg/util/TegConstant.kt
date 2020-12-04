@@ -45,5 +45,6 @@ object TegConstant {
     const val MULTI_ITEM_STATUS_ON = "on"
     const val MULTI_ITEM_STATUS_OFF = "off"
     const val MULTI_PLAYER_MAX_ITEM = 5
+    const val THREE_HUNDRED_METER = 3_000
 
 }

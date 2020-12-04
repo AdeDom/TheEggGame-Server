@@ -842,11 +842,10 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
-    override fun addMultiItem(playerId: String, roomNo: String, latitude: Double, longitude: Double): Boolean {
+    override fun addMultiItem(roomNo: String, latitude: Double, longitude: Double): Boolean {
         val statement = transaction {
             MultiItems.insert {
                 it[MultiItems.roomNo] = roomNo
-                it[MultiItems.playerId] = playerId
                 it[MultiItems.latitude] = latitude
                 it[MultiItems.longitude] = longitude
                 it[MultiItems.status] = TegConstant.MULTI_ITEM_STATUS_ON
@@ -858,15 +857,25 @@ class TegRepositoryImpl : TegRepository {
     }
 
     override fun currentPlayer(playerId: String): TegLatLng {
-        val (latitude, longitude) = transaction {
+        return transaction {
             Players
                 .slice(Players.latitude, Players.longitude)
                 .select { Players.playerId eq playerId }
-                .map { Pair(it[Players.latitude] ?: 0.0, it[Players.longitude] ?: 0.0) }
+                .map { TegLatLng(it[Players.latitude] ?: 0.0, it[Players.longitude] ?: 0.0) }
                 .single()
         }
+    }
 
-        return TegLatLng(latitude, longitude)
+    override fun fetchLocationOtherPlayer(roomNo: String): List<TegLatLng> {
+        val list = transaction {
+            RoomInfos.slice(RoomInfos.role, RoomInfos.latitude, RoomInfos.longitude)
+                .select { RoomInfos.roomNo eq roomNo }
+                .map { Triple(it[RoomInfos.role], it[RoomInfos.latitude] ?: 0.0, it[RoomInfos.longitude] ?: 0.0) }
+        }
+
+        return list
+            .filter { it.first != TegConstant.ROOM_ROLE_HEAD }
+            .map { TegLatLng(it.second, it.third) }
     }
 
 }

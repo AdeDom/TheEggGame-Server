@@ -118,8 +118,10 @@ interface TegRepository {
 
     fun fetchMultiItem(playerId: String): List<MultiItemDb>
 
-    fun addMultiItem(playerId: String, roomNo: String, latitude: Double, longitude: Double): Boolean
+    fun addMultiItem(roomNo: String, latitude: Double, longitude: Double): Boolean
 
     fun currentPlayer(playerId: String): TegLatLng
+
+    fun fetchLocationOtherPlayer(roomNo: String): List<TegLatLng>
 
 }
