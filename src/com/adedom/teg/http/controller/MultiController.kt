@@ -86,6 +86,11 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
+    get<FetchMultiItemRequest> {
+        val response = service.fetchMultiItem(call.playerId)
+        call.respond(response)
+    }
+
 }
 
 @KtorExperimentalLocationsAPI
@@ -98,7 +103,7 @@ fun Route.multiWebSocket(service: MultiService) {
         try {
             incoming
                 .consumeAsFlow()
-                .onEach { frame ->
+                .onEach {
                 }
                 .catch { }
                 .collect()
@@ -117,7 +122,7 @@ fun Route.multiWebSocket(service: MultiService) {
         try {
             incoming
                 .consumeAsFlow()
-                .onEach { frame ->
+                .onEach {
                     playgroundRoom.send(service.fetchRooms().toJson())
                 }
                 .catch { }
@@ -140,7 +145,7 @@ fun Route.multiWebSocket(service: MultiService) {
         try {
             incoming
                 .consumeAsFlow()
-                .onEach { frame ->
+                .onEach {
                 }
                 .catch { }
                 .collect()
@@ -162,7 +167,7 @@ fun Route.multiWebSocket(service: MultiService) {
         try {
             incoming
                 .consumeAsFlow()
-                .onEach { frame ->
+                .onEach {
                     roomInfoPlayers.filter { it.second == roomNo }
                         .onEach { it.first.send(service.fetchRoomInfoPlayers(roomNo).toJson()) }
                 }
@@ -183,7 +188,7 @@ fun Route.multiWebSocket(service: MultiService) {
         try {
             incoming
                 .consumeAsFlow()
-                .onEach { frame ->
+                .onEach {
                     val roomInfoTegMultiOutgoing = RoomInfoTegMultiOutgoing(
                         success = true,
                         message = "Teg multi",

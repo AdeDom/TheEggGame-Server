@@ -467,4 +467,28 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun fetchMultiItem(playerId: String?): MultiItemResponse {
+        val response = MultiItemResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                response.multiItems = repository.fetchMultiItem(playerId)
+
+                response.success = true
+                "Fetch multi item success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

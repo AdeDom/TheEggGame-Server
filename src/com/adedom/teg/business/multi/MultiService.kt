@@ -44,4 +44,6 @@ interface MultiService {
 
     fun addMultiScore(playerId: String?): BaseResponse
 
+    fun fetchMultiItem(playerId: String?): MultiItemResponse
+
 }

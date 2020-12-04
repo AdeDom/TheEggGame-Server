@@ -6,7 +6,7 @@ object DatabaseConstant {
     const val playerTable = "player"
     const val itemCollectionTable = "item_collection"
     const val logActiveTable = "log_active"
-    const val multiTable = "multi"
+    const val multiItemTable = "multi_item"
     const val multiCollectionTable = "multi_collection"
     const val roomTable = "room"
     const val roomInfoTable = "room_info"

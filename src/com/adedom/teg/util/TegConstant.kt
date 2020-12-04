@@ -42,5 +42,7 @@ object TegConstant {
     const val PLAY_MODE_MULTI = "multi"
     const val SINGLE_ITEM_STATUS_ON = "on"
     const val SINGLE_ITEM_STATUS_OFF = "off"
+    const val MULTI_ITEM_STATUS_ON = "on"
+    const val MULTI_ITEM_STATUS_OFF = "off"
 
 }

@@ -837,4 +837,14 @@ class TegRepositoryImpl : TegRepository {
         return statement.resultedValues?.size == 1
     }
 
+    override fun fetchMultiItem(playerId: String): List<MultiItemDb> {
+        val roomNo = currentRoomNo(playerId)
+
+        return transaction {
+            MultiItems.select { MultiItems.roomNo eq roomNo }
+                .andWhere { MultiItems.status eq TegConstant.MULTI_ITEM_STATUS_ON }
+                .map { MapObject.toMultiItemDb(it) }
+        }
+    }
+
 }

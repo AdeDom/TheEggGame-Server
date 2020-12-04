@@ -50,12 +50,15 @@ object MapObject {
         dateTimeUpdated = row[SingleItems.dateTimeUpdated],
     )
 
-    fun toMultiDb(row: ResultRow) = MultiDb(
-        multiId = row[Multis.multiId],
-        roomNo = row[Multis.roomNo],
-        latitude = row[Multis.latitude],
-        longitude = row[Multis.longitude],
-        status = row[Multis.status],
+    fun toMultiItemDb(row: ResultRow) = MultiItemDb(
+        multiId = row[MultiItems.multiId],
+        roomNo = row[MultiItems.roomNo],
+        playerId = row[MultiItems.playerId],
+        latitude = row[MultiItems.latitude],
+        longitude = row[MultiItems.longitude],
+        status = row[MultiItems.status],
+        dateTimeCreated = row[MultiItems.dateTimeCreated],
+        dateTimeUpdated = row[MultiItems.dateTimeUpdated],
     )
 
     fun toRoomDb(row: ResultRow) = RoomDb(
