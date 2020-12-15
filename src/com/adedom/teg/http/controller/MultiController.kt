@@ -1,5 +1,6 @@
 package com.adedom.teg.http.controller
 
+import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.websocket.PeopleAllOutgoing
@@ -99,7 +100,7 @@ fun Route.multiController(service: MultiService) {
 }
 
 @KtorExperimentalLocationsAPI
-fun Route.multiWebSocket(service: MultiService) {
+fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
 
     val roomPeopleAllSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-people-all") {
@@ -206,6 +207,28 @@ fun Route.multiWebSocket(service: MultiService) {
                 .collect()
         } finally {
             roomInfoTegMulti.remove(Pair(this, roomNo))
+        }
+    }
+
+    val multiPlayerItems = mutableListOf<Pair<WebSocketSession, String>>()
+    webSocket("/websocket/multi/multi-player-items") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+        val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+        val roomNo: String = service.currentRoomNo(accessToken)
+        multiPlayerItems.add(Pair(this, roomNo))
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach {
+                    multiPlayerItems.filter { it.second == roomNo }
+                        .onEach { it.first.send(service.fetchMultiItem(playerId).toJson()) }
+                }
+                .catch { }
+                .collect()
+        } finally {
+            multiPlayerItems.remove(Pair(this, roomNo))
         }
     }
 
