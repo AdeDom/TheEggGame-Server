@@ -1,9 +1,6 @@
 package com.adedom.teg.business.multi
 
-import com.adedom.teg.models.request.ChangeTeamRequest
-import com.adedom.teg.models.request.CreateRoomRequest
-import com.adedom.teg.models.request.JoinRoomInfoRequest
-import com.adedom.teg.models.request.MultiItemCollectionRequest
+import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
 import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
@@ -42,7 +39,7 @@ interface MultiService {
 
     fun fetchMultiScore(playerId: String?): ScoreResponse
 
-    fun addMultiScore(playerId: String?): BaseResponse
+    fun addMultiScore(playerId: String?, addMultiScoreRequest: AddMultiScoreRequest): BaseResponse
 
     fun fetchMultiItem(playerId: String?): MultiItemResponse
 

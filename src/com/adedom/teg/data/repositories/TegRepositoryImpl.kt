@@ -685,6 +685,28 @@ class TegRepositoryImpl : TegRepository {
         return result == TegConstant.SINGLE_ITEM_STATUS_OFF
     }
 
+    override fun isValidateMultiItemId(multiId: Int): Boolean {
+        val count = transaction {
+            MultiItems.select { MultiItems.multiId eq multiId }
+                .count()
+                .toInt()
+        }
+
+        return count == 0
+    }
+
+    override fun isValidateMultiItemStatusIncorrect(multiId: Int): Boolean {
+        val result = transaction {
+            MultiItems
+                .slice(MultiItems.status)
+                .select { MultiItems.multiId eq multiId }
+                .map { it[MultiItems.status] }
+                .single()
+        }
+
+        return result == TegConstant.MULTI_ITEM_STATUS_OFF
+    }
+
     override fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean {
         val result = transaction {
             Rooms.update({ Rooms.roomNo eq roomNo }) {
@@ -806,10 +828,14 @@ class TegRepositoryImpl : TegRepository {
         return ScoreDb(teamA, teamB)
     }
 
-    override fun addMultiScore(playerId: String): Boolean {
+    override fun addMultiScore(playerId: String, multiId: Int): Boolean {
         val roomNo = currentRoomNo(playerId)
 
         val statement = transaction {
+            MultiItems.update({ MultiItems.multiId eq multiId }) {
+                it[MultiItems.status] = TegConstant.MULTI_ITEM_STATUS_OFF
+            }
+
             val team = RoomInfos
                 .slice(RoomInfos.team)
                 .select { RoomInfos.roomNo eq roomNo }

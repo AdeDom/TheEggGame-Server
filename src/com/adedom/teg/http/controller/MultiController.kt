@@ -83,7 +83,8 @@ fun Route.multiController(service: MultiService) {
     }
 
     post<AddMultiScoreRequest> {
-        val response = service.addMultiScore(call.playerId)
+        val request = call.receive<AddMultiScoreRequest>()
+        val response = service.addMultiScore(call.playerId, request)
         call.respond(response)
     }
 

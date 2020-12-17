@@ -4,4 +4,6 @@ import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
 @Location("/api/multi/add-multi-score")
-class AddMultiScoreRequest
+data class AddMultiScoreRequest(
+    val multiId: Int? = null,
+)

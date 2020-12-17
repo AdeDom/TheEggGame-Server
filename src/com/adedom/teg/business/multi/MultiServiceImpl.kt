@@ -4,10 +4,7 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.TegLatLng
-import com.adedom.teg.models.request.ChangeTeamRequest
-import com.adedom.teg.models.request.CreateRoomRequest
-import com.adedom.teg.models.request.JoinRoomInfoRequest
-import com.adedom.teg.models.request.MultiItemCollectionRequest
+import com.adedom.teg.models.request.*
 import com.adedom.teg.models.response.*
 import com.adedom.teg.models.websocket.RoomInfoPlayers
 import com.adedom.teg.models.websocket.RoomInfoPlayersOutgoing
@@ -447,20 +444,24 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun addMultiScore(playerId: String?): BaseResponse {
+    override fun addMultiScore(playerId: String?, addMultiScoreRequest: AddMultiScoreRequest): BaseResponse {
         val response = BaseResponse()
+        val (multiId) = addMultiScoreRequest
 
         val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+            multiId == null -> business.toMessageIsNullOrBlank1(addMultiScoreRequest::multiId)
 
             // validate values of variable
 
             // validate database
+            repository.isValidateMultiItemId(multiId) -> business.toMessageIncorrect1(addMultiScoreRequest::multiId)
+            repository.isValidateMultiItemStatusIncorrect(multiId) -> business.toMessageIncorrect1(addMultiScoreRequest::multiId)
 
             // execute
             else -> {
-                response.success = repository.addMultiScore(playerId)
+                response.success = repository.addMultiScore(playerId, multiId)
                 "Add multi score success"
             }
         }

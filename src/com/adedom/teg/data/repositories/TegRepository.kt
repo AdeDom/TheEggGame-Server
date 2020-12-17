@@ -96,6 +96,10 @@ interface TegRepository {
 
     fun isValidateSingleItemStatusIncorrect(singleId: Int): Boolean
 
+    fun isValidateMultiItemStatusIncorrect(multiId: Int): Boolean
+
+    fun isValidateMultiItemId(multiId: Int): Boolean
+
     fun roomInfoTegMulti(playerId: String, roomNo: String): Boolean
 
     fun changeStatusUnready(playerId: String): Boolean
@@ -114,7 +118,7 @@ interface TegRepository {
 
     fun fetchMultiScore(playerId: String): ScoreDb
 
-    fun addMultiScore(playerId: String): Boolean
+    fun addMultiScore(playerId: String, multiId: Int): Boolean
 
     fun fetchMultiItem(playerId: String): List<MultiItemDb>
 
