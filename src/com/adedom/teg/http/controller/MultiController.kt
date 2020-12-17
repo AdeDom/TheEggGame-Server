@@ -4,7 +4,6 @@ import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.models.request.*
 import com.adedom.teg.models.websocket.PeopleAllOutgoing
-import com.adedom.teg.models.websocket.RoomInfoTegMultiOutgoing
 import com.adedom.teg.util.TegConstant
 import com.adedom.teg.util.playerId
 import com.adedom.teg.util.send
@@ -196,13 +195,8 @@ fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
             incoming
                 .consumeAsFlow()
                 .onEach {
-                    val roomInfoTegMultiOutgoing = RoomInfoTegMultiOutgoing(
-                        success = true,
-                        message = "Teg multi",
-                        roomNo = roomNo,
-                    )
                     roomInfoTegMulti.filter { it.second == roomNo }
-                        .onEach { it.first.send(roomInfoTegMultiOutgoing.toJson()) }
+                        .onEach { it.first.send("") }
                 }
                 .catch { }
                 .collect()
@@ -252,6 +246,27 @@ fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
                 .collect()
         } finally {
             multiPlayerScore.remove(Pair(this, roomNo))
+        }
+    }
+
+    val multiPlayerEndTeg = mutableListOf<Pair<WebSocketSession, String>>()
+    webSocket("/websocket/multi/multi-player-end-teg") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+
+        val roomNo: String = service.currentRoomNo(accessToken)
+        multiPlayerEndTeg.add(Pair(this, roomNo))
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach {
+                    multiPlayerEndTeg.filter { it.second == roomNo }
+                        .onEach { it.first.send("") }
+                }
+                .catch { }
+                .collect()
+        } finally {
+            multiPlayerEndTeg.remove(Pair(this, roomNo))
         }
     }
 
