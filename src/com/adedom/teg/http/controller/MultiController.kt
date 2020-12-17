@@ -233,4 +233,26 @@ fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
         }
     }
 
+    val multiPlayerScore = mutableListOf<Pair<WebSocketSession, String>>()
+    webSocket("/websocket/multi/multi-player-score") {
+        val accessToken: String = call.request.header(TegConstant.ACCESS_TOKEN)!!
+        val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
+
+        val roomNo: String = service.currentRoomNo(accessToken)
+        multiPlayerScore.add(Pair(this, roomNo))
+
+        try {
+            incoming
+                .consumeAsFlow()
+                .onEach {
+                    multiPlayerScore.filter { it.second == roomNo }
+                        .onEach { it.first.send(service.fetchMultiScore(playerId).toJson()) }
+                }
+                .catch { }
+                .collect()
+        } finally {
+            multiPlayerScore.remove(Pair(this, roomNo))
+        }
+    }
+
 }
