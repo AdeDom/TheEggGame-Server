@@ -56,6 +56,8 @@ interface TegBusiness {
 
     fun generateMultiItem(currentLatLng: TegLatLng): TegLatLng
 
+    fun multiPlayerEndGame(scoreTeamA: Int?, scoreTeamB: Int?, team: String): Triple<String, String, Boolean>?
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String

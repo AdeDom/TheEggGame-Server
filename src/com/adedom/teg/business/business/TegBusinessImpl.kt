@@ -262,6 +262,34 @@ class TegBusinessImpl : TegBusiness {
         return TegLatLng(latitude, longitude)
     }
 
+    override fun multiPlayerEndGame(
+        scoreTeamA: Int?,
+        scoreTeamB: Int?,
+        team: String
+    ): Triple<String, String, Boolean>? {
+        return when {
+            scoreTeamA == scoreTeamB ->
+                Triple(
+                    TegConstant.MULTI_PLAYER_RESULT_ALWAYS,
+                    TegConstant.MULTI_PLAYER_RESULT_ALWAYS,
+                    true
+                )
+            (scoreTeamA ?: 0) > (scoreTeamB ?: 0) ->
+                Triple(
+                    TegConstant.MULTI_PLAYER_RESULT_WIN,
+                    TegConstant.MULTI_PLAYER_RESULT_LOSE,
+                    team == TegConstant.TEAM_A
+                )
+            (scoreTeamA ?: 0) < (scoreTeamB ?: 0) ->
+                Triple(
+                    TegConstant.MULTI_PLAYER_RESULT_LOSE,
+                    TegConstant.MULTI_PLAYER_RESULT_WIN,
+                    team == TegConstant.TEAM_B
+                )
+            else -> null
+        }
+    }
+
     override fun toMessageIsNullOrBlank(values: String?): String {
         return "Please enter $values"
     }

@@ -736,4 +736,52 @@ class TegBusinessImplTest {
         assertEquals(10, result)
     }
 
+    @Test
+    fun multiPlayerEndGame_scoreTeamAOverScoreTeamB_returnWin() {
+        // given
+        val scoreTeamA = 3
+        val scoreTeamB = 2
+        val team = "A"
+
+        // when
+        val result = business.multiPlayerEndGame(scoreTeamA, scoreTeamB, team)
+
+        // then
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_WIN, result?.first)
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_LOSE, result?.second)
+        assertTrue(result?.third ?: false)
+    }
+
+    @Test
+    fun multiPlayerEndGame_scoreTeamALessThenScoreTeamB_returnLose() {
+        // given
+        val scoreTeamA = 2
+        val scoreTeamB = 3
+        val team = "A"
+
+        // when
+        val result = business.multiPlayerEndGame(scoreTeamA, scoreTeamB, team)
+
+        // then
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_LOSE, result?.first)
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_WIN, result?.second)
+        assertFalse(result?.third ?: false)
+    }
+
+    @Test
+    fun multiPlayerEndGame_scoreTeamAEqualScoreTeamB_returnAlways() {
+        // given
+        val scoreTeamA = 2
+        val scoreTeamB = 2
+        val team = "A"
+
+        // when
+        val result = business.multiPlayerEndGame(scoreTeamA, scoreTeamB, team)
+
+        // then
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_ALWAYS, result?.first)
+        assertEquals(TegConstant.MULTI_PLAYER_RESULT_ALWAYS, result?.second)
+        assertTrue(result?.third ?: false)
+    }
+
 }

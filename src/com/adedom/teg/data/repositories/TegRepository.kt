@@ -128,4 +128,6 @@ interface TegRepository {
 
     fun fetchLocationOtherPlayer(roomNo: String): List<TegLatLng>
 
+    fun currentTeam(playerId: String): String
+
 }

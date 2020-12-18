@@ -45,4 +45,6 @@ interface MultiService {
 
     fun addMultiItem(playerId: String?): BaseResponse
 
+    fun fetchMultiPlayerEndGame(playerId: String?): MultiPlayerEndGameResponse
+
 }

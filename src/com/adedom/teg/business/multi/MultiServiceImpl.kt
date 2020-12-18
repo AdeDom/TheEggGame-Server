@@ -550,4 +550,40 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun fetchMultiPlayerEndGame(playerId: String?): MultiPlayerEndGameResponse {
+        val response = MultiPlayerEndGameResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                val (scoreTeamA, scoreTeamB) = repository.fetchMultiScore(playerId)
+                val team = repository.currentTeam(playerId)
+
+                val triple = business.multiPlayerEndGame(scoreTeamA, scoreTeamB, team)
+
+                val multiPlayerEndGame = MultiPlayerEndGame(
+                    scoreTeamA = scoreTeamA,
+                    scoreTeamB = scoreTeamB,
+                    resultTeamA = triple?.first,
+                    resultTeamB = triple?.second,
+                    isBonusEndGame = triple?.third ?: false,
+                )
+                response.endGame = multiPlayerEndGame
+
+                response.success = true
+                "Fetch multi player end game success"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

@@ -904,4 +904,15 @@ class TegRepositoryImpl : TegRepository {
             .map { TegLatLng(it.second, it.third) }
     }
 
+    override fun currentTeam(playerId: String): String {
+        return transaction {
+            RoomInfos.slice(RoomInfos.team)
+                .select { RoomInfos.playerId eq playerId }
+                .orderBy(RoomInfos.dateTime, SortOrder.DESC)
+                .limit(1)
+                .map { it[RoomInfos.team] }
+                .single()
+        }
+    }
+
 }
