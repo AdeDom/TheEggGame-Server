@@ -24,34 +24,21 @@ class MultiServiceImpl(
         multiItemCollectionRequest: MultiItemCollectionRequest
     ): BaseResponse {
         val response = BaseResponse()
-        val (itemId, qty, latitude, longitude) = multiItemCollectionRequest
+        val (qty) = multiItemCollectionRequest
 
         val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
-            itemId == null -> business.toMessageIsNullOrBlank1(multiItemCollectionRequest::itemId)
             qty == null -> business.toMessageIsNullOrBlank1(multiItemCollectionRequest::qty)
-            latitude == null -> business.toMessageIsNullOrBlank2(multiItemCollectionRequest::latitude)
-            longitude == null -> business.toMessageIsNullOrBlank2(multiItemCollectionRequest::longitude)
 
             // validate values of variable
-            business.isValidateLessThanOrEqualToZero(itemId) -> business.toMessageIncorrect1(multiItemCollectionRequest::itemId)
             business.isValidateLessThanOrEqualToZero(qty) -> business.toMessageIncorrect1(multiItemCollectionRequest::qty)
 
             // validate database
 
             // execute
             else -> {
-                response.success = repository.multiItemCollection(
-                    playerId,
-
-                    MultiItemCollectionRequest(
-                        itemId = itemId,
-                        qty = qty,
-                        latitude = latitude,
-                        longitude = longitude,
-                    )
-                )
+                response.success = repository.multiItemCollection(playerId, MultiItemCollectionRequest(qty))
                 "Post multi item collection success"
             }
         }

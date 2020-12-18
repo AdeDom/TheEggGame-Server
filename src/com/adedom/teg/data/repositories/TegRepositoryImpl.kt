@@ -346,15 +346,17 @@ class TegRepositoryImpl : TegRepository {
         playerId: String,
         multiItemCollectionRequest: MultiItemCollectionRequest
     ): Boolean {
-        val (itemId, qty, latitude, longitude) = multiItemCollectionRequest
+        val (qty) = multiItemCollectionRequest
 
         val statement = transaction {
+            val (latitude, longitude) = currentPlayer(playerId)
+
             ItemCollections.insert {
                 it[ItemCollections.playerId] = playerId
-                it[ItemCollections.itemId] = itemId!!
+                it[ItemCollections.itemId] = TegConstant.ITEM_LEVEL
                 it[ItemCollections.qty] = qty!!
-                it[ItemCollections.latitude] = latitude!!
-                it[ItemCollections.longitude] = longitude!!
+                it[ItemCollections.latitude] = latitude
+                it[ItemCollections.longitude] = longitude
                 it[ItemCollections.dateTime] = System.currentTimeMillis()
                 it[ItemCollections.mode] = TegConstant.ITEM_COLLECTION_MULTI
             }
