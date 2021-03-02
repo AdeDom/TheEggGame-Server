@@ -1,10 +1,7 @@
 package com.adedom.teg.business.report
 
 import com.adedom.teg.data.repositories.ReportRepository
-import com.adedom.teg.models.report.ItemCollection
-import com.adedom.teg.models.report.ItemCollectionResponse
-import com.adedom.teg.models.report.LogActive
-import com.adedom.teg.models.report.LogActiveResponse
+import com.adedom.teg.models.report.*
 
 internal class ReportServiceImpl(
     private val repository: ReportRepository,
@@ -42,6 +39,26 @@ internal class ReportServiceImpl(
                 playerId = it.playerId,
                 dateTimeIn = it.dateTimeIn,
                 dateTimeOut = it.dateTimeOut,
+            )
+        }
+
+        return response
+    }
+
+    override fun multiCollection(): MultiCollectionResponse {
+        val response = MultiCollectionResponse()
+
+        response.success = true
+        response.message = "Fetch multi collection success"
+        response.multiCollections = repository.multiCollection().map {
+            MultiCollection(
+                collectionId = it.collectionId,
+                roomNo = it.roomNo,
+                playerId = it.playerId,
+                team = it.team,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                dateTime = it.dateTime,
             )
         }
 
