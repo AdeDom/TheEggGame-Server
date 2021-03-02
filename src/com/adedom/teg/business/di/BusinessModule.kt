@@ -34,7 +34,7 @@ private val businessModule = module {
     single<ApplicationService> { ApplicationServiceImpl(get(), get()) }
     single<SingleService> { SingleServiceImpl(get(), get(), get()) }
     single<MultiService> { MultiServiceImpl(get(), get(), get()) }
-    single<ReportService> { ReportServiceImpl() }
+    single<ReportService> { ReportServiceImpl(get()) }
 
 }
 

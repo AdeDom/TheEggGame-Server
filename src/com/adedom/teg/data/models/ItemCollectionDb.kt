@@ -1,11 +1,12 @@
 package com.adedom.teg.data.models
 
 data class ItemCollectionDb(
-    val collectionId: Int? = null,
-    val playerId: String? = null,
-    val itemId: Int? = null,
-    val qty: Int? = null,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
-    val dateTime: Long? = null,
+    val collectionId: Int,
+    val playerId: String,
+    val itemId: Int,
+    val qty: Int,
+    val latitude: Double,
+    val longitude: Double,
+    val dateTime: Long,
+    val mode: String,
 )

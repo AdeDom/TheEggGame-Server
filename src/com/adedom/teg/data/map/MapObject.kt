@@ -37,6 +37,7 @@ object MapObject {
         latitude = row[ItemCollections.latitude],
         longitude = row[ItemCollections.longitude],
         dateTime = row[ItemCollections.dateTime],
+        mode = row[ItemCollections.mode],
     )
 
     fun toSingleItemDb(row: ResultRow) = SingleItemDb(
