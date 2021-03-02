@@ -65,4 +65,24 @@ internal class ReportServiceImpl(
         return response
     }
 
+    override fun multiItem(): MultiItemResponse {
+        val response = MultiItemResponse()
+
+        response.success = true
+        response.message = "Fetch multi item success"
+        response.multiItems = repository.multiItem().map {
+            MultiItem(
+                multiId = it.multiId,
+                roomNo = it.roomNo,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                status = it.status,
+                dateTimeCreated = it.dateTimeCreated,
+                dateTimeUpdated = it.dateTimeUpdated,
+            )
+        }
+
+        return response
+    }
+
 }

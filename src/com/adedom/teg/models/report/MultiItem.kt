@@ -1,6 +1,6 @@
-package com.adedom.teg.data.models
+package com.adedom.teg.models.report
 
-data class MultiItemDb(
+data class MultiItem(
     val multiId: Int,
     val roomNo: String,
     val latitude: Double,

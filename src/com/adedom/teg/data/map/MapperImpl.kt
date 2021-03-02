@@ -3,9 +3,11 @@ package com.adedom.teg.data.map
 import com.adedom.teg.data.database.ItemCollections
 import com.adedom.teg.data.database.LogActives
 import com.adedom.teg.data.database.MultiCollections
+import com.adedom.teg.data.database.MultiItems
 import com.adedom.teg.data.models.ItemCollectionDb
 import com.adedom.teg.data.models.LogActiveDb
 import com.adedom.teg.data.models.MultiCollectionDb
+import com.adedom.teg.data.models.MultiItemDb
 import org.jetbrains.exposed.sql.ResultRow
 
 internal class MapperImpl : Mapper {
@@ -41,6 +43,18 @@ internal class MapperImpl : Mapper {
             latitude = row[MultiCollections.latitude],
             longitude = row[MultiCollections.longitude],
             dateTime = row[MultiCollections.dateTime],
+        )
+    }
+
+    override fun multiItem(row: ResultRow): MultiItemDb {
+        return MultiItemDb(
+            multiId = row[MultiItems.multiId],
+            roomNo = row[MultiItems.roomNo],
+            latitude = row[MultiItems.latitude],
+            longitude = row[MultiItems.longitude],
+            status = row[MultiItems.status],
+            dateTimeCreated = row[MultiItems.dateTimeCreated],
+            dateTimeUpdated = row[MultiItems.dateTimeUpdated],
         )
     }
 
