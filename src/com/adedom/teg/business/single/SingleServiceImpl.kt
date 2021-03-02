@@ -67,7 +67,7 @@ class SingleServiceImpl(
                     playerId,
                     singleItemRequest,
                     business.randomSingleItemCollection(singleItemDb.itemTypeId),
-                    TegLatLng(singleItemDb.latitude ?: 0.0, singleItemDb.longitude ?: 0.0),
+                    TegLatLng(singleItemDb.latitude, singleItemDb.longitude),
                 )
                 "Post item collection success"
             }

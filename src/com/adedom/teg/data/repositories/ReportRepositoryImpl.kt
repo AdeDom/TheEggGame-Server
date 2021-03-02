@@ -59,4 +59,11 @@ internal class ReportRepositoryImpl(
         }
     }
 
+    override fun singleItem(): List<SingleItemDb> {
+        return transaction {
+            SingleItems.selectAll()
+                .map { mapper.singleItem(it) }
+        }
+    }
+
 }

@@ -45,4 +45,9 @@ internal fun Route.reportController(service: ReportService) {
         call.respond(response)
     }
 
+    get<SingleItemRequest> {
+        val response = service.singleItem()
+        call.respond(response)
+    }
+
 }

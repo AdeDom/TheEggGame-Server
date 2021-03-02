@@ -97,4 +97,17 @@ internal class MapperImpl : Mapper {
         )
     }
 
+    override fun singleItem(row: ResultRow): SingleItemDb {
+        return SingleItemDb(
+            singleId = row[SingleItems.singleId],
+            itemTypeId = row[SingleItems.itemTypeId],
+            latitude = row[SingleItems.latitude],
+            longitude = row[SingleItems.longitude],
+            playerId = row[SingleItems.playerId],
+            status = row[SingleItems.status],
+            dateTimeCreated = row[SingleItems.dateTimeCreated],
+            dateTimeUpdated = row[SingleItems.dateTimeUpdated],
+        )
+    }
+
 }

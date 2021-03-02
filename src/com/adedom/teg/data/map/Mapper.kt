@@ -19,4 +19,6 @@ internal interface Mapper {
 
     fun roomInfo(row: ResultRow): RoomInfoDb
 
+    fun singleItem(row: ResultRow): SingleItemDb
+
 }

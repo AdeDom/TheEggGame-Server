@@ -225,8 +225,7 @@ class TegBusinessImpl : TegBusiness {
 
     override fun addSingleItemTimes(currentLatLng: TegLatLng, singleItems: List<SingleItemDb>): Int {
         val addSingleItemCount = singleItems
-            .filter { it.latitude != null && it.longitude != null }
-            .map { distanceBetween(currentLatLng, TegLatLng(it.latitude!!, it.longitude!!)) }
+            .map { distanceBetween(currentLatLng, TegLatLng(it.latitude, it.longitude)) }
             .filter { it < 3000 }
             .count()
 

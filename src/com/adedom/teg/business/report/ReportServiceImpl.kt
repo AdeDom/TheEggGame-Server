@@ -154,4 +154,25 @@ internal class ReportServiceImpl(
         return response
     }
 
+    override fun singleItem(): SingleItemResponse {
+        val response = SingleItemResponse()
+
+        response.success = true
+        response.message = "Fetch single item success"
+        response.singleItems = repository.singleItem().map {
+            SingleItem(
+                singleId = it.singleId,
+                itemTypeId = it.itemTypeId,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                playerId = it.playerId,
+                status = it.status,
+                dateTimeCreated = it.dateTimeCreated,
+                dateTimeUpdated = it.dateTimeUpdated,
+            )
+        }
+
+        return response
+    }
+
 }

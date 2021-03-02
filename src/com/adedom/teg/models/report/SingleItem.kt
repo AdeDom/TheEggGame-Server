@@ -1,6 +1,6 @@
-package com.adedom.teg.data.models
+package com.adedom.teg.models.report
 
-data class SingleItemDb(
+data class SingleItem(
     val singleId: Int,
     val itemTypeId: Int,
     val latitude: Double,

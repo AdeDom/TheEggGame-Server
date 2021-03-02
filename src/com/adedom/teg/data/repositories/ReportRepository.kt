@@ -18,4 +18,6 @@ internal interface ReportRepository {
 
     fun roomInfo(): List<RoomInfoDb>
 
+    fun singleItem(): List<SingleItemDb>
+
 }

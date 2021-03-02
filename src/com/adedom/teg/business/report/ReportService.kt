@@ -18,4 +18,6 @@ internal interface ReportService {
 
     fun roomInfo(): RoomInfoResponse
 
+    fun singleItem(): SingleItemResponse
+
 }
