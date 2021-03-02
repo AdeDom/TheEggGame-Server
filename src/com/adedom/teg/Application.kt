@@ -7,6 +7,7 @@ import com.adedom.teg.business.di.getBusinessModule
 import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.business.jwtconfig.PlayerPrincipal
 import com.adedom.teg.business.multi.MultiService
+import com.adedom.teg.business.report.ReportService
 import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.data.di.getDataModule
 import com.adedom.teg.http.controller.*
@@ -23,6 +24,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.logging.*
 import io.ktor.features.*
 import io.ktor.gson.*
+import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.locations.*
 import io.ktor.routing.*
@@ -62,6 +64,20 @@ fun Application.module() {
         }
     }
 
+    // Cross-Origin Resource Sharing
+    install(CORS) {
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
+        method(HttpMethod.Put)
+        method(HttpMethod.Patch)
+        method(HttpMethod.Delete)
+        method(HttpMethod.Options)
+        host(host = "localhost:8080", schemes = listOf("http"))
+        host(host = "localhost:8081", schemes = listOf("http"))
+        host(host = "teg-report.herokuapp.com", schemes = listOf("https"))
+        allowNonSimpleContentTypes = true
+    }
+
     // web socket
     install(io.ktor.websocket.WebSockets) {
         pingPeriod = Duration.ofSeconds(60)
@@ -77,6 +93,7 @@ fun Application.module() {
     val applicationService: ApplicationService by inject()
     val singleService: SingleService by inject()
     val multiService: MultiService by inject()
+    val reportService: ReportService by inject()
     val jwtConfig: JwtConfig by inject()
 
     // jwt
@@ -109,6 +126,9 @@ fun Application.module() {
         // web sockets
         singleWebSocket(singleService)
         multiWebSocket(multiService, jwtConfig)
+
+        // report
+        reportController(reportService)
     }
 }
 

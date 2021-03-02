@@ -12,6 +12,8 @@ import com.adedom.teg.business.jwtconfig.JwtConfig
 import com.adedom.teg.business.jwtconfig.JwtConfigImpl
 import com.adedom.teg.business.multi.MultiService
 import com.adedom.teg.business.multi.MultiServiceImpl
+import com.adedom.teg.business.report.ReportService
+import com.adedom.teg.business.report.ReportServiceImpl
 import com.adedom.teg.business.single.SingleService
 import com.adedom.teg.business.single.SingleServiceImpl
 import io.ktor.locations.*
@@ -32,6 +34,7 @@ private val businessModule = module {
     single<ApplicationService> { ApplicationServiceImpl(get(), get()) }
     single<SingleService> { SingleServiceImpl(get(), get(), get()) }
     single<MultiService> { MultiServiceImpl(get(), get(), get()) }
+    single<ReportService> { ReportServiceImpl() }
 
 }
 
