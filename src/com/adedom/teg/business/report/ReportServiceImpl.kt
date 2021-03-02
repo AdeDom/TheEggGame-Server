@@ -132,4 +132,26 @@ internal class ReportServiceImpl(
         return response
     }
 
+    override fun roomInfo(): RoomInfoResponse {
+        val response = RoomInfoResponse()
+
+        response.success = true
+        response.message = "Fetch room info success"
+        response.roomInfoList = repository.roomInfo().map {
+            RoomInfo(
+                infoId = it.infoId,
+                roomNo = it.roomNo,
+                playerId = it.playerId,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                team = it.team,
+                status = it.status,
+                role = it.role,
+                dateTime = it.dateTime,
+            )
+        }
+
+        return response
+    }
+
 }

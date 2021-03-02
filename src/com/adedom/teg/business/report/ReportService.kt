@@ -16,4 +16,6 @@ internal interface ReportService {
 
     fun room(): RoomResponse
 
+    fun roomInfo(): RoomInfoResponse
+
 }

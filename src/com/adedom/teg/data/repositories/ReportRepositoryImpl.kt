@@ -52,4 +52,11 @@ internal class ReportRepositoryImpl(
         }
     }
 
+    override fun roomInfo(): List<RoomInfoDb> {
+        return transaction {
+            RoomInfos.selectAll()
+                .map { mapper.roomInfo(it) }
+        }
+    }
+
 }

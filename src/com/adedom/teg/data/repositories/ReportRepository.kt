@@ -16,4 +16,6 @@ internal interface ReportRepository {
 
     fun room(): List<RoomDb>
 
+    fun roomInfo(): List<RoomInfoDb>
+
 }

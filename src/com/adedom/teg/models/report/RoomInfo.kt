@@ -1,6 +1,6 @@
-package com.adedom.teg.data.models
+package com.adedom.teg.models.report
 
-data class RoomInfoDb(
+data class RoomInfo(
     val infoId: Int,
     val roomNo: String,
     val playerId: String,
