@@ -121,7 +121,7 @@ class MultiServiceImpl(
                 val fetchRoomResponse = FetchRoomResponse(
                     roomId = roomDb.roomId,
                     roomNo = roomDb.roomNo,
-                    name = roomDb.name?.capitalize(),
+                    name = roomDb.name.capitalize(),
                     people = roomDb.people,
                     status = roomDb.status,
                     startTime = roomDb.startTime,
@@ -373,7 +373,7 @@ class MultiServiceImpl(
                 val fetchRoomResponse = FetchRoomResponse(
                     roomId = roomDb.roomId,
                     roomNo = roomDb.roomNo,
-                    name = roomDb.name?.capitalize(),
+                    name = roomDb.name.capitalize(),
                     people = roomDb.people,
                     status = roomDb.status,
                     startTime = roomDb.startTime,
@@ -509,7 +509,7 @@ class MultiServiceImpl(
 
                     var countItem = 0
                     repository.fetchMultiItem(playerId).forEach { latLngItem ->
-                        val locationItem = TegLatLng(latLngItem.latitude ?: 0.0, latLngItem.longitude ?: 0.0)
+                        val locationItem = TegLatLng(latLngItem.latitude, latLngItem.longitude)
 
                         val distance = business.distanceBetween(locationPlayer, locationItem)
                         if (distance < TegConstant.THREE_HUNDRED_METER) {

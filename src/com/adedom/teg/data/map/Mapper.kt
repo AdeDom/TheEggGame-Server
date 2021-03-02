@@ -15,4 +15,6 @@ internal interface Mapper {
 
     fun player(row: ResultRow): PlayerDb
 
+    fun room(row: ResultRow): RoomDb
+
 }

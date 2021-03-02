@@ -14,4 +14,6 @@ internal interface ReportService {
 
     fun player(): PlayerResponse
 
+    fun room(): RoomResponse
+
 }

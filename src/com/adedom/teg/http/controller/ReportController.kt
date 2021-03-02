@@ -35,4 +35,9 @@ internal fun Route.reportController(service: ReportService) {
         call.respond(response)
     }
 
+    get<RoomRequest> {
+        val response = service.room()
+        call.respond(response)
+    }
+
 }

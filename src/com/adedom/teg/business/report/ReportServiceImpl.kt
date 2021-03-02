@@ -111,4 +111,25 @@ internal class ReportServiceImpl(
         return response
     }
 
+    override fun room(): RoomResponse {
+        val response = RoomResponse()
+
+        response.success = true
+        response.message = "Fetch room success"
+        response.rooms = repository.room().map {
+            Room(
+                roomId = it.roomId,
+                roomNo = it.roomNo,
+                name = it.name,
+                people = it.people,
+                status = it.status,
+                startTime = it.startTime,
+                endTime = it.endTime,
+                dateTime = it.dateTime,
+            )
+        }
+
+        return response
+    }
+
 }

@@ -14,4 +14,6 @@ internal interface ReportRepository {
 
     fun player(): List<PlayerDb>
 
+    fun room(): List<RoomDb>
+
 }

@@ -23,7 +23,7 @@ class AccountServiceImpl(
     override fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse {
         val response = BaseResponse()
 
-        val message: String? = when {
+        val message: String = when {
             // validate Null Or Blank
             playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
             imageName.isNullOrBlank() -> business.toMessageIsNullOrBlank(ApiConstant.IMAGE_FILE)

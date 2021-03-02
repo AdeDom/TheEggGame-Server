@@ -70,4 +70,17 @@ internal class MapperImpl : Mapper {
         )
     }
 
+    override fun room(row: ResultRow): RoomDb {
+        return RoomDb(
+            roomId = row[Rooms.roomId],
+            roomNo = row[Rooms.roomNo],
+            name = row[Rooms.name],
+            people = row[Rooms.people],
+            status = row[Rooms.status],
+            startTime = row[Rooms.startTime],
+            endTime = row[Rooms.endTime],
+            dateTime = row[Rooms.dateTime],
+        )
+    }
+
 }
