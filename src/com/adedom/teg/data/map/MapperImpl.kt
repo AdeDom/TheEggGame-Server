@@ -1,13 +1,7 @@
 package com.adedom.teg.data.map
 
-import com.adedom.teg.data.database.ItemCollections
-import com.adedom.teg.data.database.LogActives
-import com.adedom.teg.data.database.MultiCollections
-import com.adedom.teg.data.database.MultiItems
-import com.adedom.teg.data.models.ItemCollectionDb
-import com.adedom.teg.data.models.LogActiveDb
-import com.adedom.teg.data.models.MultiCollectionDb
-import com.adedom.teg.data.models.MultiItemDb
+import com.adedom.teg.data.database.*
+import com.adedom.teg.data.models.*
 import org.jetbrains.exposed.sql.ResultRow
 
 internal class MapperImpl : Mapper {
@@ -55,6 +49,24 @@ internal class MapperImpl : Mapper {
             status = row[MultiItems.status],
             dateTimeCreated = row[MultiItems.dateTimeCreated],
             dateTimeUpdated = row[MultiItems.dateTimeUpdated],
+        )
+    }
+
+    override fun player(row: ResultRow): PlayerDb {
+        return PlayerDb(
+            playerId = row[Players.playerId],
+            username = row[Players.username],
+            password = row[Players.password],
+            name = row[Players.name],
+            image = row[Players.image],
+            gender = row[Players.gender],
+            birthDate = row[Players.birthDate],
+            state = row[Players.state],
+            latitude = row[Players.latitude],
+            longitude = row[Players.longitude],
+            currentMode = row[Players.currentMode],
+            dateTimeCreated = row[Players.dateTimeCreated],
+            dateTimeUpdated = row[Players.dateTimeUpdated],
         )
     }
 

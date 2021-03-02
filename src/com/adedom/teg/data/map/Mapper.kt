@@ -1,9 +1,6 @@
 package com.adedom.teg.data.map
 
-import com.adedom.teg.data.models.ItemCollectionDb
-import com.adedom.teg.data.models.LogActiveDb
-import com.adedom.teg.data.models.MultiCollectionDb
-import com.adedom.teg.data.models.MultiItemDb
+import com.adedom.teg.data.models.*
 import org.jetbrains.exposed.sql.ResultRow
 
 internal interface Mapper {
@@ -15,5 +12,7 @@ internal interface Mapper {
     fun multiCollection(row: ResultRow): MultiCollectionDb
 
     fun multiItem(row: ResultRow): MultiItemDb
+
+    fun player(row: ResultRow): PlayerDb
 
 }

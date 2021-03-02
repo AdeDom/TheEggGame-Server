@@ -1,10 +1,7 @@
 package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.report.ReportService
-import com.adedom.teg.models.report.ItemCollectionRequest
-import com.adedom.teg.models.report.LogActiveRequest
-import com.adedom.teg.models.report.MultiCollectionRequest
-import com.adedom.teg.models.report.MultiItemRequest
+import com.adedom.teg.models.report.*
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -30,6 +27,11 @@ internal fun Route.reportController(service: ReportService) {
 
     get<MultiItemRequest> {
         val response = service.multiItem()
+        call.respond(response)
+    }
+
+    get<PlayerRequest> {
+        val response = service.player()
         call.respond(response)
     }
 

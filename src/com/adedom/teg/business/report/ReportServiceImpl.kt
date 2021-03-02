@@ -85,4 +85,30 @@ internal class ReportServiceImpl(
         return response
     }
 
+    override fun player(): PlayerResponse {
+        val response = PlayerResponse()
+
+        response.success = true
+        response.message = "Fetch player success"
+        response.players = repository.player().map {
+            Player(
+                playerId = it.playerId,
+                username = it.username,
+                password = it.password,
+                name = it.name,
+                image = it.image,
+                gender = it.gender,
+                birthDate = it.birthDate,
+                state = it.state,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                currentMode = it.currentMode,
+                dateTimeCreated = it.dateTimeCreated,
+                dateTimeUpdated = it.dateTimeUpdated,
+            )
+        }
+
+        return response
+    }
+
 }

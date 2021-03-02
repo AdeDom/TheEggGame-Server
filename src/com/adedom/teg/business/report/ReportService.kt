@@ -1,9 +1,6 @@
 package com.adedom.teg.business.report
 
-import com.adedom.teg.models.report.ItemCollectionResponse
-import com.adedom.teg.models.report.LogActiveResponse
-import com.adedom.teg.models.report.MultiCollectionResponse
-import com.adedom.teg.models.report.MultiItemResponse
+import com.adedom.teg.models.report.*
 
 internal interface ReportService {
 
@@ -14,5 +11,7 @@ internal interface ReportService {
     fun multiCollection(): MultiCollectionResponse
 
     fun multiItem(): MultiItemResponse
+
+    fun player(): PlayerResponse
 
 }

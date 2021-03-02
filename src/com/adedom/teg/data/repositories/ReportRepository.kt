@@ -1,9 +1,6 @@
 package com.adedom.teg.data.repositories
 
-import com.adedom.teg.data.models.ItemCollectionDb
-import com.adedom.teg.data.models.LogActiveDb
-import com.adedom.teg.data.models.MultiCollectionDb
-import com.adedom.teg.data.models.MultiItemDb
+import com.adedom.teg.data.models.*
 
 internal interface ReportRepository {
 
@@ -14,5 +11,7 @@ internal interface ReportRepository {
     fun multiCollection(): List<MultiCollectionDb>
 
     fun multiItem(): List<MultiItemDb>
+
+    fun player(): List<PlayerDb>
 
 }
