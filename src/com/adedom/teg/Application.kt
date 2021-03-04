@@ -71,11 +71,14 @@ fun Application.module() {
         method(HttpMethod.Put)
         method(HttpMethod.Patch)
         method(HttpMethod.Delete)
+        method(HttpMethod.Head)
         method(HttpMethod.Options)
         host(host = "localhost:8080", schemes = listOf("http"))
         host(host = "localhost:8081", schemes = listOf("http"))
         host(host = "teg-report.herokuapp.com", schemes = listOf("https"))
+        allowCredentials = true
         allowNonSimpleContentTypes = true
+        maxAgeInSeconds = CORS.CORS_DEFAULT_MAX_AGE * 30
     }
 
     // web socket
