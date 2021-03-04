@@ -131,11 +131,11 @@ class TegRepositoryImpl : TegRepository {
         val statement = transaction {
             Players.insert {
                 it[Players.playerId] = UUID.randomUUID().toString().replace("-", "")
-                it[Players.username] = username!!
-                it[Players.password] = password!!
-                it[Players.name] = name!!
-                it[Players.gender] = gender!!
-                it[Players.birthDate] = birthDate!!
+                it[Players.username] = username
+                it[Players.password] = password
+                it[Players.name] = name
+                it[Players.gender] = gender
+                it[Players.birthDate] = birthDate
                 it[Players.dateTimeCreated] = System.currentTimeMillis()
             }
         }
@@ -201,9 +201,9 @@ class TegRepositoryImpl : TegRepository {
         val (name, gender, birthDate) = changeProfile
         val transaction: Int = transaction {
             Players.update({ Players.playerId eq playerId }) {
-                it[Players.name] = name!!
-                it[Players.gender] = gender!!
-                it[Players.birthDate] = birthDate!!
+                it[Players.name] = name
+                it[Players.gender] = gender
+                it[Players.birthDate] = birthDate
                 it[Players.dateTimeUpdated] = System.currentTimeMillis()
             }
         }
@@ -293,17 +293,17 @@ class TegRepositoryImpl : TegRepository {
             val eggI =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_ONE) }
                     .map { MapObject.toItemCollectionDb(it) }
-                    .sumBy { it.qty!! }
+                    .sumBy { it.qty }
 
             val eggII =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_TWO) }
                     .map { MapObject.toItemCollectionDb(it) }
-                    .sumBy { it.qty!! }
+                    .sumBy { it.qty }
 
             val eggIII =
                 ItemCollections.select { ItemCollections.playerId eq playerId and (ItemCollections.itemId eq TegConstant.SINGLE_ITEM_THREE) }
                     .map { MapObject.toItemCollectionDb(it) }
-                    .sumBy { it.qty!! }
+                    .sumBy { it.qty }
 
             BackpackDb(eggI, eggII, eggIII)
         }
@@ -519,7 +519,7 @@ class TegRepositoryImpl : TegRepository {
                     Players.state,
                     Players.gender,
                     Players.birthDate,
-                ).select { Players.playerId eq roomInfo.playerId!! }
+                ).select { Players.playerId eq roomInfo.playerId }
                     .map { MapObject.toRoomInfoPlayersDb(it, roomInfo.role, roomInfo.status, roomInfo.team) }
                     .single()
                 playerInfoList.add(playersDb)

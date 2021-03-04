@@ -37,7 +37,7 @@ class ApplicationServiceImpl(
                     PlayerInfo(
                         playerId = it.playerId,
                         username = it.username,
-                        name = it.name?.capitalize(),
+                        name = it.name.capitalize(),
                         image = it.image,
                         level = business.toConvertLevel(it.level),
                         state = it.state,

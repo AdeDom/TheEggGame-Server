@@ -1,9 +1,9 @@
 package com.adedom.teg.data.models
 
 data class SignUpDb(
-    val username: String? = null,
-    val password: String? = null,
-    val name: String? = null,
-    val gender: String? = null,
-    val birthDate: Long? = null,
+    val username: String,
+    val password: String,
+    val name: String,
+    val gender: String,
+    val birthDate: Long,
 )

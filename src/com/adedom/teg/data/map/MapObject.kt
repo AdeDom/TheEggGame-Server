@@ -84,7 +84,7 @@ object MapObject {
         dateTime = row[RoomInfos.dateTime],
     )
 
-    fun toRoomInfoPlayersDb(row: ResultRow, role: String?, status: String?, team: String?) = RoomInfoPlayersDb(
+    fun toRoomInfoPlayersDb(row: ResultRow, role: String, status: String, team: String) = RoomInfoPlayersDb(
         playerId = row[Players.playerId],
         username = row[Players.username],
         name = row[Players.name],

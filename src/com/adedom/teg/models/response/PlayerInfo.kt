@@ -1,14 +1,14 @@
 package com.adedom.teg.models.response
 
 data class PlayerInfo(
-    val playerId: String? = null,
-    val username: String? = null,
-    val name: String? = null,
-    val image: String? = null,
-    val level: Int? = null,
-    val state: String? = null,
-    val gender: String? = null,
-    val birthDate: String? = null,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
+    val playerId: String,
+    val username: String,
+    val name: String,
+    val image: String?,
+    val level: Int,
+    val state: String?,
+    val gender: String,
+    val birthDate: String,
+    val latitude: Double?,
+    val longitude: Double?,
 )
