@@ -19,8 +19,6 @@ interface MultiService {
 
     fun fetchRoomInfoPlayers(roomNo: String): RoomInfoPlayersOutgoing
 
-    fun currentRoomNo(playerId: String?): CurrentRoomNoResponse
-
     fun currentRoomNo(accessToken: String): String
 
     fun joinRoomInfo(playerId: String?, joinRoomInfoRequest: JoinRoomInfoRequest): BaseResponse

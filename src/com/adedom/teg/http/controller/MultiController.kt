@@ -35,11 +35,6 @@ fun Route.multiController(service: MultiService) {
         call.respond(response)
     }
 
-    get<CurrentRoomNoRequest> {
-        val response = service.currentRoomNo(call.playerId)
-        call.respond(response)
-    }
-
     post<JoinRoomInfoRequest> {
         val request = call.receive<JoinRoomInfoRequest>()
         val response = service.joinRoomInfo(call.playerId, request)

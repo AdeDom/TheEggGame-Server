@@ -181,29 +181,6 @@ class MultiServiceImpl(
         return response
     }
 
-    override fun currentRoomNo(playerId: String?): CurrentRoomNoResponse {
-        val response = CurrentRoomNoResponse()
-
-        val message: String = when {
-            // validate Null Or Blank
-            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
-
-            // validate values of variable
-
-            // validate database
-
-            // execute
-            else -> {
-                response.success = true
-                response.roomNo = repository.currentRoomNo(playerId)
-                "Fetch room no current success"
-            }
-        }
-
-        response.message = message
-        return response
-    }
-
     override fun currentRoomNo(accessToken: String): String {
         val playerId = jwtConfig.decodeJwtGetPlayerId(accessToken)
         return repository.currentRoomNo(playerId)
