@@ -73,12 +73,8 @@ fun Application.module() {
         method(HttpMethod.Delete)
         method(HttpMethod.Head)
         method(HttpMethod.Options)
-        host(host = "localhost:8080", schemes = listOf("http"))
-        host(host = "localhost:8081", schemes = listOf("http"))
-        host(host = "teg-report.herokuapp.com", schemes = listOf("https"))
-        allowCredentials = true
+        anyHost()
         allowNonSimpleContentTypes = true
-        maxAgeInSeconds = 86_400_000 * 365L
     }
 
     // web socket
