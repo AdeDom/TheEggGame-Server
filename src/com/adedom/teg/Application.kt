@@ -78,7 +78,7 @@ fun Application.module() {
         host(host = "teg-report.herokuapp.com", schemes = listOf("https"))
         allowCredentials = true
         allowNonSimpleContentTypes = true
-        maxAgeInSeconds = CORS.CORS_DEFAULT_MAX_AGE * 30
+        maxAgeInSeconds = 86_400_000 * 365L
     }
 
     // web socket
