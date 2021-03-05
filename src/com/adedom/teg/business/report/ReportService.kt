@@ -20,4 +20,6 @@ internal interface ReportService {
 
     fun singleItem(): SingleItemResponse
 
+    fun gamePlayerRankings(): GamePlayerRankingsResponse
+
 }

@@ -1,10 +1,13 @@
 package com.adedom.teg.business.report
 
+import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
+import com.adedom.teg.util.TegConstant
 
 internal class ReportServiceImpl(
     private val repository: ReportRepository,
+    private val business: TegBusiness,
 ) : ReportService {
 
     override fun itemCollection(): ItemCollectionResponse {
@@ -172,6 +175,46 @@ internal class ReportServiceImpl(
             )
         }
 
+        return response
+    }
+
+    override fun gamePlayerRankings(): GamePlayerRankingsResponse {
+        val response = GamePlayerRankingsResponse()
+
+        val message: String = when {
+            else -> {
+                val getPlayerDb = repository.player()
+                val getItemCollectionDb = repository.itemCollection()
+
+                val gamePlayerRankings = getPlayerDb.map { db ->
+                    val level = getItemCollectionDb
+                        .filter { it.playerId == db.playerId && it.itemId == TegConstant.ITEM_LEVEL }
+                        .sumBy { it.qty }
+
+                    GamePlayerRanking(
+                        playerId = db.playerId,
+                        name = db.name,
+                        image = db.image,
+                        gender = db.gender,
+                        birthDateLong = db.birthDate,
+                        birthDateString = business.toConvertDateTimeLongToString(db.birthDate),
+                        state = db.state,
+                        latitude = db.latitude,
+                        longitude = db.longitude,
+                        currentMode = db.currentMode,
+                        dateTimeCreated = business.toConvertDateTimeLongToString(db.dateTimeCreated),
+                        dateTimeUpdated = business.toConvertDateTimeLongToString(db.dateTimeUpdated),
+                        level = business.toConvertLevel(level),
+                    )
+                }
+
+                response.gamePlayerRankings = gamePlayerRankings.sortedByDescending { it.level }
+                response.success = true
+                "Fetch game player rankings success"
+            }
+        }
+
+        response.message = message
         return response
     }
 
