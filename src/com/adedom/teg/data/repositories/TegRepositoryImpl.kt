@@ -917,4 +917,14 @@ class TegRepositoryImpl : TegRepository {
         }
     }
 
+    override fun multiPlayerEndGame(roomNo: String): Boolean {
+        val result = transaction {
+            Rooms.update({ Rooms.roomNo eq roomNo }) {
+                it[Rooms.endTime] = System.currentTimeMillis()
+            }
+        }
+
+        return result == 1
+    }
+
 }

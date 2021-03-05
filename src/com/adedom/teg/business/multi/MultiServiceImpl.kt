@@ -550,4 +550,27 @@ class MultiServiceImpl(
         return response
     }
 
+    override fun multiPlayerEndGame(playerId: String?): BaseResponse {
+        val response = BaseResponse()
+
+        val message: String = when {
+            // validate Null Or Blank
+            playerId.isNullOrBlank() -> business.toMessageIsNullOrBlank(playerId)
+
+            // validate values of variable
+
+            // validate database
+
+            // execute
+            else -> {
+                val roomNo = repository.currentRoomNo(playerId)
+                response.success = repository.multiPlayerEndGame(roomNo)
+                "Multi player end game"
+            }
+        }
+
+        response.message = message
+        return response
+    }
+
 }

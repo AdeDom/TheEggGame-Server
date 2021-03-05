@@ -130,4 +130,6 @@ interface TegRepository {
 
     fun currentTeam(playerId: String): String
 
+    fun multiPlayerEndGame(roomNo: String): Boolean
+
 }

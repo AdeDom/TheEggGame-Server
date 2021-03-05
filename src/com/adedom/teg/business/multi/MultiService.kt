@@ -45,4 +45,6 @@ interface MultiService {
 
     fun fetchMultiPlayerEndGame(playerId: String?): MultiPlayerEndGameResponse
 
+    fun multiPlayerEndGame(playerId: String?): BaseResponse
+
 }
