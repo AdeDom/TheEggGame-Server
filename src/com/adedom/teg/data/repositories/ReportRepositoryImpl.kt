@@ -3,10 +3,12 @@ package com.adedom.teg.data.repositories
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.Mapper
 import com.adedom.teg.data.models.*
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.selectAll
+import com.adedom.teg.models.report.testfinal.FinalRequest
+import io.ktor.locations.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
+@KtorExperimentalLocationsAPI
 internal class ReportRepositoryImpl(
     private val mapper: Mapper,
 ) : ReportRepository {
@@ -72,6 +74,30 @@ internal class ReportRepositoryImpl(
             SingleItems.selectAll()
                 .orderBy(SingleItems.dateTimeCreated, SortOrder.DESC)
                 .map { mapper.singleItem(it) }
+        }
+    }
+
+    override fun testFinalPantips(finalRequest: FinalRequest): List<ItemCollectionDb> {
+        val (_, begin, end) = finalRequest
+
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            (ItemCollections innerJoin Players)
+                .slice(
+                    ItemCollections.collectionId,
+                    ItemCollections.playerId,
+                    ItemCollections.itemId,
+                    ItemCollections.qty,
+                    ItemCollections.latitude,
+                    ItemCollections.longitude,
+                    ItemCollections.dateTime,
+                    ItemCollections.mode,
+                )
+                .select { ItemCollections.dateTime.between(begin, end) }
+                .orderBy(ItemCollections.dateTime)
+                .orderBy(Players.dateTimeCreated)
+                .map { mapper.itemCollection(it) }
         }
     }
 

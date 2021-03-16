@@ -3,8 +3,13 @@ package com.adedom.teg.business.report
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.testfinal.*
 import com.adedom.teg.util.TegConstant
+import io.ktor.locations.*
+import java.text.SimpleDateFormat
+import java.util.*
 
+@KtorExperimentalLocationsAPI
 internal class ReportServiceImpl(
     private val repository: ReportRepository,
     private val business: TegBusiness,
@@ -215,6 +220,97 @@ internal class ReportServiceImpl(
         }
 
         response.message = message
+        return response
+    }
+
+    override fun testFinalPantip(finalRequest: FinalRequest): FinalResponse {
+        val response = FinalResponse()
+
+        val testFinalPantips = repository.testFinalPantips(finalRequest).map {
+            TestFinalPantipService(
+                collectionId = it.collectionId,
+                playerId = it.playerId,
+                itemId = it.itemId,
+                qty = it.qty,
+                dateTimeLong = it.dateTime,
+                dateString = SimpleDateFormat("d/M/yy").format(it.dateTime),
+                timeString = SimpleDateFormat("H:m").format(it.dateTime),
+                mode = it.mode,
+            )
+        }
+        val player = repository.player()
+
+        val finals = mutableListOf<Final>()
+        testFinalPantips
+            .distinctBy { it.playerId }
+            .forEach { playerIdScope ->
+
+                val dataList = mutableListOf<Data>()
+                testFinalPantips
+                    .filter { it.playerId == playerIdScope.playerId }
+                    .distinctBy { it.dateString }
+                    .forEach { dateScope ->
+                        val subDataList = mutableListOf<SubData>()
+                        val list = testFinalPantips
+                            .filter { it.playerId == playerIdScope.playerId }
+                            .filter { it.dateString == dateScope.dateString }
+
+                        val itemA = list
+                            .filter { it.itemId == TegConstant.SINGLE_ITEM_ONE }
+                            .sumBy { it.qty }
+                        val itemB = list
+                            .filter { it.itemId == TegConstant.SINGLE_ITEM_TWO }
+                            .sumBy { it.qty }
+                        val itemC = list
+                            .filter { it.itemId == TegConstant.SINGLE_ITEM_THREE }
+                            .sumBy { it.qty }
+                        val itemD = list
+                            .filter { it.itemId == TegConstant.ITEM_LEVEL }
+                            .sumBy { it.qty }
+                        val subData = SubData(
+                            subDataId = UUID.randomUUID().toString().replace("-", ""),
+                            date = dateScope.dateString,
+                            time = dateScope.timeString,
+                            itemA = itemA,
+                            itemB = itemB,
+                            itemC = itemC,
+                            itemD = itemD,
+                            totalScore = itemA + itemB + itemC + itemD,
+                        )
+                        subDataList.add(subData)
+
+                        val data = Data(
+                            dataId = UUID.randomUUID().toString().replace("-", ""),
+                            branchTotalScore = testFinalPantips
+                                .filter { it.playerId == playerIdScope.playerId }
+                                .filter { it.dateString == dateScope.dateString }
+                                .sumBy { it.qty },
+                            subData = subDataList,
+                        )
+                        dataList.add(data)
+                    }
+
+                val final = Final(
+                    playerId = playerIdScope.playerId,
+                    name = player.single { it.playerId == playerIdScope.playerId }.name,
+                    totalDate = testFinalPantips
+                        .filter { it.playerId == playerIdScope.playerId }
+                        .distinctBy { it.dateString }
+                        .size,
+                    subTotalScore = testFinalPantips
+                        .filter { it.playerId == playerIdScope.playerId }
+                        .sumBy { it.qty },
+                    `data` = dataList,
+                )
+                finals.add(final)
+            }
+
+        response.success = true
+        response.message = "Fetch test final pantip success"
+        response.grandTotalPeople = testFinalPantips.distinctBy { it.playerId }.size
+        response.grandTotalScore = testFinalPantips.sumBy { it.qty }
+        response.finals = finals
+
         return response
     }
 

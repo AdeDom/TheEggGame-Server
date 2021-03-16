@@ -1,7 +1,11 @@
 package com.adedom.teg.business.report
 
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.testfinal.FinalRequest
+import com.adedom.teg.models.report.testfinal.FinalResponse
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 internal interface ReportService {
 
     fun itemCollection(): ItemCollectionResponse
@@ -21,5 +25,7 @@ internal interface ReportService {
     fun singleItem(): SingleItemResponse
 
     fun gamePlayerRankings(): GamePlayerRankingsResponse
+
+    fun testFinalPantip(finalRequest: FinalRequest): FinalResponse
 
 }

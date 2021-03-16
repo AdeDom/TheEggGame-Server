@@ -2,6 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.report.ReportService
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.testfinal.FinalRequest
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -52,6 +53,11 @@ internal fun Route.reportController(service: ReportService) {
 
     get<GamePlayerRankingsRequest> {
         val response = service.gamePlayerRankings()
+        call.respond(response)
+    }
+
+    get<FinalRequest> { request ->
+        val response = service.testFinalPantip(request)
         call.respond(response)
     }
 

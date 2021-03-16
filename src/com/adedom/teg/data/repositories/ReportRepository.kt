@@ -1,7 +1,10 @@
 package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.models.*
+import com.adedom.teg.models.report.testfinal.FinalRequest
+import io.ktor.locations.*
 
+@KtorExperimentalLocationsAPI
 internal interface ReportRepository {
 
     fun itemCollection(): List<ItemCollectionDb>
@@ -19,5 +22,7 @@ internal interface ReportRepository {
     fun roomInfo(): List<RoomInfoDb>
 
     fun singleItem(): List<SingleItemDb>
+
+    fun testFinalPantips(finalRequest: FinalRequest): List<ItemCollectionDb>
 
 }
