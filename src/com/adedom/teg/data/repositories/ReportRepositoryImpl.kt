@@ -83,21 +83,39 @@ internal class ReportRepositoryImpl(
         return transaction {
             addLogger(StdOutSqlLogger)
 
-            (ItemCollections innerJoin Players)
-                .slice(
-                    ItemCollections.collectionId,
-                    ItemCollections.playerId,
-                    ItemCollections.itemId,
-                    ItemCollections.qty,
-                    ItemCollections.latitude,
-                    ItemCollections.longitude,
-                    ItemCollections.dateTime,
-                    ItemCollections.mode,
-                )
-                .select { ItemCollections.dateTime.between(begin, end) }
-                .orderBy(ItemCollections.dateTime)
-                .orderBy(Players.dateTimeCreated)
-                .map { mapper.itemCollection(it) }
+            if (begin == null && end == null) {
+                (ItemCollections innerJoin Players)
+                    .slice(
+                        ItemCollections.collectionId,
+                        ItemCollections.playerId,
+                        ItemCollections.itemId,
+                        ItemCollections.qty,
+                        ItemCollections.latitude,
+                        ItemCollections.longitude,
+                        ItemCollections.dateTime,
+                        ItemCollections.mode,
+                    )
+                    .selectAll()
+                    .orderBy(ItemCollections.dateTime)
+                    .orderBy(Players.dateTimeCreated)
+                    .map { mapper.itemCollection(it) }
+            } else {
+                (ItemCollections innerJoin Players)
+                    .slice(
+                        ItemCollections.collectionId,
+                        ItemCollections.playerId,
+                        ItemCollections.itemId,
+                        ItemCollections.qty,
+                        ItemCollections.latitude,
+                        ItemCollections.longitude,
+                        ItemCollections.dateTime,
+                        ItemCollections.mode,
+                    )
+                    .select { ItemCollections.dateTime.between(begin, end) }
+                    .orderBy(ItemCollections.dateTime)
+                    .orderBy(Players.dateTimeCreated)
+                    .map { mapper.itemCollection(it) }
+            }
         }
     }
 

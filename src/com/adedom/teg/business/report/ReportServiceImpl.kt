@@ -234,7 +234,7 @@ internal class ReportServiceImpl(
                 qty = it.qty,
                 dateTimeLong = it.dateTime,
                 dateString = SimpleDateFormat("d/M/yy").format(it.dateTime),
-                timeString = SimpleDateFormat("H:m").format(it.dateTime),
+                timeString = SimpleDateFormat("HH:mm").format(it.dateTime),
                 mode = it.mode,
             )
         }
