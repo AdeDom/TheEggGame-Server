@@ -243,46 +243,45 @@ internal class ReportServiceImpl(
         val finals = mutableListOf<Final>()
         testFinalPantips
             .distinctBy { it.playerId }
-            .forEach { playerIdScope ->
+            .forEach { playerScope ->
 
                 val dataList = mutableListOf<Data>()
                 testFinalPantips
-                    .filter { it.playerId == playerIdScope.playerId }
+                    .filter { it.playerId == playerScope.playerId }
                     .distinctBy { it.dateString }
                     .forEach { dateScope ->
                         val subDataList = mutableListOf<SubData>()
-                        val list = testFinalPantips
-                            .filter { it.playerId == playerIdScope.playerId }
+                        testFinalPantips
+                            .filter { it.playerId == playerScope.playerId }
                             .filter { it.dateString == dateScope.dateString }
+                            .distinctBy { it.timeString }
+                            .forEach { timeScope ->
+                                val list = testFinalPantips
+                                    .filter { it.playerId == playerScope.playerId }
+                                    .filter { it.dateString == dateScope.dateString }
+                                    .filter { it.timeString == timeScope.timeString }
 
-                        val itemA = list
-                            .filter { it.itemId == TegConstant.SINGLE_ITEM_ONE }
-                            .sumBy { it.qty }
-                        val itemB = list
-                            .filter { it.itemId == TegConstant.SINGLE_ITEM_TWO }
-                            .sumBy { it.qty }
-                        val itemC = list
-                            .filter { it.itemId == TegConstant.SINGLE_ITEM_THREE }
-                            .sumBy { it.qty }
-                        val itemD = list
-                            .filter { it.itemId == TegConstant.ITEM_LEVEL }
-                            .sumBy { it.qty }
-                        val subData = SubData(
-                            subDataId = UUID.randomUUID().toString().replace("-", ""),
-                            date = dateScope.dateString,
-                            time = dateScope.timeString,
-                            itemA = itemA,
-                            itemB = itemB,
-                            itemC = itemC,
-                            itemD = itemD,
-                            totalScore = itemA + itemB + itemC + itemD,
-                        )
-                        subDataList.add(subData)
+                                val subData = SubData(
+                                    subDataId = UUID.randomUUID().toString().replace("-", ""),
+                                    date = timeScope.dateString,
+                                    time = timeScope.timeString,
+                                    itemA = list.filter { it.itemId == TegConstant.SINGLE_ITEM_ONE }
+                                        .sumBy { it.qty },
+                                    itemB = list.filter { it.itemId == TegConstant.SINGLE_ITEM_TWO }
+                                        .sumBy { it.qty },
+                                    itemC = list.filter { it.itemId == TegConstant.SINGLE_ITEM_THREE }
+                                        .sumBy { it.qty },
+                                    itemD = list.filter { it.itemId == TegConstant.ITEM_LEVEL }
+                                        .sumBy { it.qty },
+                                    totalScore = list.sumBy { it.qty },
+                                )
+                                subDataList.add(subData)
+                            }
 
                         val data = Data(
                             dataId = UUID.randomUUID().toString().replace("-", ""),
                             branchTotalScore = testFinalPantips
-                                .filter { it.playerId == playerIdScope.playerId }
+                                .filter { it.playerId == playerScope.playerId }
                                 .filter { it.dateString == dateScope.dateString }
                                 .sumBy { it.qty },
                             subData = subDataList,
@@ -291,14 +290,14 @@ internal class ReportServiceImpl(
                     }
 
                 val final = Final(
-                    playerId = playerIdScope.playerId,
-                    name = player.single { it.playerId == playerIdScope.playerId }.name,
+                    playerId = playerScope.playerId,
+                    name = player.single { it.playerId == playerScope.playerId }.name,
                     totalDate = testFinalPantips
-                        .filter { it.playerId == playerIdScope.playerId }
+                        .filter { it.playerId == playerScope.playerId }
                         .distinctBy { it.dateString }
                         .size,
                     subTotalScore = testFinalPantips
-                        .filter { it.playerId == playerIdScope.playerId }
+                        .filter { it.playerId == playerScope.playerId }
                         .sumBy { it.qty },
                     `data` = dataList,
                 )
