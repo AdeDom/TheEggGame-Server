@@ -3,6 +3,7 @@ package com.adedom.teg.http.controller
 import com.adedom.teg.business.report.ReportService
 import com.adedom.teg.models.report.*
 import com.adedom.teg.models.report.testfinal.FinalRequest
+import com.adedom.teg.models.report.two.LogActiveHistoryRequest
 import io.ktor.application.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -53,6 +54,11 @@ internal fun Route.reportController(service: ReportService) {
 
     get<GamePlayerRankingsRequest> { request ->
         val response = service.gamePlayerRankings(request)
+        call.respond(response)
+    }
+
+    get<LogActiveHistoryRequest> { request ->
+        val response = service.logActiveHistory(request)
         call.respond(response)
     }
 

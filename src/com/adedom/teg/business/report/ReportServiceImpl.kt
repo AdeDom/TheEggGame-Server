@@ -4,6 +4,10 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
 import com.adedom.teg.models.report.testfinal.*
+import com.adedom.teg.models.report.two.LogActiveHistory
+import com.adedom.teg.models.report.two.LogActiveHistoryData
+import com.adedom.teg.models.report.two.LogActiveHistoryRequest
+import com.adedom.teg.models.report.two.LogActiveHistoryResponse
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 import java.text.SimpleDateFormat
@@ -243,6 +247,70 @@ internal class ReportServiceImpl(
         }
 
         response.message = message
+        return response
+    }
+
+    override fun logActiveHistory(logActiveHistoryRequest: LogActiveHistoryRequest): LogActiveHistoryResponse {
+        val response = LogActiveHistoryResponse()
+
+        val logActive = repository.logActive()
+        val player = repository.player()
+
+        var grandTotalTimePeriodLong = 0L
+        logActive.forEach {
+            if (it.dateTimeOut != null) {
+                grandTotalTimePeriodLong += it.dateTimeOut - it.dateTimeIn
+            }
+        }
+
+        val logActiveHistories = mutableListOf<LogActiveHistory>()
+        logActive
+            .distinctBy { it.playerId }
+            .forEach { playerScope ->
+                // logActiveHistoryDataList
+                val logActiveHistoryDataList = mutableListOf<LogActiveHistoryData>()
+                logActive
+                    .filter { it.playerId == playerScope.playerId }
+                    .forEach { laScope ->
+                        val dateSdf = SimpleDateFormat("dd/MM/yy")
+                        val timeSdf = SimpleDateFormat("HH:mm:ss")
+
+                        val logActiveHistoryData = LogActiveHistoryData(
+                            dataId = UUID.randomUUID().toString().replace("-", ""),
+                            dateIn = dateSdf.format(laScope.dateTimeIn),
+                            timeIn = timeSdf.format(laScope.dateTimeIn),
+                            dateOut = if (laScope.dateTimeOut == null) "" else dateSdf.format(laScope.dateTimeOut),
+                            timeOut = if (laScope.dateTimeOut == null) "" else timeSdf.format(laScope.dateTimeOut),
+                            timePeriod = if (laScope.dateTimeOut == null) "" else (laScope.dateTimeOut - laScope.dateTimeIn).toString(),
+                        )
+                        logActiveHistoryDataList.add(logActiveHistoryData)
+                    }
+
+                // totalTimePeriod
+                var totalTimePeriodLong = 0L
+                logActive
+                    .filter { it.playerId == playerScope.playerId }
+                    .forEach {
+                        if (it.dateTimeOut != null) {
+                            totalTimePeriodLong += it.dateTimeOut - it.dateTimeIn
+                        }
+                    }
+
+                // LogActiveHistory
+                val logActiveHistoryItem = LogActiveHistory(
+                    playerId = playerScope.playerId,
+                    name = player.single { it.playerId == playerScope.playerId }.name,
+                    time = logActive.filter { it.playerId == playerScope.playerId }.size,
+                    totalTimePeriod = totalTimePeriodLong.toString(),
+                    logActiveHistoryDataList = logActiveHistoryDataList,
+                )
+                logActiveHistories.add(logActiveHistoryItem)
+            }
+
+        response.peopleAll = logActive.distinctBy { it.playerId }.size
+        response.grandTotalTimePeriod = grandTotalTimePeriodLong.toString()
+        response.logActiveHistories = logActiveHistories
+
         return response
     }
 
