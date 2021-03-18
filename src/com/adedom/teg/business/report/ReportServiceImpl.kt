@@ -183,15 +183,16 @@ internal class ReportServiceImpl(
         return response
     }
 
-    override fun gamePlayerRankings(): GamePlayerRankingsResponse {
+    override fun gamePlayerRankings(gamePlayerRankingsRequest: GamePlayerRankingsRequest): GamePlayerRankingsResponse {
         val response = GamePlayerRankingsResponse()
+        val (_, begin, end) = gamePlayerRankingsRequest
 
         val message: String = when {
             else -> {
                 val getPlayerDb = repository.player()
                 val getItemCollectionDb = repository.itemCollection()
 
-                val gamePlayerRankings = getPlayerDb.map { db ->
+                var gamePlayerRankings = getPlayerDb.map { db ->
                     val level = getItemCollectionDb
                         .filter { it.playerId == db.playerId && it.itemId == TegConstant.ITEM_LEVEL }
                         .sumBy { it.qty }
@@ -211,9 +212,31 @@ internal class ReportServiceImpl(
                         dateTimeUpdated = business.toConvertDateTimeLongToString(db.dateTimeUpdated),
                         level = business.toConvertLevel(level),
                     )
+                }.sortedByDescending { it.level }
+
+                if (begin != null && end != null) {
+                    gamePlayerRankings = gamePlayerRankings.filter { it.level in (begin..end) }
                 }
 
-                response.gamePlayerRankings = gamePlayerRankings.sortedByDescending { it.level }
+                val genderCount = GenderCount(
+                    male = gamePlayerRankings.filter { it.gender == TegConstant.GENDER_MALE }.size,
+                    female = gamePlayerRankings.filter { it.gender == TegConstant.GENDER_FEMALE }.size,
+                )
+                val stateCount = StateCount(
+                    online = gamePlayerRankings.filter { it.state == TegConstant.STATE_ONLINE }.size,
+                    offline = gamePlayerRankings.filter { it.state == TegConstant.STATE_OFFLINE }.size,
+                )
+                val modeCount = ModeCount(
+                    main = gamePlayerRankings.filter { it.currentMode == TegConstant.PLAY_MODE_MAIN }.size,
+                    single = gamePlayerRankings.filter { it.currentMode == TegConstant.PLAY_MODE_SINGLE }.size,
+                    multi = gamePlayerRankings.filter { it.currentMode == TegConstant.PLAY_MODE_MULTI }.size,
+                )
+
+                response.peopleAll = gamePlayerRankings.size
+                response.genderCount = genderCount
+                response.stateCount = stateCount
+                response.modeCount = modeCount
+                response.gamePlayerRankings = gamePlayerRankings
                 response.success = true
                 "Fetch game player rankings success"
             }

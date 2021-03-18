@@ -24,7 +24,7 @@ internal interface ReportService {
 
     fun singleItem(): SingleItemResponse
 
-    fun gamePlayerRankings(): GamePlayerRankingsResponse
+    fun gamePlayerRankings(gamePlayerRankingsRequest: GamePlayerRankingsRequest): GamePlayerRankingsResponse
 
     fun testFinalPantip(finalRequest: FinalRequest): FinalResponse
 

@@ -51,8 +51,8 @@ internal fun Route.reportController(service: ReportService) {
         call.respond(response)
     }
 
-    get<GamePlayerRankingsRequest> {
-        val response = service.gamePlayerRankings()
+    get<GamePlayerRankingsRequest> { request ->
+        val response = service.gamePlayerRankings(request)
         call.respond(response)
     }
 
