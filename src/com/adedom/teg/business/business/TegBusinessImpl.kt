@@ -289,6 +289,33 @@ class TegBusinessImpl : TegBusiness {
         }
     }
 
+    override fun convertLongToTimeString(millis: Long): String {
+        return when {
+            millis in 0..59_999 -> "00:${getSecondTimeString(millis)}"
+            millis in 60_000..3_599_999 -> {
+                val minutes = millis.div(60_000).toString().padStart(2, '0')
+                val second = getSecondTimeString(millis % 60_000).padStart(2, '0')
+                "$minutes:$second"
+            }
+            millis in 3_600_000..86_399_999L -> {
+                val hour = millis.div(3_600_000)
+                val minuteAndSecond = convertLongToTimeString(millis % 3_600_000)
+                "$hour:$minuteAndSecond"
+            }
+            millis >= 86_400_000L -> {
+                val day = millis.div(86_400_000L)
+                val time = convertLongToTimeString(millis % 86_400_000L)
+                "${day}day $time"
+            }
+            else -> "Error"
+        }
+    }
+
+    private fun getSecondTimeString(millis: Long) = when (millis) {
+        in 0..59_999 -> millis.div(1_000).toString().padStart(2, '0')
+        else -> "Error"
+    }
+
     override fun toMessageIsNullOrBlank(values: String?): String {
         return "Please enter $values"
     }

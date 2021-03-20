@@ -58,6 +58,8 @@ interface TegBusiness {
 
     fun multiPlayerEndGame(scoreTeamA: Int?, scoreTeamB: Int?, team: String): Triple<String, String, Boolean>?
 
+    fun convertLongToTimeString(millis: Long): String
+
     fun toMessageIsNullOrBlank(values: String?): String
 
     fun toMessageIsNullOrBlank(kProperty0: KProperty0<String?>): String

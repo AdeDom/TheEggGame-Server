@@ -281,7 +281,11 @@ internal class ReportServiceImpl(
                             timeIn = timeSdf.format(laScope.dateTimeIn),
                             dateOut = if (laScope.dateTimeOut == null) "" else dateSdf.format(laScope.dateTimeOut),
                             timeOut = if (laScope.dateTimeOut == null) "" else timeSdf.format(laScope.dateTimeOut),
-                            timePeriod = if (laScope.dateTimeOut == null) "" else (laScope.dateTimeOut - laScope.dateTimeIn).toString(),
+                            timePeriod = if (laScope.dateTimeOut == null) {
+                                ""
+                            } else {
+                                business.convertLongToTimeString(laScope.dateTimeOut - laScope.dateTimeIn)
+                            },
                         )
                         logActiveHistoryDataList.add(logActiveHistoryData)
                     }
@@ -301,14 +305,14 @@ internal class ReportServiceImpl(
                     playerId = playerScope.playerId,
                     name = player.single { it.playerId == playerScope.playerId }.name,
                     time = logActive.filter { it.playerId == playerScope.playerId }.size,
-                    totalTimePeriod = totalTimePeriodLong.toString(),
+                    totalTimePeriod = business.convertLongToTimeString(totalTimePeriodLong),
                     logActiveHistoryDataList = logActiveHistoryDataList,
                 )
                 logActiveHistories.add(logActiveHistoryItem)
             }
 
         response.peopleAll = logActive.distinctBy { it.playerId }.size
-        response.grandTotalTimePeriod = grandTotalTimePeriodLong.toString()
+        response.grandTotalTimePeriod = business.convertLongToTimeString(grandTotalTimePeriodLong)
         response.logActiveHistories = logActiveHistories
 
         return response

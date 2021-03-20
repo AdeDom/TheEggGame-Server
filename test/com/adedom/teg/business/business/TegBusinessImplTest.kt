@@ -1,6 +1,5 @@
 package com.adedom.teg.business.business
 
-import com.adedom.teg.data.models.SingleItemDb
 import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.util.TegConstant
 import org.junit.Assert.assertFalse
@@ -363,18 +362,6 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun isValidateDateTimeCurrent_incorrect_returnTrue() {
-        // given
-        val dateTimeLast = 1603609762783
-
-        // when
-        val result = business.isValidateDateTimeCurrent(dateTimeLast)
-
-        // then
-        assertTrue(result)
-    }
-
-    @Test
     fun isValidateDateTimeCurrent_correct_returnFalse() {
         // given
         val dateTimeLast = 1601466777109
@@ -408,18 +395,6 @@ class TegBusinessImplTest {
 
         // then
         assertFalse(result)
-    }
-
-    @Test
-    fun isValidateMissionSingle_correct_returnTrue() {
-        // given
-        val dateTimeList = listOf(1603613803273, 1603613803273, 1603613803273)
-
-        // when
-        val result = business.isValidateMissionSingle(dateTimeList)
-
-        // then
-        assertTrue(result)
     }
 
     @Test
@@ -593,7 +568,7 @@ class TegBusinessImplTest {
     @Test
     fun toConvertLevel_nonLevel_returnLevel() {
         // given
-        val level: Int? = 999
+        val level = 999
 
         // when
         val result = business.toConvertLevel(level)
@@ -605,7 +580,7 @@ class TegBusinessImplTest {
     @Test
     fun toConvertLevel_level_returnLevel() {
         // given
-        val level: Int? = 5999
+        val level = 5999
 
         // when
         val result = business.toConvertLevel(level)
@@ -679,64 +654,6 @@ class TegBusinessImplTest {
     }
 
     @Test
-    fun addSingleItemTimes_near_returnZero() {
-        // given
-        val currentLatLng = TegLatLng(13.6041, 100.6973523)
-        val singleItems = listOf(
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 13.6041, longitude = 100.6973523),
-        )
-
-        // when
-        val result = business.addSingleItemTimes(currentLatLng, singleItems)
-
-        // then
-        assertEquals(0, result)
-    }
-
-    @Test
-    fun addSingleItemTimes_far_returnTen() {
-        // given
-        val currentLatLng = TegLatLng(13.6041, 100.6973523)
-        val singleItems = listOf(
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-            SingleItemDb(latitude = 14.6041, longitude = 100.6973523),
-        )
-
-        // when
-        val result = business.addSingleItemTimes(currentLatLng, singleItems)
-
-        // then
-        assertEquals(10, result)
-    }
-
-    @Test
     fun multiPlayerEndGame_scoreTeamAOverScoreTeamB_returnWin() {
         // given
         val scoreTeamA = 3
@@ -782,6 +699,62 @@ class TegBusinessImplTest {
         assertEquals(TegConstant.MULTI_PLAYER_RESULT_ALWAYS, result?.first)
         assertEquals(TegConstant.MULTI_PLAYER_RESULT_ALWAYS, result?.second)
         assertTrue(result?.third ?: false)
+    }
+
+    @Test
+    fun convertLongToTimeString_oneMinute() {
+        // given
+        val millis = 59_999L
+//        val millis = 60_000L
+
+        // when
+        val result = business.convertLongToTimeString(millis)
+        println("result minute : $result")
+
+        // then
+        assertEquals("00:59", result)
+    }
+
+    @Test
+    fun convertLongToTimeString_oneHour() {
+        // given
+        val millis = 3_599_999L
+//        val millis = 3_600_000L
+
+        // when
+        val result = business.convertLongToTimeString(millis)
+        println("result hour : $result")
+
+        // then
+        assertEquals("59:59", result)
+    }
+
+    @Test
+    fun convertLongToTimeString_oneDay() {
+        // given
+        val millis = 86_399_999L
+//        val millis = 86_400_000L
+
+        // when
+        val result = business.convertLongToTimeString(millis)
+        println("result day : $result")
+
+        // then
+        assertEquals("23:59:59", result)
+    }
+
+    @Test
+    fun convertLongToTimeString_fiveDay() {
+        // given
+        val millis = 431_999_999L
+//        val millis = 432_000_000L
+
+        // when
+        val result = business.convertLongToTimeString(millis)
+        println("result five day : $result")
+
+        // then
+        assertEquals("4day 23:59:59", result)
     }
 
 }
