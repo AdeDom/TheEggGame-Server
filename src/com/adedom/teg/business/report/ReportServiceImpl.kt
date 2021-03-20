@@ -4,6 +4,10 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
 import com.adedom.teg.models.report.testfinal.*
+import com.adedom.teg.models.report.three.RoomHistory
+import com.adedom.teg.models.report.three.RoomHistoryRequest
+import com.adedom.teg.models.report.three.RoomHistoryResponse
+import com.adedom.teg.models.report.three.RoomInfoHistory
 import com.adedom.teg.models.report.two.LogActiveHistory
 import com.adedom.teg.models.report.two.LogActiveHistoryData
 import com.adedom.teg.models.report.two.LogActiveHistoryRequest
@@ -314,6 +318,58 @@ internal class ReportServiceImpl(
         response.peopleAll = logActive.distinctBy { it.playerId }.size
         response.grandTotalTimePeriod = business.convertLongToTimeString(grandTotalTimePeriodLong)
         response.logActiveHistories = logActiveHistories
+
+        return response
+    }
+
+    override fun roomHistory(roomHistoryRequest: RoomHistoryRequest): RoomHistoryResponse {
+        val response = RoomHistoryResponse()
+        val (_, begin, end) = roomHistoryRequest
+
+        var room = repository.room()
+        val roomInfo = repository.roomInfo()
+        val player = repository.player()
+
+        if (begin != null && end != null) {
+            room = room.filter { it.dateTime in (begin..end) }
+        }
+
+        val fullSdf = SimpleDateFormat("dd/MM/yy HH:mm")
+        val sdf = SimpleDateFormat("HH:mm")
+
+        val roomHistories = mutableListOf<RoomHistory>()
+        room.forEach { roomScope ->
+            val roomInfoHistories = mutableListOf<RoomInfoHistory>()
+            roomInfo
+                .filter { it.roomNo == roomScope.roomNo }
+                .forEach { roomInfoScope ->
+                    val roomInfoHistory = RoomInfoHistory(
+                        infoId = roomInfoScope.infoId,
+                        playerId = roomInfoScope.playerId,
+                        name = player.single { it.playerId == roomInfoScope.playerId }.name,
+                        team = roomInfoScope.team,
+                        status = roomInfoScope.status,
+                        role = roomInfoScope.role,
+                        dateTime = sdf.format(roomInfoScope.dateTime),
+                    )
+                    roomInfoHistories.add(roomInfoHistory)
+                }
+
+            val roomHistoryDb = RoomHistory(
+                roomId = roomScope.roomId,
+                roomNo = roomScope.roomNo,
+                name = roomScope.name,
+                people = roomScope.people,
+                status = roomScope.status,
+                dateTime = fullSdf.format(roomScope.dateTime),
+                peopleAll = roomInfo.filter { it.roomNo == roomScope.roomNo }.size,
+                roomInfoHistories = roomInfoHistories,
+            )
+            roomHistories.add(roomHistoryDb)
+        }
+
+        response.roomAll = room.size
+        response.roomHistories = roomHistories
 
         return response
     }

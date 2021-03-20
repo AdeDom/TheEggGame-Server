@@ -3,6 +3,8 @@ package com.adedom.teg.business.report
 import com.adedom.teg.models.report.*
 import com.adedom.teg.models.report.testfinal.FinalRequest
 import com.adedom.teg.models.report.testfinal.FinalResponse
+import com.adedom.teg.models.report.three.RoomHistoryRequest
+import com.adedom.teg.models.report.three.RoomHistoryResponse
 import com.adedom.teg.models.report.two.LogActiveHistoryRequest
 import com.adedom.teg.models.report.two.LogActiveHistoryResponse
 import io.ktor.locations.*
@@ -29,6 +31,8 @@ internal interface ReportService {
     fun gamePlayerRankings(gamePlayerRankingsRequest: GamePlayerRankingsRequest): GamePlayerRankingsResponse
 
     fun logActiveHistory(logActiveHistoryRequest: LogActiveHistoryRequest): LogActiveHistoryResponse
+
+    fun roomHistory(roomHistoryRequest: RoomHistoryRequest): RoomHistoryResponse
 
     fun testFinalPantip(finalRequest: FinalRequest): FinalResponse
 
