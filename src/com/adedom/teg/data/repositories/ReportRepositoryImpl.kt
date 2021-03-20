@@ -4,6 +4,7 @@ import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.Mapper
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.report.testfinal.FinalRequest
+import com.adedom.teg.models.report.two.LogActiveHistoryRequest
 import io.ktor.locations.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -74,6 +75,26 @@ internal class ReportRepositoryImpl(
             SingleItems.selectAll()
                 .orderBy(SingleItems.dateTimeCreated, SortOrder.DESC)
                 .map { mapper.singleItem(it) }
+        }
+    }
+
+    override fun logActiveHistory(logActiveHistoryRequest: LogActiveHistoryRequest): List<LogActiveDb> {
+        val (_, dateTimeIn, dateTimeOut) = logActiveHistoryRequest
+
+        return transaction {
+            addLogger(StdOutSqlLogger)
+
+            if (dateTimeIn == null && dateTimeOut == null) {
+                LogActives.selectAll()
+                    .orderBy(LogActives.dateTimeIn, SortOrder.DESC)
+                    .map { mapper.logActive(it) }
+            } else {
+                LogActives.selectAll()
+                    .orWhere { LogActives.dateTimeIn.between(dateTimeIn, dateTimeOut) }
+                    .orWhere { LogActives.dateTimeOut.between(dateTimeIn, dateTimeOut) }
+                    .orderBy(LogActives.dateTimeIn, SortOrder.DESC)
+                    .map { mapper.logActive(it) }
+            }
         }
     }
 

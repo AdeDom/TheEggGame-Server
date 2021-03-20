@@ -253,7 +253,7 @@ internal class ReportServiceImpl(
     override fun logActiveHistory(logActiveHistoryRequest: LogActiveHistoryRequest): LogActiveHistoryResponse {
         val response = LogActiveHistoryResponse()
 
-        val logActive = repository.logActive()
+        val logActive = repository.logActiveHistory(logActiveHistoryRequest)
         val player = repository.player()
 
         var grandTotalTimePeriodLong = 0L

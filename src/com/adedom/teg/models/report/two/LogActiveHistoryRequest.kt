@@ -6,8 +6,6 @@ import io.ktor.locations.*
 @Location("/api/report/log-active-history/{filter}")
 data class LogActiveHistoryRequest(
     val filter: String? = null,
-    val dateIn: Long? = null,
-    val timeIn: Long? = null,
-    val dateOut: Long? = null,
-    val timeOut: Long? = null,
+    val dateTimeIn: Long? = null,
+    val dateTimeOut: Long? = null,
 )
