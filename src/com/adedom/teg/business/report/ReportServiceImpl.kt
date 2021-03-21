@@ -3,6 +3,7 @@ package com.adedom.teg.business.report
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.four.*
 import com.adedom.teg.models.report.testfinal.*
 import com.adedom.teg.models.report.three.RoomHistory
 import com.adedom.teg.models.report.three.RoomHistoryRequest
@@ -370,6 +371,79 @@ internal class ReportServiceImpl(
 
         response.roomAll = room.size
         response.roomHistories = roomHistories
+
+        return response
+    }
+
+    override fun itemCollectionHistory(): ItemCollectionHistoryResponse {
+        val response = ItemCollectionHistoryResponse()
+
+        val itemCollection = repository.itemCollection()
+        val player = repository.player()
+
+        val dateSdf = SimpleDateFormat("dd/MM/yy")
+        val timeSdf = SimpleDateFormat("HH:mm")
+
+        val itemCollectionPlayers = mutableListOf<ItemCollectionPlayer>()
+        itemCollection
+            .distinctBy { it.playerId }
+            .forEach { playerScope ->
+                // ItemCollectionMode
+                val itemCollectionModes = mutableListOf<ItemCollectionMode>()
+                val modeList = listOf(
+                    TegConstant.PLAY_MODE_MAIN,
+                    TegConstant.PLAY_MODE_SINGLE,
+                    TegConstant.PLAY_MODE_MULTI,
+                    TegConstant.MISSION_DELIVERY,
+                    TegConstant.MISSION_SINGLE,
+                    TegConstant.MISSION_MULTI,
+                )
+                modeList.forEach { mode ->
+                    itemCollection
+                        .filter { it.playerId == playerScope.playerId }
+                        .filter { it.mode == mode }
+                        .distinctBy { it.mode }
+                        .forEach { modeScope ->
+                            // ItemCollectionItem
+                            val itemCollectionItems = mutableListOf<ItemCollectionItem>()
+                            itemCollection
+                                .filter { it.playerId == playerScope.playerId }
+                                .filter { it.mode == modeScope.mode }
+                                .forEach { itemScope ->
+                                    val itemCollectionItem = ItemCollectionItem(
+                                        collectionId = itemScope.collectionId,
+                                        itemId = itemScope.itemId,
+                                        qty = itemScope.qty,
+                                        date = dateSdf.format(itemScope.dateTime),
+                                        time = timeSdf.format(itemScope.dateTime),
+                                    )
+                                    itemCollectionItems.add(itemCollectionItem)
+                                }
+
+                            val itemCollectionMode = ItemCollectionMode(
+                                modeId = UUID.randomUUID().toString().replace("-", ""),
+                                mode = mode.replace("mission_", "*"),
+                                itemQtyAll = itemCollectionItems.sumBy { it.qty ?: 0 },
+                                itemAll = itemCollectionItems.size,
+                                itemCollectionItems = itemCollectionItems,
+                            )
+                            itemCollectionModes.add(itemCollectionMode)
+                        }
+                }
+
+                // ItemCollectionPlayer
+                val itemCollectionPlayer = ItemCollectionPlayer(
+                    playerId = playerScope.playerId,
+                    name = player.single { it.playerId == playerScope.playerId }.name,
+                    modeAll = itemCollectionModes.size,
+                    itemCollectionModes = itemCollectionModes,
+                )
+                itemCollectionPlayers.add(itemCollectionPlayer)
+            }
+
+        response.itemAll = itemCollection.sumBy { it.qty }
+        response.playerAll = itemCollection.distinctBy { it.playerId }.size
+        response.itemCollectionPlayers = itemCollectionPlayers
 
         return response
     }

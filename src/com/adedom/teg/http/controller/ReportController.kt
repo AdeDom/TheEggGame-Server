@@ -2,6 +2,7 @@ package com.adedom.teg.http.controller
 
 import com.adedom.teg.business.report.ReportService
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.four.ItemCollectionHistoryRequest
 import com.adedom.teg.models.report.testfinal.FinalRequest
 import com.adedom.teg.models.report.three.RoomHistoryRequest
 import com.adedom.teg.models.report.two.LogActiveHistoryRequest
@@ -65,6 +66,11 @@ internal fun Route.reportController(service: ReportService) {
 
     get<RoomHistoryRequest> { request ->
         val response = service.roomHistory(request)
+        call.respond(response)
+    }
+
+    get<ItemCollectionHistoryRequest> {
+        val response = service.itemCollectionHistory()
         call.respond(response)
     }
 
