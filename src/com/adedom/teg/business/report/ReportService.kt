@@ -1,6 +1,7 @@
 package com.adedom.teg.business.report
 
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.four.ItemCollectionHistoryRequest
 import com.adedom.teg.models.report.four.ItemCollectionHistoryResponse
 import com.adedom.teg.models.report.testfinal.FinalRequest
 import com.adedom.teg.models.report.testfinal.FinalResponse
@@ -35,7 +36,7 @@ internal interface ReportService {
 
     fun roomHistory(roomHistoryRequest: RoomHistoryRequest): RoomHistoryResponse
 
-    fun itemCollectionHistory(): ItemCollectionHistoryResponse
+    fun itemCollectionHistory(itemCollectionHistoryRequest: ItemCollectionHistoryRequest): ItemCollectionHistoryResponse
 
     fun testFinalPantip(finalRequest: FinalRequest): FinalResponse
 

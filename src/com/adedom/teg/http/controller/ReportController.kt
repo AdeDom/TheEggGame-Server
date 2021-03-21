@@ -69,8 +69,8 @@ internal fun Route.reportController(service: ReportService) {
         call.respond(response)
     }
 
-    get<ItemCollectionHistoryRequest> {
-        val response = service.itemCollectionHistory()
+    get<ItemCollectionHistoryRequest> { request ->
+        val response = service.itemCollectionHistory(request)
         call.respond(response)
     }
 

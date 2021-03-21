@@ -375,11 +375,16 @@ internal class ReportServiceImpl(
         return response
     }
 
-    override fun itemCollectionHistory(): ItemCollectionHistoryResponse {
+    override fun itemCollectionHistory(itemCollectionHistoryRequest: ItemCollectionHistoryRequest): ItemCollectionHistoryResponse {
         val response = ItemCollectionHistoryResponse()
+        val (_, begin, end) = itemCollectionHistoryRequest
 
-        val itemCollection = repository.itemCollection()
+        var itemCollection = repository.itemCollection()
         val player = repository.player()
+
+        if (begin != null && end != null) {
+            itemCollection = itemCollection.filter { it.dateTime in (begin..end) }
+        }
 
         val dateSdf = SimpleDateFormat("dd/MM/yy")
         val timeSdf = SimpleDateFormat("HH:mm")
