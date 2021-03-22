@@ -3,6 +3,7 @@ package com.adedom.teg.business.report
 import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
+import com.adedom.teg.models.report.five.*
 import com.adedom.teg.models.report.four.*
 import com.adedom.teg.models.report.testfinal.*
 import com.adedom.teg.models.report.three.RoomHistory
@@ -449,6 +450,66 @@ internal class ReportServiceImpl(
         response.itemAll = itemCollection.sumBy { it.qty }
         response.playerAll = itemCollection.distinctBy { it.playerId }.size
         response.itemCollectionPlayers = itemCollectionPlayers
+
+        return response
+    }
+
+    override fun multiCollectionHistory(multiCollectionHistoryRequest: MultiCollectionHistoryRequest): MultiCollectionHistoryResponse {
+        val response = MultiCollectionHistoryResponse()
+        val (_, begin, end) = multiCollectionHistoryRequest
+
+        val dateSdf = SimpleDateFormat("dd/MM/yy")
+        val timeSdf = SimpleDateFormat("HH:mm")
+
+        val player = repository.player()
+        var multiCollection = repository.multiCollection().map { db ->
+            MultiCollectionHistoryDb(
+                collectionId = db.collectionId,
+                roomNo = db.roomNo,
+                playerId = db.playerId,
+                name = player.single { it.playerId == db.playerId }.name,
+                team = db.team,
+                dateTime = db.dateTime,
+                date = dateSdf.format(db.dateTime),
+                time = timeSdf.format(db.dateTime),
+            )
+        }
+
+        if (begin != null && end != null) {
+            multiCollection = multiCollection.filter { it.dateTime in (begin..end) }
+        }
+
+        val multiCollectionDates = mutableListOf<MultiCollectionDate>()
+        multiCollection
+            .distinctBy { it.date }
+            .forEach { dateScope ->
+                val multiCollectionTimes = mutableListOf<MultiCollectionTime>()
+                multiCollection
+                    .filter { it.date == dateScope.date }
+                    .forEach { timeScope ->
+                        val multiCollectionTime = MultiCollectionTime(
+                            timeId = UUID.randomUUID().toString().replace("-", ""),
+                            time = timeScope.time,
+                            collectionId = timeScope.collectionId,
+                            roomNo = timeScope.roomNo,
+                            playerId = timeScope.playerId,
+                            name = timeScope.name,
+                            team = timeScope.team,
+                        )
+                        multiCollectionTimes.add(multiCollectionTime)
+                    }
+
+                val multiCollectionDate = MultiCollectionDate(
+                    dateId = UUID.randomUUID().toString().replace("-", ""),
+                    date = dateScope.date,
+                    timeAll = multiCollectionTimes.size,
+                    multiCollectionTimes = multiCollectionTimes,
+                )
+                multiCollectionDates.add(multiCollectionDate)
+            }
+
+        response.dateAll = multiCollection.distinctBy { it.date }.size
+        response.multiCollectionDates = multiCollectionDates
 
         return response
     }
