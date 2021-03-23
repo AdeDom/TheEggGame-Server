@@ -836,6 +836,7 @@ class TegRepositoryImpl : TegRepository {
         val statement = transaction {
             MultiItems.update({ MultiItems.multiId eq multiId }) {
                 it[MultiItems.status] = TegConstant.MULTI_ITEM_STATUS_OFF
+                it[MultiItems.dateTimeUpdated] = System.currentTimeMillis()
             }
 
             val team = RoomInfos

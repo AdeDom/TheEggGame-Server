@@ -5,6 +5,7 @@ import com.adedom.teg.data.repositories.ReportRepository
 import com.adedom.teg.models.report.*
 import com.adedom.teg.models.report.five.*
 import com.adedom.teg.models.report.four.*
+import com.adedom.teg.models.report.six.*
 import com.adedom.teg.models.report.testfinal.*
 import com.adedom.teg.models.report.three.RoomHistory
 import com.adedom.teg.models.report.three.RoomHistoryRequest
@@ -510,6 +511,69 @@ internal class ReportServiceImpl(
 
         response.dateAll = multiCollection.distinctBy { it.date }.size
         response.multiCollectionDates = multiCollectionDates
+
+        return response
+    }
+
+    override fun singleItemHistory(singleItemHistoryRequest: SingleItemHistoryRequest): SingleItemHistoryResponse {
+        val response = SingleItemHistoryResponse()
+        val (_, begin, end) = singleItemHistoryRequest
+
+        val dateSdf = SimpleDateFormat("dd/MM/yy")
+        val timeSdf = SimpleDateFormat("HH:mm")
+        val fullSdf = SimpleDateFormat("dd/MM/yy HH:mm")
+
+        val player = repository.player()
+        var multiItem = repository.singleItem().map { db ->
+            MultiItemHistoryDb(
+                singleId = db.singleId,
+                itemTypeId = db.itemTypeId,
+                playerId = db.playerId,
+                name = player.singleOrNull { it.playerId == db.playerId }?.name,
+                status = db.status,
+                dateTimeCreated = db.dateTimeCreated,
+                dateCreated = dateSdf.format(db.dateTimeCreated),
+                timeCreated = timeSdf.format(db.dateTimeCreated),
+                dateTimeUpdated = db.dateTimeUpdated?.let { fullSdf.format(db.dateTimeUpdated) },
+            )
+        }
+
+        if (begin != null && end != null) {
+            multiItem = multiItem.filter { it.dateTimeCreated in (begin..end) }
+        }
+
+        val singleItemDates = mutableListOf<SingleItemDate>()
+        multiItem
+            .distinctBy { it.dateCreated }
+            .forEach { dateScope ->
+                val singleItemTimes = mutableListOf<SingleItemTime>()
+                multiItem
+                    .filter { it.dateCreated == dateScope.dateCreated }
+                    .forEach { timeScope ->
+                        val singleItemTime = SingleItemTime(
+                            timeId = UUID.randomUUID().toString().replace("-", ""),
+                            time = timeScope.timeCreated,
+                            singleId = timeScope.singleId,
+                            itemTypeId = timeScope.itemTypeId,
+                            playerId = timeScope.playerId,
+                            name = timeScope.name,
+                            status = timeScope.status,
+                            dateTimeUpdated = timeScope.dateTimeUpdated,
+                        )
+                        singleItemTimes.add(singleItemTime)
+                    }
+
+                val singleItemDate = SingleItemDate(
+                    dateId = UUID.randomUUID().toString().replace("-", ""),
+                    date = dateScope.dateCreated,
+                    timeAll = singleItemTimes.size,
+                    singleItemTimes = singleItemTimes,
+                )
+                singleItemDates.add(singleItemDate)
+            }
+
+        response.dateAll = multiItem.distinctBy { it.dateCreated }.size
+        response.singleItemDates = singleItemDates
 
         return response
     }

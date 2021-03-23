@@ -5,6 +5,8 @@ import com.adedom.teg.models.report.five.MultiCollectionHistoryRequest
 import com.adedom.teg.models.report.five.MultiCollectionHistoryResponse
 import com.adedom.teg.models.report.four.ItemCollectionHistoryRequest
 import com.adedom.teg.models.report.four.ItemCollectionHistoryResponse
+import com.adedom.teg.models.report.six.SingleItemHistoryRequest
+import com.adedom.teg.models.report.six.SingleItemHistoryResponse
 import com.adedom.teg.models.report.testfinal.FinalRequest
 import com.adedom.teg.models.report.testfinal.FinalResponse
 import com.adedom.teg.models.report.three.RoomHistoryRequest
@@ -41,6 +43,8 @@ internal interface ReportService {
     fun itemCollectionHistory(itemCollectionHistoryRequest: ItemCollectionHistoryRequest): ItemCollectionHistoryResponse
 
     fun multiCollectionHistory(multiCollectionHistoryRequest: MultiCollectionHistoryRequest): MultiCollectionHistoryResponse
+
+    fun singleItemHistory(singleItemHistoryRequest: SingleItemHistoryRequest): SingleItemHistoryResponse
 
     fun testFinalPantip(finalRequest: FinalRequest): FinalResponse
 
