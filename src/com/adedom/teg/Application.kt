@@ -40,7 +40,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
 
     // database mysql
-    val databaseConfig = DatabaseConfig.Heroku
+    val databaseConfig = DatabaseConfig.Localhost
     val config = HikariConfig().apply {
         jdbcUrl = databaseConfig.jdbcUrl
         driverClassName = "com.mysql.cj.jdbc.Driver"
