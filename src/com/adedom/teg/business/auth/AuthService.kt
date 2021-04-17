@@ -8,7 +8,7 @@ import io.ktor.http.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface AuthService {
+internal interface AuthService {
 
     fun signIn(signInRequest: SignInRequest): SignInResponse
 

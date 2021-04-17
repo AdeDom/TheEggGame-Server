@@ -2,16 +2,15 @@ package com.adedom.teg.business.application
 
 import com.adedom.teg.models.request.ChangeCurrentModeRequest
 import com.adedom.teg.models.request.MissionRequest
-import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.BaseResponse
 import com.adedom.teg.models.response.MissionResponse
 import com.adedom.teg.models.response.RankPlayersResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface ApplicationService {
+internal interface ApplicationService {
 
-    fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse
+    fun fetchRankPlayers(): RankPlayersResponse
 
     fun logActiveOn(playerId: String?): BaseResponse
 

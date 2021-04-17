@@ -15,7 +15,7 @@ import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class AccountServiceImpl(
+internal class AccountServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
 ) : AccountService {

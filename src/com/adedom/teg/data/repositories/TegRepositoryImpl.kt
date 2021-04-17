@@ -2,6 +2,7 @@ package com.adedom.teg.data.repositories
 
 import com.adedom.teg.data.database.*
 import com.adedom.teg.data.map.MapObject
+import com.adedom.teg.data.map.Mapper
 import com.adedom.teg.data.models.*
 import com.adedom.teg.models.TegLatLng
 import com.adedom.teg.models.request.*
@@ -13,7 +14,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 @KtorExperimentalLocationsAPI
-class TegRepositoryImpl : TegRepository {
+internal class TegRepositoryImpl(
+    private val mapper: Mapper,
+) : TegRepository {
 
     override fun isUsernameRepeat(username: String): Boolean {
         return transaction {
@@ -225,36 +228,19 @@ class TegRepositoryImpl : TegRepository {
         return result == 1
     }
 
-    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb> {
-        val (_, search, limit) = rankPlayersRequest
-
+    override fun fetchRankPlayers(): Pair<List<ItemCollectionDb>, List<PlayerDb>> {
         return transaction {
             addLogger(StdOutSqlLogger)
 
-            val query = (Players innerJoin ItemCollections)
-                .slice(
-                    Players.playerId,
-                    Players.username,
-                    Players.name,
-                    Players.image,
-                    ItemCollections.qty.sum(),
-                    Players.state,
-                    Players.gender,
-                    Players.birthDate,
-                    Players.latitude,
-                    Players.longitude,
-                )
-                .select { ItemCollections.itemId eq 1 and (Players.name like "%${search}%") }
-                .groupBy(Players.playerId)
-                .orderBy(ItemCollections.qty.sum() to SortOrder.DESC, Players.playerId to SortOrder.ASC)
+            val itemCollectionDb = ItemCollections.selectAll()
+                .orderBy(ItemCollections.dateTime, SortOrder.DESC)
+                .map { mapper.itemCollection(it) }
 
-            when (limit!!.toInt()) {
-                TegConstant.RANK_LIMIT_TEN -> query.limit(TegConstant.RANK_LIMIT_TEN)
-                TegConstant.RANK_LIMIT_FIFTY -> query.limit(TegConstant.RANK_LIMIT_FIFTY)
-                TegConstant.RANK_LIMIT_HUNDRED -> query.limit(TegConstant.RANK_LIMIT_HUNDRED)
-            }
+            val playerDb = Players.selectAll()
+                .orderBy(Players.dateTimeCreated, SortOrder.DESC)
+                .map { mapper.player(it) }
 
-            query.map { MapObject.toPlayerInfoDb(it) }
+            Pair(itemCollectionDb, playerDb)
         }
     }
 

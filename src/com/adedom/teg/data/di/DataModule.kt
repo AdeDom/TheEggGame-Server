@@ -14,7 +14,7 @@ private val dataModule = module {
 
     single<Mapper> { MapperImpl() }
 
-    single<TegRepository> { TegRepositoryImpl() }
+    single<TegRepository> { TegRepositoryImpl(get()) }
     single<ReportRepository> { ReportRepositoryImpl(get()) }
 
 }

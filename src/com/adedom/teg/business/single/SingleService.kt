@@ -11,7 +11,7 @@ import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface SingleService {
+internal interface SingleService {
 
     fun fetchItemCollection(playerId: String?): BackpackResponse
 

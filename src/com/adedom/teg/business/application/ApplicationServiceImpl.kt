@@ -4,52 +4,52 @@ import com.adedom.teg.business.business.TegBusiness
 import com.adedom.teg.data.repositories.TegRepository
 import com.adedom.teg.models.request.ChangeCurrentModeRequest
 import com.adedom.teg.models.request.MissionRequest
-import com.adedom.teg.models.request.RankPlayersRequest
 import com.adedom.teg.models.response.*
 import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class ApplicationServiceImpl(
+internal class ApplicationServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
 ) : ApplicationService {
 
-    override fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): RankPlayersResponse {
+    override fun fetchRankPlayers(): RankPlayersResponse {
         val response = RankPlayersResponse()
-        val (_, search, limit) = rankPlayersRequest
 
         val message: String = when {
             // validate Null Or Blank
-            search == null -> business.toMessageIsNullOrBlank(rankPlayersRequest::search)
-            limit.isNullOrBlank() -> business.toMessageIsNullOrBlank(rankPlayersRequest::limit)
-            limit.toIntOrNull() == null -> business.toMessageIsNullOrBlank(rankPlayersRequest::limit)
 
             // validate values of variable
-            business.isValidateLessThanOrEqualToZero(limit.toInt()) -> business.toMessageIncorrect(rankPlayersRequest::limit)
-            !business.isValidateRankPlayer(limit.toInt()) -> business.toMessageIncorrect(rankPlayersRequest::limit)
 
             // validate database
 
             // execute
             else -> {
-                val rankPlayer = repository.fetchRankPlayers(rankPlayersRequest).map {
+                val (itemCollectionDb, playerDb) = repository.fetchRankPlayers()
+
+                val rankPlayer = playerDb.map { db ->
+                    val level = itemCollectionDb
+                        .filter { it.playerId == db.playerId && it.itemId == TegConstant.ITEM_LEVEL }
+                        .sumBy { it.qty }
+
                     PlayerInfo(
-                        playerId = it.playerId,
-                        username = it.username,
-                        name = it.name.capitalize(),
-                        image = it.image,
-                        level = business.toConvertLevel(it.level),
-                        state = it.state,
-                        gender = it.gender,
-                        birthDate = business.toConvertDateTimeLongToString(it.birthDate),
-                        latitude = it.latitude,
-                        longitude = it.longitude,
+                        playerId = db.playerId,
+                        username = db.username,
+                        name = db.name.capitalize(),
+                        image = db.image,
+                        level = business.toConvertLevel(level),
+                        state = db.state,
+                        gender = db.gender,
+                        birthDate = business.toConvertDateTimeLongToString(db.birthDate),
+                        latitude = db.latitude,
+                        longitude = db.longitude,
                     )
-                }
+                }.sortedByDescending { it.level }
+
                 response.success = true
                 response.rankPlayers = rankPlayer
-                "Fetch rank players success Hey"
+                "Fetch rank players success"
             }
         }
 

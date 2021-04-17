@@ -13,7 +13,7 @@ import com.adedom.teg.util.TegConstant
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class MultiServiceImpl(
+internal class MultiServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
     private val jwtConfig: JwtConfig,

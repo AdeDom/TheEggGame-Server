@@ -9,7 +9,7 @@ import com.adedom.teg.models.response.PlayerInfoResponse
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface AccountService {
+internal interface AccountService {
 
     fun changeImageProfile(playerId: String?, imageName: String?): BaseResponse
 

@@ -14,7 +14,7 @@ import io.ktor.http.*
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class AuthServiceImpl(
+internal class AuthServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
     private val jwtConfig: JwtConfig,

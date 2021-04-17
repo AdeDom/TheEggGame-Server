@@ -11,7 +11,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 
 @KtorExperimentalLocationsAPI
-fun Route.authController(service: AuthService) {
+internal fun Route.authController(service: AuthService) {
 
     post<SignInRequest> {
         val request = call.receive<SignInRequest>()

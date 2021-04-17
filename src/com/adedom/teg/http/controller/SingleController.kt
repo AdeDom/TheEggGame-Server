@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.onEach
 
 @KtorExperimentalLocationsAPI
-fun Route.singleController(service: SingleService) {
+internal fun Route.singleController(service: SingleService) {
 
     get<BackpackRequest> {
         val response = service.fetchItemCollection(call.playerId)
@@ -35,7 +35,7 @@ fun Route.singleController(service: SingleService) {
 }
 
 @KtorExperimentalLocationsAPI
-fun Route.singleWebSocket(service: SingleService) {
+internal fun Route.singleWebSocket(service: SingleService) {
 
     val singlePeopleAllSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/single/single-people-all") {

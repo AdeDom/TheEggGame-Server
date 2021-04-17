@@ -14,7 +14,7 @@ import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-class SingleServiceImpl(
+internal class SingleServiceImpl(
     private val repository: TegRepository,
     private val business: TegBusiness,
     private val jwtConfig: JwtConfig,

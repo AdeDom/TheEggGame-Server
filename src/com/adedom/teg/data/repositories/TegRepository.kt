@@ -7,7 +7,7 @@ import com.adedom.teg.models.websocket.SingleSuccessAnnouncementOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface TegRepository {
+internal interface TegRepository {
 
     // if repeat return ture
     fun isUsernameRepeat(username: String): Boolean
@@ -47,7 +47,7 @@ interface TegRepository {
 
     fun changeLatLng(playerId: String, changeLatLngRequest: ChangeLatLngRequest): Boolean
 
-    fun fetchRankPlayers(rankPlayersRequest: RankPlayersRequest): List<PlayerInfoDb>
+    fun fetchRankPlayers(): Pair<List<ItemCollectionDb>, List<PlayerDb>>
 
     fun logActiveOn(playerId: String): Boolean
 

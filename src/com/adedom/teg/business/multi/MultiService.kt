@@ -7,7 +7,7 @@ import com.adedom.teg.models.websocket.RoomInfoTitleOutgoing
 import io.ktor.locations.*
 
 @KtorExperimentalLocationsAPI
-interface MultiService {
+internal interface MultiService {
 
     fun itemCollection(playerId: String?, multiItemCollectionRequest: MultiItemCollectionRequest): BaseResponse
 

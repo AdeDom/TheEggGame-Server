@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.onEach
 
 @KtorExperimentalLocationsAPI
-fun Route.multiController(service: MultiService) {
+internal fun Route.multiController(service: MultiService) {
 
     post<MultiItemCollectionRequest> {
         val request = call.receive<MultiItemCollectionRequest>()
@@ -105,7 +105,7 @@ fun Route.multiController(service: MultiService) {
 }
 
 @KtorExperimentalLocationsAPI
-fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
+internal fun Route.multiWebSocket(service: MultiService, jwtConfig: JwtConfig) {
 
     val roomPeopleAllSocket = mutableListOf<WebSocketSession>()
     webSocket("/websocket/multi/room-people-all") {

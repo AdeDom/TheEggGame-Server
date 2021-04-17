@@ -10,10 +10,10 @@ import io.ktor.response.*
 import io.ktor.routing.*
 
 @KtorExperimentalLocationsAPI
-fun Route.applicationController(service: ApplicationService) {
+internal fun Route.applicationController(service: ApplicationService) {
 
     get<RankPlayersRequest> {
-        val response = service.fetchRankPlayers(it)
+        val response = service.fetchRankPlayers()
         call.respond(response)
     }
 

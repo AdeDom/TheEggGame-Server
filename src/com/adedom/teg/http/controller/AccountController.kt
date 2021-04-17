@@ -21,7 +21,7 @@ import java.io.File
 import java.util.*
 
 @KtorExperimentalLocationsAPI
-fun Route.accountController(service: AccountService) {
+internal fun Route.accountController(service: AccountService) {
 
     put<ImageProfileRequest> {
         var imageName: String? = null
